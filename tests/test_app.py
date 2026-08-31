@@ -73,3 +73,10 @@ def test_dashboard_renders_conversion_and_risk_elements():
     assert 'id="source-badge"' in html
     assert 'id="pricing"' in html
     assert "not investment advice" in html.lower()
+
+
+def test_dashboard_links_to_free_early_access_funnel():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert "Request early access" in html
+    assert "issues/new?template=early-access.yml" in html

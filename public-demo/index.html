@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
@@ -32,7 +32,7 @@
           <input id="ticker-input" name="ticker" value="SPY" maxlength="10" placeholder="Enter ticker â€” SPY, AAPL, NVDA" aria-describedby="form-status">
           <button class="primary-btn" type="submit"><span>Run research</span><span>â†—</span></button>
         </div>
-        <div id="form-status" class="form-status">Demo mode works instantly. Connect Factor Weave later for live provider data.</div>
+        <div id="form-status" class="form-status">Public synthetic demo — no live market data or payment connection.</div>
       </form>
       <div class="proof-row"><span>No brokerage connection</span><span>â€¢</span><span>No card required</span><span>â€¢</span><span>Server-side provider keys</span></div>
     </section>
@@ -81,7 +81,7 @@
       </div>
     </section>
     <section id="pricing" class="shell pricing-section">
-      <div class="pricing-heading"><span class="kicker">Start free, prove value first</span><h2>Simple plans. Zero forced spend.</h2><p>Checkout activates only after payment links are configured.</p></div>
+      <div class="pricing-heading"><span class="kicker">Start free, prove value first</span><h2>Simple plans. Zero forced spend.</h2><p>This preview does not take payments.</p></div>
       <div id="pricing-grid" class="pricing-grid">
         <article class="price-card"><span>FREE</span><h3>$0<small>/mo</small></h3><p>Explore the workflow in demo mode.</p><button disabled>Current starting point</button></article>
         <article class="price-card featured"><span>PRO</span><h3>$15<small>/mo</small></h3><p>Built for recurring research and watchlists.</p><button disabled>Checkout not configured</button></article>
@@ -96,7 +96,7 @@
     <span>Built to validate demand before adding paid infrastructure.</span>
   </footer>
 
-  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
 
