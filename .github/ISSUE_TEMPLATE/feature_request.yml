@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an improvement or new capability.
+title: "[Feature] "
+body:
+  - type: markdown
+    attributes:
+      value: "This is a public issue. Share only information that is safe to publish; do not include private business data or credentials."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What user need, limitation, or opportunity should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed outcome
+      description: Describe the behavior or result you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches or workarounds have you considered?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Optional public-safe examples, sketches, or constraints.

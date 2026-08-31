@@ -1,0 +1,34 @@
+name: repository-quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Check tracked text for whitespace errors
+        run: git diff --check HEAD^
+        if: github.event_name == 'push'
+      - name: Check pull request diff for whitespace errors
+        run: git diff --check origin/${{ github.base_ref }}...HEAD
+        if: github.event_name == 'pull_request'
+      - name: Compile Python when Python files exist
+        shell: bash
+        run: |
+          if find . -type f -name '*.py' -not -path './.git/*' | grep -q .; then
+            python -m compileall -q .
+          else
+            echo "No Python files yet; compile check skipped."
+          fi
