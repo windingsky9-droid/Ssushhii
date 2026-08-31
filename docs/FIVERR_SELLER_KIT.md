@@ -79,3 +79,15 @@ Before ordering, send the API documentation and a short description of the resul
 ## First-review strategy
 
 Keep the first orders tightly scoped, deliver early, include a short README, and offer one small revision. Do not underprice large custom builds just to get a review; use the Basic package for a genuinely small integration and send a custom offer for larger scope.
+
+## Pricing ramp after first reviews
+
+The launch prices above are intentionally entry-level for tightly bounded work. Public Fiverr search results currently show Flask/API integration offers around $80+ and custom dashboard/admin work around $90+ in some listings, so do not keep introductory pricing forever.
+
+Suggested ramp after 2–3 successful reviews:
+
+- API integration: $35 / $90 / $175.
+- Dashboard/internal tool: $60 / $150 / $300.
+- MCP/AI integration: $60 / $175 / $350.
+
+Raise scope and price together. Never promise more endpoints, integrations, revisions, or deployment work than the package can realistically deliver.
