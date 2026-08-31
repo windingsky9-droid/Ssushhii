@@ -39,7 +39,7 @@ For clients, that means clear scope, practical communication, tested delivery, a
 
 Recent portfolio work includes Market Observatory: a Python/Flask research dashboard with provider abstraction, demo/live modes, automated tests, GitHub CI, safe secret handling, and a public static preview.
 
-Portfolio: https://rainbow-ion-e9pf9pd.shipstatic.com
+Portfolio: https://split-robot-mku5jt9.shipstatic.com
 GitHub: https://github.com/windingsky9-droid/Ssushhii
 
 ## Client-facing close
