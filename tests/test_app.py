@@ -95,3 +95,10 @@ def test_dashboard_has_fixed_price_starter_service_and_contact():
     assert "$49 starter" in html.lower()
     assert "windingsky9@gmail.com" in html
     assert "mailto:windingsky9@gmail.com" in html
+
+
+def test_dashboard_has_no_mojibake():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert "â" not in html
+    assert "ï»¿" not in html
