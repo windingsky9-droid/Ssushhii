@@ -1,7 +1,6 @@
 name: Early access request
 description: Tell us how you would use Market Observatory.
 title: "Early access: "
-labels: ["early-access"]
 body:
   - type: markdown
     attributes:
