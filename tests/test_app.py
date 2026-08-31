@@ -62,3 +62,14 @@ def test_config_disables_checkout_without_environment(monkeypatch):
     assert plans["pro"]["checkout_enabled"] is False
     assert plans["creator"]["checkout_enabled"] is False
     assert plans["free"]["price"] == 0
+
+
+def test_dashboard_renders_conversion_and_risk_elements():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert response.status_code == 200
+    assert "Market Observatory" in html
+    assert 'id="research-form"' in html
+    assert 'id="source-badge"' in html
+    assert 'id="pricing"' in html
+    assert "not investment advice" in html.lower()

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 
 from src.pricing import public_pricing
 from src.research import get_research_provider, normalize_ticker
@@ -7,6 +7,10 @@ from src.research import get_research_provider, normalize_ticker
 def create_app(provider=None) -> Flask:
     app = Flask(__name__)
     research_provider = provider or get_research_provider()
+
+    @app.get("/")
+    def index():
+        return render_template("index.html")
 
     @app.get("/health")
     def health():
@@ -34,7 +38,6 @@ def create_app(provider=None) -> Flask:
 
 
 app = create_app()
-
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=False)
