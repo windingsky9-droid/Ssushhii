@@ -80,3 +80,10 @@ def test_dashboard_links_to_free_early_access_funnel():
     html = response.get_data(as_text=True)
     assert "Request early access" in html
     assert "issues/new?template=early-access.yml" in html
+
+
+def test_dashboard_has_developer_service_request_cta():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert "Need this built for your project?" in html
+    assert "issues/new?template=service-request.yml" in html

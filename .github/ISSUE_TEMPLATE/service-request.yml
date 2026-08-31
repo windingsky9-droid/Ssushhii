@@ -1,0 +1,28 @@
+name: Developer service request
+description: Request a quote for API, dashboard, or MCP/AI integration work.
+title: "Project request: "
+labels: ["service-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share only non-sensitive project details. Do not paste passwords, production API keys, payment credentials, or private customer data.
+  - type: dropdown
+    id: service
+    attributes:
+      label: What do you need?
+      options:
+        - REST API integration
+        - Dashboard / internal tool
+        - MCP or AI API integration
+        - API debugging / repair
+        - Other small Python automation
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Project scope
+      description: Include your tech stack, desired result, documentation links, and deadline.
+    validations:
+      required: true
