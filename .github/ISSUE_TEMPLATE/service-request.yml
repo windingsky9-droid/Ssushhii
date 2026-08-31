@@ -1,7 +1,6 @@
 name: Developer service request
 description: Request a quote for API, dashboard, or MCP/AI integration work.
 title: "Project request: "
-labels: ["service-request"]
 body:
   - type: markdown
     attributes:
