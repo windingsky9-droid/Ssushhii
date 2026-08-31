@@ -1,43 +1,50 @@
-# Ssushhii + Factor Weave Research Hub
+# Market Observatory
 
-This branch adds a safe Factor Weave integration scaffold without storing secrets in Git.
+A zero-required-cost market research MVP built around a clean provider boundary. It runs immediately with deterministic demo data and switches to server-side Factor Weave research when `FACTORWEAVE_API_KEY` is configured.
 
-## What it does
+## Why this exists
 
-- Reads Factor Weave market-factor data through the REST API.
-- Provides a smoke test for ticker data and market context.
-- Includes an MCP configuration template for MCP-aware clients.
-- Keeps `fw_live_...` credentials outside the repository.
-- Leaves room for dashboards, alerts, research reports, and paid products.
+The goal is to validate whether people will use and pay for a clearer research workflow before spending money on infrastructure. It is a research product, not an auto-trader and not a promise of investment returns.
 
-## Cost-aware starting point
+## Current MVP
 
-- Factor Weave Free: $0, 250 API calls/day, REST access.
-- Factor Weave Hobby: $19/month, 2,500 calls/day and MCP server access.
-- Start on Free for development; upgrade only when MCP or higher limits are actually needed.
+- Premium responsive ticker-research dashboard.
+- Deterministic demo mode with no account or API key required.
+- Optional Factor Weave REST provider on the server.
+- Composite profile, factor lens, market context, and comparable symbols.
+- Free / Pro / Creator pricing presentation.
+- Paid CTAs remain disabled until Stripe Payment Links are deliberately configured.
+- Health and JSON research endpoints for deployment checks.
+- Factor Weave MCP probe/template retained for future agent workflows.
 
-## Local setup
+## Run locally — $0 path
 
-1. Create a Factor Weave dev key in Profile -> API Access.
-2. Copy `.env.example` to `.env`.
-3. Put the key in `.env`; never commit that file.
-4. Install Python dependencies with `py -m pip install -r requirements.txt`.
-5. Run `py scripts/smoke_test.py`.
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe app.py
+```
+Open `http://127.0.0.1:5000`. The app automatically loads a SPY demo snapshot.
 
-## MCP setup
+## Optional live Factor Weave mode
 
-The Factor Weave MCP endpoint is:
+1. Copy `.env.example` to `.env`.
+2. Put a Factor Weave API key in `FACTORWEAVE_API_KEY`.
+3. Load that environment before starting the app.
+4. Keep `.env` local; it is ignored by Git.
 
-`https://factorweave.com/api/mcp`
+The browser never receives the Factor Weave credential. Provider requests are made by Flask on the server.
 
-Factor Weave documents streamable HTTP transport and `Authorization: Bearer fw_live_...` authentication. The template is in `mcp/factorweave.template.json`.
+## Optional payments
 
-MCP data tools require the Factor Weave Hobby tier or above. Public MCP initialization/tool discovery can still be probed without exposing a key.
+Create hosted Stripe Payment Links only when you intentionally want to accept payments, then set `STRIPE_PRO_URL` and/or `STRIPE_CREATOR_URL`. Until those variables are present, the paid buttons remain disabled. This MVP does not collect card data or require a Stripe secret key.
 
-## Revenue-oriented uses
+## Test and verify
 
-Good product directions include a research dashboard, watchlist/report-card service, alert digest, educational market screener, or paid research newsletter. Treat Factor Weave as research infrastructure, not as a guaranteed return or auto-trading signal.
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m compileall app.py src scripts
+.\.venv\Scripts\python.exe scripts\mcp_probe.py
+```
 
-Before reselling or redistributing Factor Weave data, verify the provider's commercial/licensing terms.
-
-See `docs/MONEY_STACK.md` for a low-cost build-and-sell plan.
+The MCP probe performs public initialization/tool discovery only; authenticated Factor Weave MCP data calls depend on your provider plan and key.
