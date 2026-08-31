@@ -2,6 +2,21 @@
 
 A zero-required-cost market research MVP built around a clean provider boundary. It runs immediately with deterministic demo data and switches to server-side Factor Weave research when `FACTORWEAVE_API_KEY` is configured.
 
+## Hire me / starter service
+
+Live demo: https://split-robot-mku5jt9.shipstatic.com
+
+I also take small client projects around the same stack shown here:
+- Python REST API integrations and debugging
+- Flask dashboards and internal tools
+- AI/MCP provider integrations and automation handoff
+
+**Starter offer: $49** for one tightly scoped Python/API debugging or integration task with basic verification and a concise handoff. Larger work is quoted separately.
+
+Request a project: https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml
+
+Email: windingsky9@gmail.com
+
 ## Why this exists
 
 The goal is to validate whether people will use and pay for a clearer research workflow before spending money on infrastructure. It is a research product, not an auto-trader and not a promise of investment returns.
