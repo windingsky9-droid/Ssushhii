@@ -87,3 +87,11 @@ def test_dashboard_has_developer_service_request_cta():
     html = response.get_data(as_text=True)
     assert "Need this built for your project?" in html
     assert "issues/new?template=service-request.yml" in html
+
+
+def test_dashboard_has_fixed_price_starter_service_and_contact():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert "$49 starter" in html.lower()
+    assert "windingsky9@gmail.com" in html
+    assert "mailto:windingsky9@gmail.com" in html
