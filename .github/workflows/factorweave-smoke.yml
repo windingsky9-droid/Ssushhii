@@ -1,0 +1,21 @@
+name: Factor Weave smoke test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      FACTORWEAVE_API_KEY: ${{ secrets.FACTORWEAVE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements.txt
+      - name: Probe public MCP endpoint
+        run: python scripts/mcp_probe.py
+      - name: Test authenticated REST API
+        if: ${{ env.FACTORWEAVE_API_KEY != '' }}
+        run: python scripts/smoke_test.py
