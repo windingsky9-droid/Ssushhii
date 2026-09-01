@@ -102,3 +102,19 @@ def test_dashboard_has_no_mojibake():
     html = response.get_data(as_text=True)
     assert "â" not in html
     assert "ï»¿" not in html
+
+
+def test_dashboard_uses_direct_sales_story_sections():
+    response = client().get("/")
+    html = response.get_data(as_text=True)
+    assert response.status_code == 200
+    for section_id, label in (
+        ("what-i-build", "What I build"),
+        ("proof", "Proof"),
+        ("problems-i-solve", "Problems I solve"),
+        ("hire-me", "Hire me"),
+    ):
+        assert f'id="{section_id}"' in html
+        assert label in html
+    assert "$49 starter" in html.lower()
+    assert "passing tests" in html.lower()
