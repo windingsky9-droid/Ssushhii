@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Market Observatory turns factor research into a clear, decision-ready market snapshot.">
+  <title>Market Observatory — Research the setup, not the hype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Market Observatory home">
+      <span class="brand-mark">MO</span><span>Market Observatory</span>
+    </a>
+    <nav><a href="#what-i-build">Build</a><a href="#proof">Proof</a><a href="#problems-i-solve">Solve</a><a href="#hire-me">Hire me</a></nav>
+    <a class="ghost-btn" href="https://github.com/windingsky9-droid/Ssushhii/issues/new?template=early-access.yml" target="_blank" rel="noopener">Request early access</a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="eyebrow"><span class="live-dot"></span> Market intelligence without the noise</div>
+      <h1>Research the <em>setup</em>,<br>not the hype.</h1>
+      <p class="hero-copy">A clean factor snapshot for traders, creators, and curious investors. Search a ticker, inspect the regime, and see comparable profiles in seconds.</p>
+      <form id="research-form" class="ticker-form" autocomplete="off">
+        <label class="sr-only" for="ticker-input">Ticker symbol</label>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input id="ticker-input" name="ticker" value="SPY" maxlength="10" placeholder="Enter ticker — SPY, AAPL, NVDA" aria-describedby="form-status">
+          <button class="primary-btn" type="submit"><span>Run research</span><span>↗</span></button>
+        </div>
+        <div id="form-status" class="form-status">Demo mode works instantly. Connect Factor Weave later for live provider data.</div>
+      </form>
+      <div class="proof-row"><span>No brokerage connection</span><span>•</span><span>No card required</span><span>•</span><span>Server-side provider keys</span></div>
+    </section>
+
+    <section id="research" class="shell research-shell">
+      <div class="section-heading">
+        <div><span class="kicker">Research snapshot</span><h2 id="result-title">SPY / Waiting for research</h2></div>
+        <span id="source-badge" class="source-badge">DEMO READY</span>
+      </div>
+      <div id="research-error" class="error-banner" hidden></div>
+      <div class="research-grid">
+        <article class="score-card panel">
+          <span class="panel-label">Composite profile</span>
+          <div class="score-line"><strong id="composite-score">—</strong><span>/100</span></div>
+          <div class="meter"><span id="score-meter"></span></div>
+          <h3 id="posture">Search a ticker</h3>
+          <p id="summary">Run a research snapshot to populate factor and market context.</p>
+          <small id="as-of">Source will appear here.</small>
+        </article>
+        <article class="panel metrics-card">
+          <div class="panel-top"><span class="panel-label">Factor lens</span><span class="micro">Point-in-time research</span></div>
+          <div class="metric-grid">
+            <div><span>Momentum</span><strong id="metric-momentum">—</strong></div>
+            <div><span>RSI (14)</span><strong id="metric-rsi">—</strong></div>
+            <div><span>Realized vol</span><strong id="metric-vol">—</strong></div>
+            <div><span>Beta vs SPY</span><strong id="metric-beta">—</strong></div>
+          </div>
+        </article>
+        <article class="panel context-card">
+          <span class="panel-label">Market context</span>
+          <h3 id="market-regime">Awaiting snapshot</h3>
+          <p id="market-note">Regime and volatility context will be summarized here.</p>
+          <div class="context-rule"></div>
+          <span class="panel-label">Comparable profiles</span>
+          <div id="comparables" class="chips"><span>—</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="what-i-build" class="shell method-section">
+      <div><span class="kicker">What I build</span><h2>Useful systems.<br>No mystery layer.</h2></div>
+      <div class="method-list">
+        <div><span>API</span><p><strong>Python / REST API integrations.</strong> Auth, normalized responses, failure handling, tests, and clean setup notes.</p></div>
+        <div><span>UI</span><p><strong>Dashboards and internal tools.</strong> Flask interfaces that turn API or business data into something people can actually use.</p></div>
+        <div><span>FIX</span><p><strong>Debugging and reliability.</strong> Reproduce the problem, write the failing test, fix the root cause, and verify the result.</p></div>
+        <div><span>MCP</span><p><strong>AI / MCP automation.</strong> Tool connections, provider boundaries, safe server-side credentials, and integration handoff.</p></div>
+      </div>
+    </section>
+
+    <section id="proof" class="shell method-section">
+      <div><span class="kicker">Proof</span><h2>I ship working proof,<br>not just promises.</h2></div>
+      <div class="method-list">
+        <div><span>MO</span><p><strong>Market Observatory.</strong> A Flask research dashboard with deterministic demo mode and optional live Factor Weave provider mode.</p></div>
+        <div><span>CI</span><p><strong>Tested delivery.</strong> 18 passing tests, GitHub Actions CI, input validation, provider-failure handling, and explicit demo/live labeling.</p></div>
+        <div><span>API</span><p><strong>Factor Weave integration.</strong> REST client, MCP probe, smoke tooling, and server-side environment configuration.</p></div>
+        <div><span>LIVE</span><p><strong>Public demo.</strong> <a href="https://split-robot-mku5jt9.shipstatic.com" target="_blank" rel="noopener">Open the working portfolio demo ↗</a></p></div>
+      </div>
+    </section>
+
+    <section id="problems-i-solve" class="shell method-section">
+      <div><span class="kicker">Problems I solve</span><h2>Bring me the messy part.</h2></div>
+      <div class="method-list">
+        <div><span>01</span><p><strong>Your API integration is brittle.</strong> I can wrap it behind a clean Python service with explicit errors and tests.</p></div>
+        <div><span>02</span><p><strong>Your team is doing repetitive work by hand.</strong> I can turn a repeatable workflow into a small automation or internal tool.</p></div>
+        <div><span>03</span><p><strong>Your Python code fails in ways nobody can reproduce.</strong> I can isolate the failure, prove it with a test, and fix the actual cause.</p></div>
+        <div><span>04</span><p><strong>You need AI tooling connected safely.</strong> I can wire MCP/API workflows without leaking provider keys into the browser.</p></div>
+      </div>
+    </section>
+
+    <section id="hire-me" class="shell pricing-section"><div id="pricing"></div>
+      <div class="pricing-heading"><span class="kicker">Hire me</span><h2>Need this built for your project?</h2><p><strong>$49 starter</strong> task first. Bigger scope only after the first result is clear.</p></div>
+      <div class="pricing-grid">
+        <article class="price-card featured"><span>STARTER</span><h3>$49<small> fixed scope</small></h3><p>One tightly scoped Python/API debugging or integration task with basic verification and concise handoff.</p><a href="mailto:windingsky9@gmail.com?subject=%2449%20Python%20API%20Starter%20Task">Email me the task</a></article>
+        <article class="price-card"><span>PROJECT</span><h3>Scope<small> first</small></h3><p>Dashboards, API integrations, automation, or MCP work quoted after a short project brief.</p><a href="https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml" target="_blank" rel="noopener">Request a project quote</a></article>
+        <article class="price-card"><span>PROOF</span><h3>Live<small> demo</small></h3><p>See the working Market Observatory build, source repo, tests, and delivery style before hiring.</p><a href="https://split-robot-mku5jt9.shipstatic.com" target="_blank" rel="noopener">View portfolio demo</a></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div class="brand footer-brand"><span class="brand-mark">MO</span><span>Market Observatory</span></div>
+    <p><strong>Research tool, not investment advice.</strong> Market data and factor signals can be incomplete, delayed, or wrong. Nothing here guarantees performance or recommends a transaction.</p>
+    <span>Built to validate demand before adding paid infrastructure.</span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+name: Early access request
+description: Tell us how you would use Market Observatory.
+title: "Early access: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Market Observatory. Do not post private financial information, passwords, API keys, or payment details here.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which best describes you?
+      options:
+        - Individual market researcher
+        - Finance/content creator
+        - Small research or investment team
+        - Developer / data builder
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What would make this worth paying for?
+      placeholder: Describe the workflow or result you want.
+    validations:
+      required: true
