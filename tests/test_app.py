@@ -72,6 +72,8 @@ def test_dashboard_renders_conversion_and_risk_elements():
     assert 'id="research-form"' in html
     assert 'id="source-badge"' in html
     assert 'id="pricing"' in html
+    assert 'id="signal-canvas"' in html
+    assert 'id="offer"' in html
     assert "not investment advice" in html.lower()
 
 

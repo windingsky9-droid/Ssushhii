@@ -1,8 +1,4 @@
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-
-DEMO_JS = r'''const $=id=>document.getElementById(id);
+const $=id=>document.getElementById(id);
 const scene=(()=>{const c=$("signal-canvas");if(!c)return null;const x=c.getContext("2d"),reduced=matchMedia("(prefers-reduced-motion: reduce)").matches,stars=Array.from({length:100},(_,i)=>{const s=(i*9301+49297)%233280/233280;return{x:s*2-1,y:(s*7.31%1)*2-1,z:s,size:.4+s*1.5}});let w=1,h=1,score=0,momentum=0,phase=0,queued=0;function size(){const b=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);w=Math.max(1,b.width);h=Math.max(1,b.height);c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0);paint()}function pt(a,b,z,ry,rx,s){let X=a*Math.cos(ry)-z*Math.sin(ry),Z=a*Math.sin(ry)+z*Math.cos(ry),Y=b*Math.cos(rx)-Z*Math.sin(rx);Z=b*Math.sin(rx)+Z*Math.cos(rx);const q=3.6/(3.6-Z);return{x:w*.5+X*s*q,y:h*.52+Y*s*q,q}}function paint(){phase=performance.now()*.00016;x.clearRect(0,0,w,h);const s=Math.min(w,h)*.27,ry=phase*.7+.48,rx=.34;stars.forEach((a,i)=>{const p=pt(a.x*2.4,a.y*1.4,a.z*2.4-1.2,ry*.18,rx*.25,s*.9);x.globalAlpha=.12+.22*Math.sin(phase*4+i);x.fillStyle=i%6?"#c9d6e3":i%2?"#75d7ff":"#b6f36b";x.beginPath();x.arc(p.x,p.y,a.size*p.q*.4,0,Math.PI*2);x.fill()});x.globalAlpha=1;for(const [r,col,off] of [[1.4,"rgba(182,243,107,.42)",0],[1.7,"rgba(117,215,255,.35)",.8],[2,"rgba(166,141,255,.22)",2.1]]){x.beginPath();for(let i=0;i<=100;i++){const a=i/100*Math.PI*2+off,p=pt(Math.cos(a)*r,Math.sin(a)*r*.25,Math.sin(a)*r*.72,ry,rx,s);i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y)}x.strokeStyle=col;x.lineWidth=1;x.stroke()}for(let la=-2;la<=2;la++){x.beginPath();for(let i=0;i<=60;i++){const a=i/60*Math.PI*2,r=Math.cos(la*.24),p=pt(Math.cos(a)*r,Math.sin(la*.24),Math.sin(a)*r,ry,rx,s*.96);i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y)}x.strokeStyle=la?"rgba(117,215,255,.14)":"rgba(117,215,255,.5)";x.stroke()}for(let i=0,n=7+Math.round(score/13);i<n;i++){const a=phase*(1.2+i%3*.25)+i*Math.PI*2/n,p=pt(Math.cos(a)*(1.18+i%3*.25),Math.sin(a*1.5)*.2,Math.sin(a)*(1.18+i%3*.25)*.72,ry,rx,s),col=i%3?i%3===1?"#75d7ff":"#a68dff":"#b6f36b",g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,12);g.addColorStop(0,col);g.addColorStop(1,"transparent");x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,12,0,Math.PI*2);x.fill();x.fillStyle=col;x.beginPath();x.arc(p.x,p.y,1.7,0,Math.PI*2);x.fill()}if(!reduced&&!queued){queued=1;requestAnimationFrame(n=>{queued=0;paint(n)})}}window.addEventListener("resize",size);size();return{update(d){score=Number(d.composite_score)||0;momentum=Number(d.metrics?.momentum)||0;$("scene-score").textContent=Math.round(score);$("scene-momentum").textContent=Math.round(momentum);$("scene-ticker").textContent=d.ticker||"SPY";$("scene-posture").textContent=(d.posture||"DEMO").toUpperCase();$("scene-regime").textContent=(d.market?.regime||"BALANCED").replaceAll("_"," ").toUpperCase();paint()}}})();
 const peers=["SPY","QQQ","AAPL","MSFT","NVDA","AMZN","META","GOOGL"];
 function hashScore(t,s,lo,hi){let h=2166136261;for(const c of `${t}:${s}`){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return lo+(Math.abs(h)%(hi-lo+1));}
@@ -11,23 +7,4 @@ function snapshot(t){const c=hashScore(t,"composite",38,92),m=hashScore(t,"momen
 function render(d){const s=Math.max(0,Math.min(100,d.composite_score));$("result-title").textContent=`${d.ticker} / Research snapshot`;$("source-badge").textContent="DEMO DATA";$("composite-score").textContent=s;$("score-meter").style.width=`${s}%`;$("posture").textContent=d.posture;$("summary").textContent=d.summary;$("as-of").textContent=d.as_of;$("metric-momentum").textContent=d.metrics.momentum;$("metric-rsi").textContent=d.metrics.rsi;$("metric-vol").textContent=`${(d.metrics.realized_vol*100).toFixed(1)}%`;$("metric-beta").textContent=d.metrics.beta.toFixed(2);$("market-regime").textContent=d.market.regime;$("market-note").textContent=d.market.note;$("comparables").innerHTML="";d.comparables.forEach(p=>{const e=document.createElement("span");e.textContent=p;$("comparables").appendChild(e)});scene?.update(d);}
 function run(v){const status=$("form-status"),err=$("research-error");err.hidden=true;try{render(snapshot(ticker(v)));status.className="form-status";status.textContent="Synthetic demo snapshot loaded — no live market data or payment connection.";}catch(e){status.className="form-status error";status.textContent=e.message;err.textContent=e.message;err.hidden=false;}}
 document.getElementById("research-form").addEventListener("submit",e=>{e.preventDefault();run(document.getElementById("ticker-input").value)});
-document.addEventListener("DOMContentLoaded",()=>run(document.getElementById("ticker-input").value));'''
-
-def build_public_demo(output_dir: Path) -> None:
-    output_dir.mkdir(parents=True, exist_ok=True)
-    html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
-    html = html.replace("{{ url_for('static', filename='styles.css') }}", "styles.css")
-    html = html.replace("{{ url_for('static', filename='app.js') }}", "app.js")
-    html = html.replace(
-        "Demo mode works instantly. Connect Factor Weave later for live provider data.",
-        "Public synthetic demo — no live market data or payment connection.",
-    )
-    html = html.replace("Checkout activates only after payment links are configured.", "This preview does not take payments.")
-    (output_dir / "index.html").write_text(html, encoding="utf-8")
-    (output_dir / "styles.css").write_text((ROOT / "static" / "styles.css").read_text(encoding="utf-8"), encoding="utf-8")
-    (output_dir / "app.js").write_text(DEMO_JS, encoding="utf-8")
-
-
-if __name__ == "__main__":
-    build_public_demo(ROOT / "public-demo")
-    print("Built public-demo/")
+document.addEventListener("DOMContentLoaded",()=>run(document.getElementById("ticker-input").value));

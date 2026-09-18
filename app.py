@@ -1,7 +1,13 @@
 from flask import Flask, jsonify, render_template, request
+from dotenv import load_dotenv
 
 from src.pricing import public_pricing
 from src.research import get_research_provider, normalize_ticker
+
+
+# Load local development configuration while keeping credentials out of source control.
+# Deployment platforms should provide the same variables through their secret manager.
+load_dotenv()
 
 
 def create_app(provider=None) -> Flask:
