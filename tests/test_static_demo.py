@@ -124,3 +124,23 @@ def test_static_demo_base_url_is_configurable(tmp_path):
 
     assert 'content="https://example.test/og-card.png"' in html
     assert SITE_URL not in html
+
+
+def test_static_demo_offers_a_contact_path_without_a_github_account(tmp_path):
+    """Every CTA used to be a GitHub issue form.
+
+    The early-access form's own dropdown names "Finance/content creator" and
+    "Small research or investment team" as target users — people who mostly do
+    not have a GitHub account, and the form is public. Keep at least one route
+    that needs no account.
+    """
+    build_static_demo(tmp_path)
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+
+    hrefs = re.findall(r'<a [^>]*href="([^"]+)"', html)
+    contact = [h for h in hrefs if h.startswith("mailto:") or "issues/new" in h]
+    assert contact, "no contact route at all"
+
+    mailto = [h for h in contact if h.startswith("mailto:")]
+    assert mailto, "every contact route requires a GitHub account"
+    assert all("windingsky9@gmail.com" in h for h in mailto)
