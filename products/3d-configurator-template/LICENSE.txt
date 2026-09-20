@@ -1,0 +1,36 @@
+STANDARD LICENCE
+
+You may:
+
+  - Use this template in one commercial or non-commercial project, for
+    yourself or for one client.
+  - Modify it in any way, including changing the geometry, the shading and
+    the interface.
+  - Deploy the modified result publicly, and charge end users for access to
+    the product or site it is part of.
+  - Keep using it indefinitely. The licence does not expire.
+
+You may not:
+
+  - Resell, relicense, sublicense or redistribute the template itself, or a
+    substantially unmodified derivative of it, whether free or paid. This
+    includes template marketplaces, asset packs, theme bundles and public
+    repositories.
+  - Use it in a product whose main purpose is to provide this template to
+    others (for example a site builder that hands users a copy).
+
+For use across more than one project or client, buy one licence per project,
+or ask about an extended licence.
+
+NO WARRANTY
+
+This template is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and non-infringement. In no event shall the
+author be liable for any claim, damages or other liability arising from the
+use of this template.
+
+--------------------------------------------------------------------------
+This is a plain-language licence, not legal advice. If your situation is
+unusual, or you are reselling in a jurisdiction you are unsure about, have a
+lawyer look at it.

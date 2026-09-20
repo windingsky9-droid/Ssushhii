@@ -1,0 +1,16 @@
+<!-- Drop this wherever you want the configurator to appear.
+     Change the src to wherever you uploaded index.html. -->
+
+<div style="position:relative;width:100%;aspect-ratio:16/10;min-height:520px">
+  <iframe
+    src="/configurator/index.html"
+    title="Product configurator"
+    loading="lazy"
+    allow="accelerometer; gyroscope"
+    style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:16px"
+  ></iframe>
+</div>
+
+<!-- On a phone the configurator stacks the viewer above the controls and
+     needs roughly 1100px of height. aspect-ratio handles that on its own;
+     min-height is the floor for very short viewports. -->
