@@ -4,7 +4,8 @@ A product configurator that runs in the customer's browser. They change the
 colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
-**Four complete products. One file. 51 KB. Zero dependencies.**
+**Four complete products, and a cart integration that works. One file.
+54 KB. Zero dependencies.**
 
 Headphones, a cosmetic bottle, a table lamp and a three-legged side table,
 switchable from a tab, all drawn by one renderer — because the question you
@@ -178,6 +179,47 @@ call to action with a configuration on screen, and it carries the build code
 they had chosen.
 
 ## Embedding it in a store
+
+### See it working first
+
+`examples/store-demo/index.html` is a complete mock product page. It embeds the
+configurator in an iframe, receives the configuration, fills in the product
+panel live, and adds a cart line carrying every option, the build code, and a
+link that reopens the exact configuration.
+
+Serve the folder over HTTP and open it:
+
+```
+python3 -m http.server 8080      # http://localhost:8080/examples/store-demo/
+```
+
+It will **not** work from `file://` — `postMessage` origin checks need a real
+origin. That is the check doing its job, not a bug.
+
+Read its listener before writing your own; it is fifteen lines and it does the
+two things that matter:
+
+```js
+// Trust only the origin the configurator is actually served from. Deriving it
+// from the iframe's own src is correct whether you host the configurator next
+// to your store or on a CDN — assuming same-origin silently drops every
+// message in the CDN case.
+const EXPECTED_ORIGIN = new URL(frame.src, location.href).origin;
+
+window.addEventListener('message', e => {
+  if (e.origin !== EXPECTED_ORIGIN) return;
+  if (!e.data || e.data.type !== 'configurator') return;
+  // e.data: { product, model, code, price, currency, url, options[] }
+});
+```
+
+Set `CONFIG.postMessageTarget` to your storefront's origin before going live.
+The default `"*"` is fine on localhost and a bad idea in production: it lets
+any page that frames your configurator read the message.
+
+**Never charge from the price in the message.** It is computed in the browser
+and editable in devtools. Charge from a real variant or a server-side rule,
+and carry the build code as a line-item property.
 
 ### Shopify
 

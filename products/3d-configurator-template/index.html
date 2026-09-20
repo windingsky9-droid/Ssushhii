@@ -191,7 +191,13 @@ const CONFIG = {
   },
 
   note:        "Prices shown are illustrative. Replace this note with your own terms.",
-  autoSpin:    true
+  autoSpin:    true,
+
+  // When this page is embedded in an iframe it posts the current configuration
+  // to the parent window on every change, so a store page can put it in the
+  // cart. Set this to YOUR storefront's origin before going live: "*" lets any
+  // page that frames the configurator read the message.
+  postMessageTarget: "*"
 };
 /* ============ END OF EDITABLE BLOCK ================================ */
 /* ------------------------------------------------------------------ *
@@ -1036,6 +1042,27 @@ function start() {
     $('sPrice').textContent = CONFIG.currency + total;
     $('sCode').textContent = [prod.codePrefix].concat(prod.groups.map(g => opts[g.key].id)).join('-');
     writeHash();
+    publish(prod, opts, total);
+  }
+
+  // Embedded in a store page? Hand the configuration to the parent so it can
+  // be added to a cart. Only fires when actually framed.
+  function publish(prod, opts, total) {
+    if (window.parent === window) return;
+    try {
+      window.parent.postMessage({
+        type:    'configurator',
+        product:  cfg.product,
+        model:    prod.name,
+        code:     $('sCode').textContent,
+        price:    total,
+        currency: CONFIG.currency,
+        url:      location.href,
+        options:  prod.groups.map(g => ({
+          key: g.key, label: g.label, id: opts[g.key].id, name: opts[g.key].name
+        }))
+      }, CONFIG.postMessageTarget || '*');
+    } catch (_) { /* a framing page that rejects the message is not our problem */ }
   }
 
   function productTabs() {
