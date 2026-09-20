@@ -4,7 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Live 3D Product Configurator — Sushir 3D Studio</title>
-<meta name="description" content="A real-time WebGL2 product configurator running in the browser. No plugin, no download, no dependencies — 0 KB of framework, one file.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sushir 3D Studio">
+<meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
+<meta property="og:description" content="A real-time WebGL product configurator. Two products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
+<meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A pair of headphones rendered in real time beside the words Configure it live, in the browser.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
+<meta name="twitter:description" content="A real-time WebGL product configurator. Two products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
+<link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
+<!-- Link-preview tags. Uncomment and set YOUR absolute URLs before going live:
+     relative og:image / og:url values are silently dropped by every unfurler.
+<meta property="og:type" content="website">
+<meta property="og:title" content="Configure it live, in the browser">
+<meta property="og:description" content="Real-time 3D product viewer.">
+<meta property="og:url" content="https://example.com/configurator/">
+<meta property="og:image" content="https://example.com/configurator/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+-->
+<meta name="description" content="A real-time 3D product configurator running in the browser.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b8ff73'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='sans-serif' font-size='26' font-weight='700' fill='%230a1106'%3E3D%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,20 +118,6 @@ canvas:active{cursor:grabbing}
   .sw{width:40px;height:40px}
 }
 </style>
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Sushir 3D Studio">
-<meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta property="og:description" content="A real-time WebGL product configurator. Change colour, finish, hardware and lighting and watch it re-shade instantly. No plugin, no download, no framework.">
-<meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
-<meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A 3D pair of headphones rendered in real time beside the words Configure it live, in the browser.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta name="twitter:description" content="A real-time WebGL product configurator. Change colour, finish, hardware and lighting and watch it re-shade instantly. No plugin, no download, no framework.">
-<meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
-<link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
 </head>
 <body>
 <div id="app">
@@ -114,8 +125,8 @@ canvas:active{cursor:grabbing}
     <canvas id="c"></canvas>
     <div id="loading">compiling shaders…</div>
     <div class="top">
-      <div class="brand"><i>3D</i> SUSHIR 3D STUDIO</div>
-      <a class="back" href="/">← Portfolio</a>
+      <div class="brand"><i></i><span></span></div>
+      <a class="back" href="/"></a>
     </div>
     <div class="hud">
       <span class="pill">drag to orbit · scroll to zoom</span>
@@ -125,65 +136,75 @@ canvas:active{cursor:grabbing}
   </div>
 
   <aside id="panel">
-    <span class="eyebrow">Live demo · runs on your GPU</span>
-    <h1>Product configurator</h1>
-    <p class="sub">Every surface below is shaded in real time — physically based metal, leather and matte polymer, lit by a procedural studio environment. No video, no pre-rendered turntable.</p>
+    <span class="eyebrow" id="eyebrow"></span>
+    <h1></h1>
+    <p class="sub"></p>
 
     <div id="fallback">This browser has no WebGL2 context, so the live viewer can't start. Everything else on the page still works — and on a client project this is the point where a pre-rendered fallback image would load instead.</div>
 
-    <div class="group">
-      <div class="glabel"><span>Shell colour</span><b id="lblShell">Graphite</b></div>
-      <div class="swatches" id="shell"></div>
-    </div>
+    <div class="seg" id="product" style="margin:18px 0 4px"></div>
 
-    <div class="group">
-      <div class="glabel"><span>Finish</span><b id="lblFinish">Matte</b></div>
-      <div class="seg" id="finish"></div>
-    </div>
-
-    <div class="group">
-      <div class="glabel"><span>Hardware</span><b id="lblMetal">Brushed steel</b></div>
-      <div class="swatches" id="metal"></div>
-    </div>
-
-    <div class="group">
-      <div class="glabel"><span>Ear cushion</span><b id="lblPad">Nappa leather</b></div>
-      <div class="seg" id="pad"></div>
-    </div>
-
-    <div class="group">
-      <div class="glabel"><span>Lighting</span><b id="lblEnv">Studio</b></div>
-      <div class="seg" id="env"></div>
-    </div>
+    <div id="groups"></div>
 
     <div class="spec">
-      <div class="row"><span>Model</span><b>ORBIT ONE</b></div>
-      <div class="row"><span>Configuration</span><b id="sSpec">Graphite / Matte</b></div>
-      <div class="row"><span>Hardware</span><b id="sMetal">Brushed steel</b></div>
-      <div class="row"><span>Cushion</span><b id="sPad">Nappa leather</b></div>
+      <div class="row"><span>Model</span><b id="sModel"></b></div>
+      <div id="specRows"></div>
       <div class="row"><span>Indicative price</span><b id="sPrice">$349</b></div>
       <div class="code" id="sCode">ORB1-GRA-MT-STL-NAP</div>
     </div>
 
     <div class="cta">
-      <h3>Want this for your product?</h3>
-      <p>I build configurators like this from your CAD, photos or sketches — embedded straight into your store page. No plugin for the customer, no app to install.</p>
+      <h3 id="ctaHead"></h3>
+      <p id="ctaBody"></p>
       <div class="btns">
-        <a class="primary" href="mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A">Get a quote</a>
+        <a class="primary" id="ctaBtn" href="#"></a>
         <button class="ghost" id="shot">Download this view</button>
       </div>
     </div>
 
-    <p class="note">ORBIT ONE is a sample product built to demonstrate the renderer — it isn't for sale and the price is illustrative. The viewer is a single HTML file with a hand-written WebGL2 renderer: <b style="color:#93a2b3">no three.js, no framework, nothing to download</b>. That is why it starts in well under a second on a phone.</p>
+    <p class="note" id="note"></p>
   </aside>
 </div>
 
 <script>
 "use strict";
+
+/* ===================================================================
+   EDIT THIS BLOCK — and only this block.
+   Everything here is copy, pricing and branding. You should not need
+   to touch a line of the renderer below to ship your own product.
+   =================================================================== */
+const CONFIG = {
+  brand:       "SUSHIR 3D STUDIO",
+  brandMark:   "3D",                       // 2-3 characters for the square logo
+  backLink:    { text: "\u2190 Portfolio", href: "/" },
+
+  eyebrow:     "Live demo \u00b7 runs on your GPU",
+  heading:     "Product configurator",
+  intro:       "Two completely different products, one renderer. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded.",
+
+  defaultProduct: "headphones",   // must be a key of PRODUCTS below
+  currency:    "$",
+
+  cta: {
+    heading: "Want this for your product?",
+    body:    "I build configurators like this from your CAD, photos or sketches \u2014 embedded straight into your store page. No plugin for the customer, no app to install.",
+    button:  { text: "Get a quote", href: "mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A" }
+  },
+
+  note:        "ORBIT ONE and SERUM 30ML are sample products built to demonstrate the renderer \u2014 neither is for sale and the prices are illustrative. Both are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone.",
+  autoSpin:    true
+};
+/* ============ END OF EDITABLE BLOCK ================================ */
 /* ------------------------------------------------------------------ *
- * Sushir 3D Studio — real-time product configurator
+ * Real-time product configurator.
  * Hand-written WebGL2 renderer. No framework, no CDN, no model files:
- * every surface below is generated procedurally at load time.
+ * every surface is generated procedurally at load time.
+ *
+ * To rebrand: edit the CONFIG block below. To change the product's
+ * colours, finishes, hardware, cushions or lighting: edit the SHELLS /
+ * FINISHES / METALS / PADS / ENVS arrays. To change the product's shape:
+ * edit the profiles passed to lathe() and ring() inside start().
  * ------------------------------------------------------------------ */
 
 /* ---------- tiny matrix math (column-major, like GL expects) ------- */
@@ -379,7 +400,7 @@ in vec3 vN;
 out vec4 frag;
 
 uniform vec3  uCam, uAlbedo, uSky, uGnd, uBg;
-uniform float uMetal, uRough, uIsGround;
+uniform float uMetal, uRough, uIsGround, uAoX;
 uniform vec3  uLdir[3];
 uniform vec3  uLcol[3];
 uniform float uLsharp[3];
@@ -389,13 +410,19 @@ vec3 envSample(vec3 d, float rough){
   float b = clamp(rough, 0.0, 1.0);
   for (int i = 0; i < 3; i++){
     float sh = mix(uLsharp[i], 2.5, b * b);
-    c += uLcol[i] * pow(max(dot(d, uLdir[i]), 0.0), sh) * (1.0 + (1.0 - b) * 0.55);
+    c += uLcol[i] * pow(max(dot(d, uLdir[i]), 0.0), sh) * (1.0 + (1.0 - b) * 0.38);
   }
   return c;
 }
 vec3 irradiance(vec3 n){
+  // Each lobe's diffuse contribution has to be weighted by how much sky it
+  // actually covers. A pow(cos, s) lobe subtends roughly 2*PI/(s+1), so a
+  // sharpness-150 specular pinpoint contributes almost no diffuse while a
+  // sharpness-4 softbox contributes most of it. Weighting them equally is
+  // what was washing matte surfaces out under a bright key.
   vec3 c = mix(uGnd, uSky, n.y * 0.5 + 0.5) * 0.62;
-  for (int i = 0; i < 3; i++) c += uLcol[i] * max(dot(n, uLdir[i]), 0.0) * 0.34;
+  for (int i = 0; i < 3; i++)
+    c += uLcol[i] * max(dot(n, uLdir[i]), 0.0) * (2.4 / (uLsharp[i] + 2.0));
   return c;
 }
 vec3 fresnelRough(float ct, vec3 F0, float r){
@@ -419,7 +446,7 @@ void main(){
 
   float ao = 1.0;
   if (uIsGround > 0.5){
-    float d = length(vec2(vWP.x * 0.58, vWP.z));
+    float d = length(vec2(vWP.x * uAoX, vWP.z));
     ao = clamp(1.0 - 0.86 * exp(-d * d * 0.85) - 0.22 * exp(-d * d * 0.16), 0.04, 1.0);
   }
   vec3 F0   = mix(vec3(0.04), uAlbedo, uMetal);
@@ -434,41 +461,153 @@ void main(){
 }`;
 
 /* ---------- configuration data -------------------------------------- */
-const SHELLS = [
-  { id:'GRA', name:'Graphite',      c:[0.075,0.082,0.092] },
-  { id:'IVO', name:'Ivory',         c:[0.855,0.835,0.785] },
-  { id:'MID', name:'Midnight blue', c:[0.050,0.085,0.200] },
-  { id:'CLY', name:'Terracotta',    c:[0.520,0.255,0.185] },
-  { id:'SGE', name:'Sage',          c:[0.300,0.400,0.285] },
-  { id:'ACD', name:'Acid',          c:[0.575,0.905,0.320] }
-];
-const FINISHES = [
-  { id:'MT', name:'Matte',     r:0.62, m:0.00, price:0  },
-  { id:'ST', name:'Satin',     r:0.34, m:0.00, price:15 },
-  { id:'GL', name:'Gloss',     r:0.09, m:0.00, price:30 },
-  { id:'AN', name:'Anodised',  r:0.27, m:0.85, price:45 }
-];
-const METALS = [
-  { id:'STL', name:'Brushed steel',   c:[0.560,0.570,0.585], r:0.30, price:0  },
-  { id:'GLD', name:'Champagne gold',  c:[0.855,0.660,0.335], r:0.20, price:60 },
-  { id:'GUN', name:'Gunmetal',        c:[0.205,0.215,0.235], r:0.34, price:20 },
-  { id:'BLK', name:'Matte black',     c:[0.042,0.045,0.050], r:0.56, price:10 }
-];
-const PADS = [
-  { id:'NAP', name:'Nappa leather', c:[0.048,0.050,0.056], r:0.54, price:0   },
-  { id:'SUE', name:'Suede',         c:[0.160,0.140,0.155], r:0.93, price:25  },
-  { id:'MSH', name:'Cooling mesh',  c:[0.095,0.115,0.135], r:0.78, price:-20 }
-];
+/* ===================================================================
+   PRODUCTS — each entry is a complete configurable product: its geometry,
+   its option groups, how those options map to materials, and its pricing.
+   The renderer below knows nothing about headphones or bottles; add a
+   third product here and it appears in the switcher with no other change.
+   =================================================================== */
+const PRODUCTS = {
+
+  headphones: {
+    label: 'Headphones', name: 'ORBIT ONE', codePrefix: 'ORB1', basePrice: 349,
+    camera: { yaw: -0.62, pitch: 0.22, dist: 3.35, target: [0, -0.16, 0] },
+    aoX: 0.58, groundY: -0.98,   // wide product: stretch the contact shadow along X
+    groups: [
+      { key:'shell', label:'Shell colour', kind:'swatch', spec:'Shell', items:[
+        { id:'GRA', name:'Graphite',      c:[0.075,0.082,0.092], price:0 },
+        { id:'IVO', name:'Ivory',         c:[0.855,0.835,0.785], price:0 },
+        { id:'MID', name:'Midnight blue', c:[0.050,0.085,0.200], price:0 },
+        { id:'CLY', name:'Terracotta',    c:[0.520,0.255,0.185], price:0 },
+        { id:'SGE', name:'Sage',          c:[0.300,0.400,0.285], price:0 },
+        { id:'ACD', name:'Acid',          c:[0.575,0.905,0.320], price:0 }]},
+      { key:'finish', label:'Finish', kind:'seg', spec:'Finish', items:[
+        { id:'MT', name:'Matte',    r:0.62, m:0.00, price:0  },
+        { id:'ST', name:'Satin',    r:0.34, m:0.00, price:15 },
+        { id:'GL', name:'Gloss',    r:0.09, m:0.00, price:30 },
+        { id:'AN', name:'Anodised', r:0.27, m:0.85, price:45 }]},
+      { key:'metal', label:'Hardware', kind:'swatch', spec:'Hardware', items:[
+        { id:'STL', name:'Brushed steel',  c:[0.560,0.570,0.585], r:0.30, price:0  },
+        { id:'GLD', name:'Champagne gold', c:[0.855,0.660,0.335], r:0.20, price:60 },
+        { id:'GUN', name:'Gunmetal',       c:[0.205,0.215,0.235], r:0.34, price:20 },
+        { id:'BLK', name:'Matte black',    c:[0.042,0.045,0.050], r:0.56, price:10 }]},
+      { key:'pad', label:'Ear cushion', kind:'seg', spec:'Cushion', items:[
+        { id:'NAP', name:'Nappa leather', c:[0.048,0.050,0.056], r:0.54, price:0   },
+        { id:'SUE', name:'Suede',         c:[0.160,0.140,0.155], r:0.93, price:25  },
+        { id:'MSH', name:'Cooling mesh',  c:[0.095,0.115,0.135], r:0.78, price:-20 }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'shell':  return { c: o.shell.c, m: o.finish.m, r: o.finish.r };
+        case 'metal':  return { c: o.metal.c, m: 1.0, r: o.metal.r };
+        case 'arm':    return { c: o.metal.c, m: 1.0, r: Math.min(o.metal.r + 0.26, 0.95) };
+        case 'pad':    return { c: o.pad.c,   m: 0.0, r: o.pad.r };
+        default:       return { c: [0.020,0.022,0.026], m: 0.0, r: 0.85 };
+      }
+    },
+    build(up, add) {
+      const RB = 1.02, H = Math.PI / 2;
+      const gBand    = up(bandArc(RB, 0.055*Math.PI, 0.945*Math.PI, 0.052, 0.155, 112, 22));
+      const gBandPad = up(bandArc(RB - 0.086, 0.22*Math.PI, 0.78*Math.PI, 0.040, 0.125, 72, 18));
+      const gArm     = up(box(0.068, 0.46, 0.125));
+      const gCup     = up(lathe([
+          [0,0.115],[0.09,0.113],[0.17,0.106],[0.245,0.092],[0.300,0.068],[0.340,0.030],
+          [0.362,-0.022],[0.372,-0.082],[0.372,-0.155],[0.372,-0.155],[0.338,-0.176],[0.300,-0.182]
+        ], 80));
+      const gTrim   = up(ring(0.374, 0.0155, -0.030, 80, 16));
+      const gBadge  = up(ring(0.072, 0.0125,  0.112, 52, 12));
+      const gPad    = up(ring(0.268, 0.097, -0.246, 80, 26, 0.88));
+      const gBaffle = up(lathe([[0,-0.206],[0.16,-0.200],[0.265,-0.188],[0.300,-0.196]], 64));
+      const armX = RB * Math.cos(0.055 * Math.PI), armY = RB * Math.sin(0.055 * Math.PI);
+      const cupY = -0.30;
+      add(gBand, 'shell', [0,0,0]);
+      add(gBandPad, 'pad', [0,0,0]);
+      for (const side of [1, -1]) {
+        const rz = side > 0 ? -H : H;
+        add(gArm,    'arm',    [side * (armX - 0.015), armY - 0.20, 0]);
+        add(gCup,    'shell',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gTrim,   'metal',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gBadge,  'metal',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gPad,    'pad',    [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gBaffle, 'baffle', [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+      }
+    }
+  },
+
+  bottle: {
+    label: 'Bottle', name: 'SERUM 30ML', codePrefix: 'SER1', basePrice: 28,
+    camera: { yaw: -0.45, pitch: 0.10, dist: 4.25, target: [0, 0.06, 0] },
+    aoX: 1.0, groundY: -0.902,   // narrow product: a round shadow, sitting on its base
+    groups: [
+      { key:'body', label:'Body colour', kind:'swatch', spec:'Body', items:[
+        { id:'FRW', name:'Frosted white', c:[0.760,0.755,0.735], price:0 },
+        { id:'AMB', name:'Amber',         c:[0.430,0.190,0.045], price:0 },
+        { id:'SGE', name:'Sage',          c:[0.255,0.330,0.235], price:0 },
+        { id:'OBS', name:'Obsidian',      c:[0.030,0.032,0.036], price:0 },
+        { id:'BLS', name:'Blush',         c:[0.640,0.420,0.395], price:0 },
+        { id:'COB', name:'Cobalt',        c:[0.045,0.110,0.320], price:0 }]},
+      { key:'finish', label:'Finish', kind:'seg', spec:'Finish', items:[
+        { id:'FR', name:'Frosted',  r:0.86, m:0.00, price:0 },
+        { id:'ST', name:'Satin',    r:0.42, m:0.00, price:2 },
+        { id:'GL', name:'Gloss',    r:0.08, m:0.00, price:4 },
+        { id:'MT', name:'Metallic', r:0.24, m:0.90, price:8 }]},
+      { key:'cap', label:'Cap', kind:'swatch', spec:'Cap', items:[
+        { id:'GLD', name:'Brushed gold', c:[0.845,0.655,0.330], r:0.26, m:1.0, price:6 },
+        { id:'BLK', name:'Matte black',  c:[0.030,0.032,0.036], r:0.62, m:0.0, price:0 },
+        { id:'WAL', name:'Walnut',       c:[0.155,0.080,0.042], r:0.58, m:0.0, price:5 },
+        { id:'SLV', name:'Silver',       c:[0.560,0.570,0.585], r:0.22, m:1.0, price:3 }]},
+      { key:'label', label:'Label', kind:'seg', spec:'Label', items:[
+        { id:'IVO', name:'Ivory',     c:[0.820,0.805,0.760], r:0.74, m:0.0, price:0, on:true },
+        { id:'BLK', name:'Black',     c:[0.022,0.024,0.028], r:0.70, m:0.0, price:0, on:true },
+        { id:'FOI', name:'Gold foil', c:[0.845,0.655,0.330], r:0.18, m:1.0, price:3, on:true },
+        { id:'NON', name:'None',      c:[0,0,0], r:1, m:0, price:-2, on:false }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'body':   return { c: o.body.c, m: o.finish.m, r: o.finish.r };
+        case 'cap':    return { c: o.cap.c,  m: o.cap.m,    r: o.cap.r };
+        case 'collar': return { c: o.cap.c,  m: 1.0,        r: Math.max(o.cap.r - 0.10, 0.10) };
+        default:       return { c: o.label.c, m: o.label.m, r: o.label.r };
+      }
+    },
+    hidden(key, o) { return key === 'label' && !o.label.on; },
+    build(up, add) {
+      const gBody = up(lathe([
+        [0,-0.90],[0.30,-0.90],[0.345,-0.888],[0.360,-0.862],[0.362,-0.80],
+        [0.362,0.06],[0.358,0.20],[0.330,0.33],[0.268,0.43],[0.190,0.49],
+        [0.148,0.515],[0.146,0.84],[0.146,0.84],[0.120,0.845]
+      ], 96));
+      // A thin band standing just proud of the body — a printed label, not a decal,
+      // because a decal would need a texture and this file ships none.
+      const gLabel = up(lathe([[0.362,-0.345],[0.381,-0.320],[0.381,0.230],[0.362,0.255]], 96));
+      const gCap = up(lathe([
+        [0,1.132],[0.085,1.130],[0.140,1.118],[0.170,1.092],[0.178,1.045],
+        [0.180,0.98],[0.180,0.63],[0.180,0.63],[0.164,0.615],[0.150,0.612]
+      ], 80));
+      const gCollar = up(ring(0.1815, 0.0115, 0.672, 80, 14));
+      add(gBody,   'body',   [0,0,0]);
+      add(gLabel,  'label',  [0,0,0]);
+      add(gCap,    'cap',    [0,0,0]);
+      add(gCollar, 'collar', [0,0,0]);
+    }
+  }
+
+};
+
 const ENVS = [
-  { id:'studio', name:'Studio', sky:[0.42,0.48,0.58], gnd:[0.045,0.050,0.062], L:[
-      { d:[-0.40, 0.78, 0.50], c:[2.60,2.60,2.70], s:55 },
-      { d:[ 0.88, 0.20, 0.32], c:[0.50,0.72,0.98], s:22 },
-      { d:[ 0.10,-0.22,-0.92], c:[0.68,0.74,0.92], s:16 }] },
-  { id:'sunset', name:'Sunset', sky:[0.50,0.33,0.30], gnd:[0.090,0.050,0.048], L:[
-      { d:[-0.62, 0.26, 0.52], c:[3.30,1.50,0.58], s:38 },
-      { d:[ 0.68, 0.52,-0.40], c:[0.72,0.40,0.98], s:20 },
-      { d:[ 0.18,-0.38, 0.86], c:[0.52,0.26,0.34], s:13 }] },
-  { id:'showroom', name:'Showroom', sky:[0.72,0.75,0.82], gnd:[0.155,0.165,0.190], L:[
+  // A metal's only colour is what it reflects. A tight lobe gives it one white
+  // streak and nothing else, which is why gold was rendering as grey. Real
+  // studios light product with a broad warm softbox the whole surface can
+  // reflect, plus a tight source for the sparkle — so model it that way.
+  { id:'studio', name:'Studio', sky:[0.055,0.064,0.084], gnd:[0.012,0.013,0.017], L:[
+      { d:[-0.45, 0.70, 0.55], c:[2.20,1.92,1.46], s:4   },   // warm softbox
+      { d:[-0.40, 0.78, 0.50], c:[5.40,5.10,4.60], s:150 },   // specular hit
+      { d:[ 0.85, 0.22, 0.35], c:[0.42,0.56,0.82], s:5   }] },// cool fill
+  { id:'sunset', name:'Sunset', sky:[0.090,0.058,0.056], gnd:[0.030,0.016,0.015], L:[
+      { d:[-0.62, 0.26, 0.52], c:[2.60,1.16,0.44], s:3   },
+      { d:[-0.58, 0.32, 0.48], c:[6.20,3.00,1.10], s:130 },
+      { d:[ 0.68, 0.46,-0.38], c:[0.60,0.30,0.86], s:6   }] },
+  { id:'showroom', name:'Showroom', sky:[0.56,0.59,0.65], gnd:[0.110,0.118,0.138], L:[
       { d:[ 0.00, 1.00, 0.18], c:[2.10,2.10,2.12], s:28 },
       { d:[-0.70, 0.52, 0.48], c:[1.35,1.40,1.48], s:44 },
       { d:[ 0.72, 0.40,-0.50], c:[0.95,1.00,1.12], s:34 }] },
@@ -477,10 +616,15 @@ const ENVS = [
       { d:[ 0.82, 0.18,-0.42], c:[2.20,2.95,0.85], s:52 },
       { d:[ 0.00, 0.92,-0.38], c:[0.80,0.50,1.80], s:28 }] }
 ];
-const BASE_PRICE = 349;
 const BG = [0.004, 0.006, 0.011];
 
-const cfg = { shell:0, finish:0, metal:0, pad:0, env:0 };
+const cfg = { product: CONFIG.defaultProduct || 'headphones', env: 0, sel: {} };
+for (const [id, p] of Object.entries(PRODUCTS)) {
+  cfg.sel[id] = Object.fromEntries(p.groups.map(g => [g.key, 0]));
+}
+// Resolve the current product's selections to the actual option objects.
+const chosen = () => Object.fromEntries(PRODUCTS[cfg.product].groups
+  .map(g => [g.key, g.items[cfg.sel[cfg.product][g.key]]]));
 // JS twin of the ACES curve in the fragment shader — used for the clear colour
 // so the background and the ground plane's far fade resolve to the same pixel.
 const acesJS = x => Math.min(Math.max((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0), 1);
@@ -529,63 +673,29 @@ function start() {
   gl.useProgram(prog);
   const U = n => gl.getUniformLocation(prog, n);
   const u = { M:U('uM'), V:U('uV'), P:U('uP'), N:U('uN'), cam:U('uCam'), albedo:U('uAlbedo'),
-              metal:U('uMetal'), rough:U('uRough'), ground:U('uIsGround'),
+              metal:U('uMetal'), rough:U('uRough'), ground:U('uIsGround'), aoX:U('uAoX'),
               sky:U('uSky'), gnd:U('uGnd'), bg:U('uBg'),
               ldir:U('uLdir'), lcol:U('uLcol'), lsharp:U('uLsharp') };
 
-  /* ---- build the product ---- */
-  const RB = 1.02;                           // headband radius
-  const gBand    = upload(bandArc(RB, 0.055*Math.PI, 0.945*Math.PI, 0.052, 0.155, 112, 22));
-  const gBandPad = upload(bandArc(RB - 0.086, 0.22*Math.PI, 0.78*Math.PI, 0.040, 0.125, 72, 18));
-  const gArm     = upload(box(0.068, 0.46, 0.125));
-  const gCup     = upload(lathe([
-      [0,0.115],[0.09,0.113],[0.17,0.106],[0.245,0.092],[0.300,0.068],[0.340,0.030],
-      [0.362,-0.022],[0.372,-0.082],[0.372,-0.155],[0.372,-0.155],[0.338,-0.176],[0.300,-0.182]
-    ], 80));
-  const gTrim    = upload(ring(0.374, 0.0155, -0.030, 80, 16));
-  const gBadge   = upload(ring(0.072, 0.0125,  0.112, 52, 12));
-  const gPad     = upload(ring(0.268, 0.097, -0.246, 80, 26, 0.88));
-  const gBaffle  = upload(lathe([[0,-0.206],[0.16,-0.200],[0.265,-0.188],[0.300,-0.196]], 64));
-  const gGround  = upload(plane(26));
-
-  const armX = RB * Math.cos(0.055 * Math.PI);
-  const armY = RB * Math.sin(0.055 * Math.PI);
-  const cupY = -0.30;
-  const H = Math.PI / 2;
-
-  const parts = [];
-  const add = (geo, mat, t, rot, s) =>
-    parts.push({ geo, mat, m: M4.compose(t, rot || [0,0,0], s || [1,1,1]) });
-
-  add(gBand,    'shell', [0,0,0]);
-  add(gBandPad, 'pad',   [0,0,0]);
-  for (const side of [1, -1]) {
-    const rz = side > 0 ? -H : H;                       // lathe +Y -> +X / -X
-    add(gArm,    'arm',    [side * (armX - 0.015), armY - 0.20, 0]);
-    add(gCup,    'shell',  [side * (armX - 0.020), cupY, 0], [0, 0, rz]);
-    add(gTrim,   'metal',  [side * (armX - 0.020), cupY, 0], [0, 0, rz]);
-    add(gBadge,  'metal',  [side * (armX - 0.020), cupY, 0], [0, 0, rz]);
-    add(gPad,    'pad',    [side * (armX - 0.020), cupY, 0], [0, 0, rz]);
-    add(gBaffle, 'baffle', [side * (armX - 0.020), cupY, 0], [0, 0, rz]);
+  /* ---- build every product once; switching between them is then free ---- */
+  const built = {};
+  for (const [id, prod] of Object.entries(PRODUCTS)) {
+    const parts = [];
+    prod.build(upload, (geo, mat, t, rot, sc) =>
+      parts.push({ geo, mat, m: M4.compose(t, rot || [0,0,0], sc || [1,1,1]) }));
+    built[id] = parts;
   }
-  add(gGround, 'ground', [0, -0.98, 0]);
-
-  function material(key) {
-    const sh = SHELLS[cfg.shell], fi = FINISHES[cfg.finish];
-    const me = METALS[cfg.metal], pa = PADS[cfg.pad];
-    switch (key) {
-      case 'shell':  return { c: sh.c, m: fi.m, r: fi.r };
-      case 'metal':  return { c: me.c, m: 1.0,  r: me.r };
-      case 'arm':    return { c: me.c, m: 1.0,  r: Math.min(me.r + 0.26, 0.95) };
-      case 'pad':    return { c: pa.c, m: 0.0,  r: pa.r };
-      case 'baffle': return { c: [0.020,0.022,0.026], m: 0.0, r: 0.85 };
-      default:       return { c: [0.030,0.034,0.042], m: 0.0, r: 0.58 };
-    }
+  const gGround = upload(plane(26));
+  const ground = {};
+  for (const [id, prod] of Object.entries(PRODUCTS)) {
+    ground[id] = { geo: gGround, mat: 'ground',
+                   m: M4.compose([0, prod.groundY === undefined ? -0.98 : prod.groundY, 0], [0,0,0], [1,1,1]) };
   }
 
   /* ---- camera + input ---- */
-  const cam = { yaw: -0.62, pitch: 0.22, dist: 3.35, target: [0, -0.16, 0] };
-  let spinning = true, dragging = false, lastX = 0, lastY = 0, vYaw = 0;
+  const cam = Object.assign({}, PRODUCTS[cfg.product].camera);
+  function loadCamera(id) { Object.assign(cam, PRODUCTS[id].camera); vYaw = 0; }
+  let spinning = CONFIG.autoSpin !== false, dragging = false, lastX = 0, lastY = 0, vYaw = 0;
 
   canvas.addEventListener('pointerdown', e => {
     dragging = true; lastX = e.clientX; lastY = e.clientY;
@@ -671,8 +781,13 @@ function start() {
     gl.uniform3fv(u.lcol, new Float32Array(env.L.flatMap(l => l.c)));
     gl.uniform1fv(u.lsharp, new Float32Array(env.L.map(l => l.s)));
 
-    for (const p of parts) {
-      const mt = material(p.mat);
+    const prod = PRODUCTS[cfg.product];
+    const opts = chosen();
+    gl.uniform1f(u.aoX, prod.aoX === undefined ? 1.0 : prod.aoX);
+    for (const p of built[cfg.product].concat(ground[cfg.product])) {
+      if (p.mat !== 'ground' && prod.hidden && prod.hidden(p.mat, opts)) continue;
+      const mt = p.mat === 'ground' ? { c: [0.030,0.034,0.042], m: 0, r: 0.58 }
+                                    : prod.material(p.mat, opts);
       gl.uniformMatrix4fv(u.M, false, p.m);
       gl.uniformMatrix3fv(u.N, false, M4.normalMat(p.m));
       gl.uniform3fv(u.albedo, mt.c);
@@ -691,56 +806,123 @@ function start() {
     requestAnimationFrame(frame);
   }
 
-  /* ---- UI ---- */
+  /* ---- UI, generated from whichever product is selected ---- */
   const $ = id => document.getElementById(id);
-  function swatches(host, list, key, label) {
-    host.innerHTML = '';
-    list.forEach((item, i) => {
-      const b = document.createElement('button');
-      b.className = 'sw';
-      b.style.background = linToHex(item.c);
-      b.title = item.name;
-      b.setAttribute('aria-label', item.name);
-      b.setAttribute('aria-pressed', String(cfg[key] === i));
-      b.addEventListener('click', () => {
-        cfg[key] = i;
+
+  function control(group) {
+    const wrap = document.createElement('div');
+    wrap.className = 'group';
+    const sel = cfg.sel[cfg.product];
+    const head = document.createElement('div');
+    head.className = 'glabel';
+    head.innerHTML = '<span></span><b></b>';
+    head.querySelector('span').textContent = group.label;
+    const value = head.querySelector('b');
+    const host = document.createElement('div');
+    host.className = group.kind === 'swatch' ? 'swatches' : 'seg';
+
+    group.items.forEach((item, i) => {
+      const btn = document.createElement('button');
+      if (group.kind === 'swatch') {
+        btn.className = 'sw';
+        btn.style.background = linToHex(item.c);
+        btn.title = item.name;
+        btn.setAttribute('aria-label', item.name);
+      } else {
+        btn.textContent = item.name;
+      }
+      btn.setAttribute('aria-pressed', String(sel[group.key] === i));
+      btn.addEventListener('click', () => {
+        sel[group.key] = i;
         [...host.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
-        $(label).textContent = item.name;
+        value.textContent = item.name;
         sync();
       });
-      host.appendChild(b);
+      host.appendChild(btn);
     });
-  }
-  function segment(host, list, key, label) {
-    host.innerHTML = '';
-    list.forEach((item, i) => {
-      const b = document.createElement('button');
-      b.textContent = item.name;
-      b.setAttribute('aria-pressed', String(cfg[key] === i));
-      b.addEventListener('click', () => {
-        cfg[key] = i;
-        [...host.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
-        $(label).textContent = item.name;
-        sync();
-      });
-      host.appendChild(b);
-    });
-  }
-  function sync() {
-    const sh = SHELLS[cfg.shell], fi = FINISHES[cfg.finish];
-    const me = METALS[cfg.metal], pa = PADS[cfg.pad];
-    $('sSpec').textContent  = sh.name + ' / ' + fi.name;
-    $('sMetal').textContent = me.name;
-    $('sPad').textContent   = pa.name;
-    $('sPrice').textContent = '$' + (BASE_PRICE + fi.price + me.price + pa.price);
-    $('sCode').textContent  = ['ORB1', sh.id, fi.id, me.id, pa.id].join('-');
+    value.textContent = group.items[sel[group.key]].name;
+    wrap.append(head, host);
+    return wrap;
   }
 
-  swatches($('shell'), SHELLS, 'shell', 'lblShell');
-  segment($('finish'), FINISHES, 'finish', 'lblFinish');
-  swatches($('metal'), METALS, 'metal', 'lblMetal');
-  segment($('pad'), PADS, 'pad', 'lblPad');
-  segment($('env'), ENVS, 'env', 'lblEnv');
+  function buildGroups() {
+    const host = $('groups');
+    host.innerHTML = '';
+    PRODUCTS[cfg.product].groups.forEach(g => host.appendChild(control(g)));
+
+    // Lighting is a property of the scene, not of the product, so it is
+    // rendered last and kept when you switch products.
+    const wrap = document.createElement('div');
+    wrap.className = 'group';
+    wrap.innerHTML = '<div class="glabel"><span>Lighting</span><b></b></div><div class="seg"></div>';
+    const value = wrap.querySelector('b'), seg = wrap.querySelector('.seg');
+    ENVS.forEach((e, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = e.name;
+      btn.setAttribute('aria-pressed', String(cfg.env === i));
+      btn.addEventListener('click', () => {
+        cfg.env = i;
+        [...seg.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
+        value.textContent = e.name;
+      });
+      seg.appendChild(btn);
+    });
+    value.textContent = ENVS[cfg.env].name;
+    host.appendChild(wrap);
+  }
+
+  function sync() {
+    const prod = PRODUCTS[cfg.product], opts = chosen();
+    const rows = prod.groups.filter(g => g.spec)
+      .map(g => '<div class="row"><span>' + g.spec + '</span><b>' + opts[g.key].name + '</b></div>');
+    $('specRows').innerHTML = rows.join('');
+    $('sModel').textContent = prod.name;
+    const total = prod.groups.reduce((n, g) => n + (opts[g.key].price || 0), prod.basePrice);
+    $('sPrice').textContent = CONFIG.currency + total;
+    $('sCode').textContent = [prod.codePrefix].concat(prod.groups.map(g => opts[g.key].id)).join('-');
+  }
+
+  function productTabs() {
+    const host = $('product');
+    host.innerHTML = '';
+    Object.entries(PRODUCTS).forEach(([id, prod]) => {
+      const btn = document.createElement('button');
+      btn.textContent = prod.label;
+      btn.setAttribute('aria-pressed', String(cfg.product === id));
+      btn.addEventListener('click', () => {
+        if (cfg.product === id) return;
+        cfg.product = id;
+        [...host.children].forEach(el =>
+          el.setAttribute('aria-pressed', String(el.textContent === prod.label)));
+        loadCamera(id);
+        buildGroups();
+        sync();
+      });
+      host.appendChild(btn);
+    });
+    // One product needs no switcher.
+    if (Object.keys(PRODUCTS).length < 2) host.style.display = 'none';
+  }
+
+  // Copy and branding come from CONFIG so the markup stays untouched.
+  document.title = CONFIG.brand + " \u2014 " + CONFIG.heading;
+  $('eyebrow').textContent = CONFIG.eyebrow;
+  document.querySelector('.brand i').textContent = CONFIG.brandMark;
+  document.querySelector('.brand span').textContent = CONFIG.brand;
+  const back = document.querySelector('.back');
+  if (CONFIG.backLink) { back.textContent = CONFIG.backLink.text; back.href = CONFIG.backLink.href; }
+  else back.style.display = 'none';
+  document.querySelector('#panel h1').textContent = CONFIG.heading;
+  document.querySelector('.sub').textContent = CONFIG.intro;
+  $('ctaHead').textContent = CONFIG.cta.heading;
+  $('ctaBody').textContent = CONFIG.cta.body;
+  $('ctaBtn').textContent  = CONFIG.cta.button.text;
+  $('ctaBtn').href         = CONFIG.cta.button.href;
+  $('note').textContent    = CONFIG.note;
+  setSpin(spinning);
+
+  productTabs();
+  buildGroups();
   sync();
 
   $('shot').addEventListener('click', () => {
