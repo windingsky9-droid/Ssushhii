@@ -144,6 +144,7 @@ canvas:active{cursor:grabbing}
       <p id="ctaBody"></p>
       <div class="btns">
         <a class="primary" id="ctaBtn" href="#"></a>
+        <button class="ghost" id="share">Copy link</button>
         <button class="ghost" id="shot">Download this view</button>
       </div>
     </div>
@@ -979,11 +980,38 @@ function start() {
         cfg.env = i;
         [...seg.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
         value.textContent = e.name;
+        writeHash();
       });
       seg.appendChild(btn);
     });
     value.textContent = ENVS[cfg.env].name;
     host.appendChild(wrap);
+  }
+
+  function readHash() {
+    // "#FRM1-MAR-LQ-BRS-RNG:studio" — the build code, plus the lighting preset.
+    // Anything unrecognised is ignored wholesale rather than applied in part:
+    // a half-restored configuration is worse than the default one.
+    const raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+    if (!raw) return false;
+    const [code, envId] = raw.split(':');
+    const parts = (code || '').split('-');
+    const entry = Object.entries(PRODUCTS).find(([, p]) => p.codePrefix === parts[0]);
+    if (!entry) return false;
+    const [id, prod] = entry;
+    if (parts.length !== prod.groups.length + 1) return false;
+    const picks = prod.groups.map((g, i) => g.items.findIndex(it => it.id === parts[i + 1]));
+    if (picks.some(i => i < 0)) return false;
+    cfg.product = id;
+    prod.groups.forEach((g, i) => { cfg.sel[id][g.key] = picks[i]; });
+    const env = ENVS.findIndex(e => e.id === envId);
+    if (env >= 0) cfg.env = env;
+    return true;
+  }
+
+  function writeHash() {
+    const hash = '#' + $('sCode').textContent + ':' + ENVS[cfg.env].id;
+    if (location.hash !== hash) history.replaceState(null, '', hash);
   }
 
   function sync() {
@@ -995,6 +1023,7 @@ function start() {
     const total = prod.groups.reduce((n, g) => n + (opts[g.key].price || 0), prod.basePrice);
     $('sPrice').textContent = CONFIG.currency + total;
     $('sCode').textContent = [prod.codePrefix].concat(prod.groups.map(g => opts[g.key].id)).join('-');
+    writeHash();
   }
 
   function productTabs() {
@@ -1036,9 +1065,39 @@ function start() {
   $('note').textContent    = CONFIG.note;
   setSpin(spinning);
 
+  if (readHash()) loadCamera(cfg.product);
   productTabs();
   buildGroups();
   sync();
+
+  // Someone else's link should restore their exact configuration.
+  window.addEventListener('hashchange', () => {
+    if (!readHash()) return;
+    loadCamera(cfg.product);
+    productTabs();
+    buildGroups();
+    sync();
+  });
+
+  $('share').addEventListener('click', async e => {
+    const btn = e.currentTarget, was = btn.textContent;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(location.href);
+      ok = true;
+    } catch (_) {
+      // Clipboard access needs a secure context and can be blocked outright,
+      // so fall back to selecting the URL rather than failing silently.
+      const f = document.createElement('input');
+      f.value = location.href;
+      document.body.appendChild(f);
+      f.select();
+      try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+      f.remove();
+    }
+    btn.textContent = ok ? 'Link copied' : location.href;
+    setTimeout(() => { btn.textContent = was; }, ok ? 1600 : 4000);
+  });
 
   $('shot').addEventListener('click', () => {
     const a = document.createElement('a');

@@ -122,6 +122,30 @@ lenses, speakers, cans, pots, wheels, lamps. `box()` handles the rest.
 
 ---
 
+## Shareable configurations
+
+Every change writes the configuration into the URL as the build code itself:
+
+```
+https://yourstore.com/configurator/#FRM1-MAR-LQ-BRS-RNG:neon
+                                    ^^^^ ^^^^^^^^^^^^^^^ ^^^^
+                                  product     options   lighting
+```
+
+Opening that link restores the exact product, every option and the lighting
+preset. The **Copy link** button puts it on the clipboard, falling back to
+selecting the URL where clipboard access is blocked (it needs a secure
+context, so it will not work over plain `http://`).
+
+Because the fragment is the same string shown in the spec panel, a customer
+quoting `FRM1-MAR-LQ-BRS-RNG` in an email and a customer sending you a link
+are giving you the same information.
+
+A link whose product or any option is unrecognised is ignored **entirely** and
+the default configuration loads. That is deliberate: a half-restored spec is
+worse than an obviously fresh one, because the customer cannot tell which
+parts survived.
+
 ## Embedding it in a store
 
 ### Shopify
