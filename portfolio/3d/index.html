@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sushir 3D Studio">
 <meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta property="og:description" content="A real-time WebGL product configurator. Two products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta property="og:description" content="A real-time WebGL product configurator. Three products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
 <meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
 <meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <meta property="og:image:width" content="1200">
@@ -15,7 +15,7 @@
 <meta property="og:image:alt" content="A pair of headphones rendered in real time beside the words Configure it live, in the browser.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta name="twitter:description" content="A real-time WebGL product configurator. Two products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta name="twitter:description" content="A real-time WebGL product configurator. Three products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
 <meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
 <!-- Link-preview tags. Uncomment and set YOUR absolute URLs before going live:
@@ -181,7 +181,7 @@ const CONFIG = {
 
   eyebrow:     "Live demo \u00b7 runs on your GPU",
   heading:     "Product configurator",
-  intro:       "Two completely different products, one renderer. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded.",
+  intro:       "Three completely different products, one renderer, one file. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded.",
 
   defaultProduct: "headphones",   // must be a key of PRODUCTS below
   currency:    "$",
@@ -192,7 +192,7 @@ const CONFIG = {
     button:  { text: "Get a quote", href: "mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A" }
   },
 
-  note:        "ORBIT ONE and SERUM 30ML are sample products built to demonstrate the renderer \u2014 neither is for sale and the prices are illustrative. Both are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone.",
+  note:        "ORBIT ONE, SERUM 30ML and ARC TABLE LAMP are sample products built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All three are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone.",
   autoSpin:    true
 };
 /* ============ END OF EDITABLE BLOCK ================================ */
@@ -591,7 +591,78 @@ const PRODUCTS = {
       add(gCollar, 'collar', [0,0,0]);
     }
   }
+,
 
+  lamp: {
+    label: 'Lamp', name: 'ARC TABLE LAMP', codePrefix: 'ARC1', basePrice: 119,
+    camera: { yaw: -0.52, pitch: 0.14, dist: 4.05, target: [0, 0.06, 0] },
+    aoX: 0.85, groundY: -0.86,
+    groups: [
+      { key:'shade', label:'Shade', kind:'swatch', spec:'Shade', items:[
+        { id:'LIN', name:'Linen',      c:[0.700,0.665,0.590], r:0.92, m:0.0, price:0  },
+        { id:'CHR', name:'Charcoal',   c:[0.048,0.050,0.056], r:0.88, m:0.0, price:0  },
+        { id:'OLV', name:'Olive',      c:[0.180,0.205,0.110], r:0.90, m:0.0, price:8  },
+        { id:'RST', name:'Rust',       c:[0.400,0.145,0.075], r:0.90, m:0.0, price:8  },
+        { id:'BRS', name:'Spun brass', c:[0.780,0.590,0.270], r:0.28, m:1.0, price:34 },
+        { id:'OPL', name:'Opal glass', c:[0.860,0.870,0.880], r:0.16, m:0.0, price:28 }]},
+      { key:'stem', label:'Stem', kind:'swatch', spec:'Stem', items:[
+        { id:'BRS', name:'Brushed brass', c:[0.780,0.590,0.270], r:0.30, m:1.0, price:0  },
+        { id:'BLK', name:'Matte black',   c:[0.030,0.032,0.038], r:0.62, m:0.0, price:0  },
+        { id:'CHR', name:'Chrome',        c:[0.560,0.570,0.585], r:0.09, m:1.0, price:12 },
+        { id:'WAL', name:'Walnut',        c:[0.155,0.080,0.042], r:0.56, m:0.0, price:22 }]},
+      { key:'base', label:'Base', kind:'seg', spec:'Base', items:[
+        { id:'DSC', name:'Disc',    price:0,  wide:false },
+        { id:'DOM', name:'Dome',    price:14, wide:false },
+        { id:'PLT', name:'Platter', price:9,  wide:true  }]},
+      { key:'switch', label:'Cord switch', kind:'seg', spec:'Switch', items:[
+        { id:'INL', name:'Inline', price:0, on:true  },
+        { id:'NON', name:'None',   price:-6, on:false }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'shade':  return { c: o.shade.c, m: o.shade.m, r: o.shade.r };
+        // The inside of the shade is what a lit lamp shows most of, so it gets
+        // a bright neutral regardless of the outside colour.
+        case 'lining': return { c: [0.880,0.855,0.790], m: 0.0, r: 0.88 };
+        case 'switch': return { c: [0.040,0.042,0.048], m: 0.0, r: 0.70 };
+        // baseDisc / baseDome / basePlatter / rim / stem all fall through to the stem finish.
+        default:       return { c: o.stem.c, m: o.stem.m, r: o.stem.r };
+      }
+    },
+    hidden(key, o) {
+      if (key === 'switch') return !o.switch.on;
+      if (key === 'baseDisc')    return o.base.id !== 'DSC';
+      if (key === 'baseDome')    return o.base.id !== 'DOM';
+      if (key === 'basePlatter') return o.base.id !== 'PLT';
+      return false;
+    },
+    build(up, add) {
+      // Shade: a truncated cone, built as two lathes so the inside can carry
+      // its own material. The inner one is wound to face inward via a
+      // reversed profile, since the renderer culls back faces.
+      // lathe() derives outward normals from the profile's direction of travel,
+      // so a profile has to run bottom-to-top. Written top-down, the shade's
+      // normals pointed inward and it rendered unlit.
+      const shadeOut = [[0.565,-0.315],[0.560,-0.300],[0.305,0.325],[0.300,0.340]];
+      const shadeIn  = [[0.292,0.336],[0.296,0.322],[0.552,-0.298],[0.556,-0.312]];
+      const gShade  = up(lathe(shadeOut, 88));
+      const gLining = up(lathe(shadeIn, 88));
+      const gRim    = up(ring(0.562, 0.010, -0.307, 88, 12));
+      const gStem   = up(lathe([[0.055,-0.755],[0.055,-0.740],[0.032,-0.700],[0.032,0.340],[0.030,0.355],[0,0.360]], 44));
+      const gDisc    = up(lathe([[0,-0.855],[0.30,-0.855],[0.325,-0.845],[0.330,-0.815],[0.310,-0.790],[0.055,-0.780]], 72));
+      const gDome    = up(lathe([[0,-0.855],[0.26,-0.855],[0.295,-0.840],[0.300,-0.780],[0.250,-0.680],[0.150,-0.620],[0.055,-0.600]], 72));
+      const gPlatter = up(lathe([[0,-0.858],[0.42,-0.858],[0.445,-0.850],[0.448,-0.832],[0.430,-0.818],[0.055,-0.812]], 80));
+      const gSwitch  = up(lathe([[0,-0.545],[0.026,-0.542],[0.030,-0.530],[0.030,-0.470],[0.028,-0.458],[0,-0.455]], 28));
+      add(gShade,   'shade',  [0,0,0]);
+      add(gLining,  'lining', [0,0,0]);
+      add(gRim,     'stem',   [0,0,0]);
+      add(gStem,    'stem',   [0,0,0]);
+      add(gDisc,    'baseDisc',    [0,0,0]);
+      add(gDome,    'baseDome',    [0,0,0]);
+      add(gPlatter, 'basePlatter', [0,0,0]);
+      add(gSwitch,  'switch', [0.052,0,0]);
+    }
+  }
 };
 
 const ENVS = [
