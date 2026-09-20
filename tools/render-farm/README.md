@@ -6,7 +6,7 @@ This is what produced `products/3d-render-pack/`.
 
 ```sh
 pip install playwright && playwright install chromium
-python render_farm.py 0 1000          # all 384 configurations at 2000 x 2000
+python render_farm.py 0 1000          # all 480 configurations at 2000 x 2000
 python render_farm.py 8 700           # eight-frame sample, fast
 python render_farm.py 0 1400 ../../portfolio/3d/index.html
 ```
@@ -40,7 +40,7 @@ Three details that are load-bearing:
   the frame. Re-tune it with `probe.py` if you change a product's geometry:
 
 ```sh
-python probe.py '{"headphones":0.92,"bottle":0.72,"lamp":0.55,"table":0.62}'
+python probe.py '{"headphones":0.92,"bottle":0.72,"lamp":0.55,"table":0.62,"speaker":0.60}'
 ```
 
 That writes `probe.png`, one hero per product side by side.

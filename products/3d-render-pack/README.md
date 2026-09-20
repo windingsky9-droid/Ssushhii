@@ -1,13 +1,13 @@
 # Studio Product Renders — Volume 1
 
-384 royalty-free 3D product renders. 2000 × 2000 PNG. Studio-lit, four camera
-angles, four lighting setups, twenty-four product configurations.
+480 royalty-free 3D product renders. 2000 × 2000 PNG. Studio-lit, four camera
+angles, four lighting setups, thirty product configurations.
 
 Nothing here was photographed, licensed or scraped. Every frame was generated
 by a hand-written WebGL2 renderer — the same one that powers the live
 configurator in this repository — which means the set is internally consistent
 in a way stock photography never is: identical lighting rig, identical camera
-geometry, identical tone mapping across all 384 files.
+geometry, identical tone mapping across all 480 files.
 
 ---
 
@@ -15,13 +15,13 @@ geometry, identical tone mapping across all 384 files.
 
 | | |
 |---|---|
-| Products | Over-ear headphones, cosmetic pump bottle, table lamp, three-legged side table |
-| Configurations | 24 (six colourways per product, each with its own finish, hardware and trim) |
+| Products | Over-ear headphones, cosmetic pump bottle, table lamp, three-legged side table, bookshelf speaker |
+| Configurations | 30 (six colourways per product, each with its own finish, hardware and trim) |
 | Lighting | 4 presets — Studio, Sunset, Showroom, Neon |
 | Angles | 4 — hero three-quarter, front, high three-quarter, profile |
 | Resolution | 2000 × 2000 px |
 | Format | PNG, 8-bit RGB |
-| Total | 4 products × 6 colourways × 4 lighting × 4 angles = **384 files** |
+| Total | 5 products × 6 colourways × 4 lighting × 4 angles = **480 files** |
 
 Every filename carries its own configuration, so the set is searchable without
 opening anything:
@@ -58,7 +58,8 @@ Stated plainly, because a refund costs more than a lost sale:
 - **Not editable mockups.** There is no smart object, no PSD, no layer to drop
   your own label into. The white band on the bottle is geometry, not a
   placeholder.
-- **Not real products.** ORBIT ONE, SERUM 30ML, ARC TABLE LAMP and FORM 62 are invented.
+- **Not real products.** ORBIT ONE, SERUM 30ML, ARC TABLE LAMP, FORM 62 and
+  MONITOR 5 are invented.
   Do not present them as products you actually sell unless you actually make
   them.
 - **Not photorealistic.** The lighting is analytic — three directional lobes
@@ -86,6 +87,6 @@ an angle, and re-run:
 python render_farm.py 0 1400     # all configurations, 2800 x 2800
 ```
 
-That property matters more than the 384 files. A stock pack you cannot extend
-is a dead end; this one regenerates to any size, and a fifth product is one
+That property matters more than the 480 files. A stock pack you cannot extend
+is a dead end; this one regenerates to any size, and a sixth product is one
 object in the renderer's `PRODUCTS` registry.

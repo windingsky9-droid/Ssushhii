@@ -40,7 +40,8 @@ def canvas_css(side):
 # the page's own `fit` factor pushes the camera back further still, so every
 # product needs its own pull-in. Tuned by eye against a contact sheet: too tight
 # clips the lamp's base and the headphone band, too loose wastes half the frame.
-FRAME = {"headphones": 0.92, "bottle": 0.72, "lamp": 0.55, "table": 0.62}
+FRAME = {"headphones": 0.92, "bottle": 0.72, "lamp": 0.55,
+         "table": 0.62, "speaker": 0.60}
 
 ANGLES = [
     ("hero",    0.00,  0.00, 1.00),

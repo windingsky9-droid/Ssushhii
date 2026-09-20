@@ -4,13 +4,13 @@ A product configurator that runs in the customer's browser. They change the
 colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
-**Four complete products, and a cart integration that works. One file.
-54 KB. Zero dependencies.**
+**Five complete products, and a cart integration that works. One file.
+59 KB. Zero dependencies.**
 
-Headphones, a cosmetic bottle, a table lamp and a three-legged side table,
-switchable from a tab, all drawn by one renderer — because the question you
-are really asking is "will this work for *my* product", and four unrelated
-shapes is the only honest answer to that.
+Headphones, a cosmetic bottle, a table lamp, a three-legged side table and a
+bookshelf speaker, switchable from a tab, all drawn by one renderer — because
+the question you are really asking is "will this work for *my* product", and
+five unrelated shapes is the only honest answer to that.
 
 No three.js. No framework. No CDN request. No `.glb`, `.gltf`, `.obj` or
 texture files to download — the geometry is generated in code when the page
@@ -48,12 +48,12 @@ Everything lives in one file, in this order:
 | Which product loads first | `CONFIG.defaultProduct` |
 | The four lighting presets | the `ENVS` array (shared by all products) |
 
-### Adding a fifth product
+### Adding a sixth product
 
 Add one entry to `PRODUCTS` and it appears in the switcher. Nothing else
-changes — the renderer knows nothing about headphones, bottles, lamps or
-tables. The lamp and the table were both added exactly this way: one object
-each, no other edit.
+changes — the renderer knows nothing about headphones, bottles, lamps, tables
+or speakers. The lamp, the table and the speaker were each added exactly this
+way: one object, no other edit.
 
 ```js
 candle: {

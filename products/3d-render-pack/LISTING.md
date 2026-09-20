@@ -7,7 +7,7 @@ account setup and payouts, and you only do those once.
 ## Product name
 
 ```
-384 Studio Product Renders — 2000×2000, Royalty-Free
+480 Studio Product Renders — 2000×2000, Royalty-Free
 ```
 
 ## Price
@@ -18,8 +18,8 @@ account setup and payouts, and you only do those once.
 
 USD, one-time.
 
-**Why 29.** Stock render and mockup packs cluster at $15–49. At 384 files
-that's about 7½ cents a render, which is an easy yes for anyone who needs
+**Why 29.** Stock render and mockup packs cluster at $15–49. At 480 files
+that's about 6 cents a render, which is an easy yes for anyone who needs
 three of them. It also sits deliberately below the $49 configurator template,
 because this is the impulse buy and that is the considered one — and someone
 who buys this for $29 is exactly who buys that for $49 next.
@@ -27,18 +27,18 @@ who buys this for $29 is exactly who buys that for $49 next.
 ## Summary
 
 ```
-384 royalty-free 3D product renders at 2000×2000. Four products, six colourways each, four lighting setups, four camera angles — one consistent studio rig across every frame.
+480 royalty-free 3D product renders at 2000×2000. Five products, six colourways each, four lighting setups, four camera angles — one consistent studio rig across every frame.
 ```
 
 ---
 
 ## Description (paste into the description box)
 
-**384 studio product renders. One lighting rig. No photography.**
+**480 studio product renders. One lighting rig. No photography.**
 
-Four products — over-ear headphones, a cosmetic pump bottle, a table lamp and
-a three-legged side table — in six colourways each, shot under four lighting
-setups from four camera angles. 2000 × 2000 PNG.
+Five products — over-ear headphones, a cosmetic pump bottle, a table lamp, a
+three-legged side table and a bookshelf speaker — in six colourways each, shot
+under four lighting setups from four camera angles. 2000 × 2000 PNG.
 
 **Why they match, and stock photos don't**
 
@@ -49,7 +49,7 @@ photos from three photographers never will.
 
 **What's inside**
 
-- 4 products × 6 colourways × 4 lighting presets × 4 camera angles = 384 PNGs
+- 5 products × 6 colourways × 4 lighting presets × 4 camera angles = 480 PNGs
 - 2000 × 2000, 8-bit RGB
 - `manifest.csv` — every file mapped to product, colourway, build code, lighting and angle
 - Self-describing filenames: `bottle_SER1-AMB-GL-SLV-IVO_studio_hero.png`
@@ -69,8 +69,8 @@ placeholders you replace with real photography later.
   masking if you want them on another background.
 - **Not editable mockups.** No PSD, no smart object. The white band on the
   bottle is geometry, not a placeholder for your label.
-- **Not real products.** ORBIT ONE, SERUM 30ML, ARC TABLE LAMP and FORM 62 are
-  invented. Don't present them as products you sell.
+- **Not real products.** ORBIT ONE, SERUM 30ML, ARC TABLE LAMP, FORM 62 and
+  MONITOR 5 are invented. Don't present them as products you sell.
 - **Not photorealistic.** Analytic lighting, not a captured HDR environment.
   It reads as a clean product render, which is the point — but it is not a
   photograph.
@@ -86,7 +86,7 @@ themselves as a stock pack.
 
 ## Gallery — upload in this order
 
-1. The contact sheet (`contact-sheet.png`) — 384 files in one image is the
+1. The contact sheet (`contact-sheet.png`) — 480 files in one image is the
    whole pitch; lead with it.
 2. A headphones hero at full resolution
 3. A bottle colourway row — same product, six finishes, proving the range
@@ -117,8 +117,8 @@ python render_farm.py 0 1000
 zip -r ../../3d-render-pack-vol1.zip renders ../../products/3d-render-pack/README.md ../../products/3d-render-pack/LICENSE.txt
 ```
 
-About 13 minutes on software rendering, and considerably less on a machine
-with a real GPU. The result is roughly 290 MB.
+About 16 minutes on software rendering, and considerably less on a machine
+with a real GPU. The result is roughly 360 MB.
 
 Want it bigger? `python render_farm.py 0 1400` gives 2800 × 2800 and a
 "4K-ready" line in the listing.
