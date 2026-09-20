@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Static demo build output (regenerate: python scripts/build_static_demo.py)
+static-demo/
