@@ -4,7 +4,11 @@ A product configurator that runs in the customer's browser. They change the
 colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
-**One file. 36 KB. Zero dependencies.**
+**Two complete products. One file. 45 KB. Zero dependencies.**
+
+Headphones and a cosmetic bottle, switchable from a tab, sharing one renderer
+— because the question you are really asking is "will this work for *my*
+product", and two unrelated shapes is the only honest answer to that.
 
 No three.js. No framework. No CDN request. No `.glb`, `.gltf`, `.obj` or
 texture files to download — the geometry is generated in code when the page
@@ -35,19 +39,45 @@ Everything lives in one file, in this order:
 
 | I want to change… | Edit |
 |---|---|
-| Brand name, logo text, headings, CTA, base price | the `CONFIG` block — clearly fenced, at the top |
-| The colour swatches | the `SHELLS` array |
-| Matte / satin / gloss / anodised, and their surcharges | the `FINISHES` array |
-| Hardware metals | the `METALS` array |
-| Cushion materials | the `PADS` array |
-| The four lighting presets | the `ENVS` array |
-| **The product's actual shape** | the profiles passed to `lathe()` and `ring()` inside `start()` |
+| Brand name, logo text, headings, CTA, currency | the `CONFIG` block — clearly fenced, at the top |
+| A product's options, prices and build codes | its `groups` array inside `PRODUCTS` |
+| How an option maps to a surface | that product's `material()` |
+| **A product's actual shape** | that product's `build()` |
+| Which product loads first | `CONFIG.defaultProduct` |
+| The four lighting presets | the `ENVS` array (shared by all products) |
+
+### Adding a third product
+
+Add one entry to `PRODUCTS` and it appears in the switcher. Nothing else
+changes — the renderer knows nothing about headphones or bottles.
+
+```js
+candle: {
+  label: 'Candle', name: 'VESSEL 220G', codePrefix: 'VES1', basePrice: 42,
+  camera: { yaw: -0.4, pitch: 0.12, dist: 3.6, target: [0, 0, 0] },
+  aoX: 1.0, groundY: -0.6,
+  groups: [ /* same shape as the two below */ ],
+  material(key, o) { /* map a part name to { c, m, r } */ },
+  build(up, add)   { /* up(geometry) once, add(geo, partName, pos, rot) */ }
+}
+```
+
+`groundY` is where that product's floor sits, and `aoX` squashes the contact
+shadow along X — 0.58 for something wide like headphones, 1.0 for something
+upright like a bottle. A product may also define `hidden(partName, options)`
+to drop a part entirely; the bottle uses it so the "None" label option removes
+the band instead of painting it.
 
 ### Colours are linear, not hex
 
-Material colours are `[r, g, b]` in **linear** space, each 0–1 — not sRGB hex.
+Option colours are `[r, g, b]` in **linear** space, each 0–1 — not sRGB hex.
 The renderer does its own tone mapping and gamma, so a linear value is what the
 shading maths needs.
+
+The renderer's lighting is deliberately high-contrast: a dim sky with a broad
+warm softbox and one tight specular source, which is how product photography is
+actually lit. Under a flat bright sky, black renders as grey and gold renders
+as silver, because a metal's only colour is what it reflects.
 
 To convert a hex colour you already have:
 
@@ -141,9 +171,12 @@ front of paying customers:
 - **It has no cart or checkout.** It reports the configuration and a price.
   Wiring that into your cart is the `postMessage` example, and it is your
   store's job.
-- **The sample product is a pair of headphones.** Reshaping it into your
-  product is real work — an hour or two if it is a turned or moulded shape,
-  longer if it is not.
+- **The sample products are headphones and a cosmetic bottle.** Reshaping one
+  into your product is real work — an hour or two if it is a turned or moulded
+  shape, longer if it is not.
+- **Labels are geometry, not artwork.** The bottle's label is a coloured band
+  standing proud of the body. Printing an actual logo or text on it needs a
+  texture, which this file does not ship.
 
 ---
 
