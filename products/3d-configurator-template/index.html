@@ -156,6 +156,17 @@ canvas:active{cursor:grabbing}
 <script>
 "use strict";
 
+/* Analytics hooks. These do nothing unless the page defines
+   window.__configuratorTrack(eventName, properties). Wire it to whatever you
+   already use — PostHog, Plausible, GA, your own endpoint — or leave it unset
+   and nothing is sent anywhere. Events fired: product_changed,
+   option_changed, link_copied, view_downloaded, cta_clicked. */
+function track(name, props) {
+  try {
+    if (typeof window.__configuratorTrack === 'function') window.__configuratorTrack(name, props || {});
+  } catch (_) { /* instrumentation must never break the configurator */ }
+}
+
 /* ===================================================================
    EDIT THIS BLOCK — and only this block.
    Everything here is copy, pricing and branding. You should not need
@@ -953,6 +964,7 @@ function start() {
         [...host.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
         value.textContent = item.name;
         sync();
+        track('option_changed', { product: cfg.product, option: group.key, value: item.id });
       });
       host.appendChild(btn);
     });
@@ -1041,6 +1053,7 @@ function start() {
         loadCamera(id);
         buildGroups();
         sync();
+        track('product_changed', { product: id });
       });
       host.appendChild(btn);
     });
@@ -1066,6 +1079,10 @@ function start() {
   setSpin(spinning);
 
   if (readHash()) loadCamera(cfg.product);
+  // The call to action is the only event that matters commercially.
+  $('ctaBtn').addEventListener('click', () =>
+    track('cta_clicked', { product: cfg.product, code: $('sCode').textContent }));
+
   productTabs();
   buildGroups();
   sync();
@@ -1095,12 +1112,14 @@ function start() {
       try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
       f.remove();
     }
+    track('link_copied', { code: $('sCode').textContent, copied: ok });
     btn.textContent = ok ? 'Link copied' : location.href;
     setTimeout(() => { btn.textContent = was; }, ok ? 1600 : 4000);
   });
 
   $('shot').addEventListener('click', () => {
     const a = document.createElement('a');
+    track('view_downloaded', { code: $('sCode').textContent });
     a.download = $('sCode').textContent + '.png';
     a.href = canvas.toDataURL('image/png');
     a.click();

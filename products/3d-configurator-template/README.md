@@ -146,6 +146,37 @@ the default configuration loads. That is deliberate: a half-restored spec is
 worse than an obviously fresh one, because the customer cannot tell which
 parts survived.
 
+## Analytics
+
+The configurator calls a hook on every meaningful interaction:
+
+```js
+window.__configuratorTrack = function (event, props) {
+  // send it wherever you already send events
+};
+```
+
+| Event | Properties |
+|---|---|
+| `product_changed` | `product` |
+| `option_changed` | `product`, `option`, `value` |
+| `link_copied` | `code`, `copied` |
+| `view_downloaded` | `code` |
+| `cta_clicked` | `product`, `code` |
+
+**Nothing is sent anywhere unless you define that function.** There is no
+analytics provider baked in, no default endpoint and no key — a file you paid
+for should not report back to whoever sold it to you. Wire it to PostHog,
+Plausible, GA, Segment or your own endpoint in three lines, or leave it unset
+and the calls are silent no-ops.
+
+The hook is wrapped in try/catch at the call site, so a broken or blocked
+analytics script cannot take the configurator down with it.
+
+`cta_clicked` is the one worth a funnel: it fires when someone clicks your
+call to action with a configuration on screen, and it carries the build code
+they had chosen.
+
 ## Embedding it in a store
 
 ### Shopify
