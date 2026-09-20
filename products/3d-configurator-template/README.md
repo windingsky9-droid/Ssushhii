@@ -4,11 +4,12 @@ A product configurator that runs in the customer's browser. They change the
 colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
-**Two complete products. One file. 45 KB. Zero dependencies.**
+**Three complete products. One file. 48 KB. Zero dependencies.**
 
-Headphones and a cosmetic bottle, switchable from a tab, sharing one renderer
-— because the question you are really asking is "will this work for *my*
-product", and two unrelated shapes is the only honest answer to that.
+Headphones, a cosmetic bottle and a table lamp, switchable from a tab, all
+drawn by one renderer — because the question you are really asking is "will
+this work for *my* product", and three unrelated shapes is the only honest
+answer to that.
 
 No three.js. No framework. No CDN request. No `.glb`, `.gltf`, `.obj` or
 texture files to download — the geometry is generated in code when the page
@@ -46,10 +47,11 @@ Everything lives in one file, in this order:
 | Which product loads first | `CONFIG.defaultProduct` |
 | The four lighting presets | the `ENVS` array (shared by all products) |
 
-### Adding a third product
+### Adding a fourth product
 
 Add one entry to `PRODUCTS` and it appears in the switcher. Nothing else
-changes — the renderer knows nothing about headphones or bottles.
+changes — the renderer knows nothing about headphones, bottles or lamps. The
+lamp was added exactly this way: one object, no other edit.
 
 ```js
 candle: {
@@ -65,8 +67,13 @@ candle: {
 `groundY` is where that product's floor sits, and `aoX` squashes the contact
 shadow along X — 0.58 for something wide like headphones, 1.0 for something
 upright like a bottle. A product may also define `hidden(partName, options)`
-to drop a part entirely; the bottle uses it so the "None" label option removes
-the band instead of painting it.
+to drop a part entirely: the bottle uses it so the "None" label option removes
+the band instead of painting it, and the lamp uses it to swap between three
+different base geometries from one control.
+
+**Profiles must run bottom-to-top.** `lathe()` derives outward normals from the
+direction of travel, so a profile written top-down comes out inside-out and
+renders unlit. If a new part looks strangely dark, check this first.
 
 ### Colours are linear, not hex
 
@@ -171,8 +178,14 @@ front of paying customers:
 - **It has no cart or checkout.** It reports the configuration and a price.
   Wiring that into your cart is the `postMessage` example, and it is your
   store's job.
-- **The sample products are headphones and a cosmetic bottle.** Reshaping one
-  into your product is real work — an hour or two if it is a turned or moulded
+- **Large, smooth metal surfaces look subtler than they would under a real HDR
+  environment.** A metal shows only what it reflects, and an analytic sky has
+  far less detail than a photographed room, so a big polished panel reads
+  calmer than it would in a renderer that ships an environment map. Small metal
+  parts — trim, hardware, caps — are unaffected. This is the trade for shipping
+  no texture files at all.
+- **The sample products are headphones, a cosmetic bottle and a table lamp.**
+  Reshaping one into your product is real work — an hour or two if it is a turned or moulded
   shape, longer if it is not.
 - **Labels are geometry, not artwork.** The bottle's label is a coloured band
   standing proud of the body. Printing an actual logo or text on it needs a
