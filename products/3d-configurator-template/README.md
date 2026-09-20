@@ -4,12 +4,12 @@ A product configurator that runs in the customer's browser. They change the
 colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
-**Three complete products. One file. 48 KB. Zero dependencies.**
+**Four complete products. One file. 51 KB. Zero dependencies.**
 
-Headphones, a cosmetic bottle and a table lamp, switchable from a tab, all
-drawn by one renderer — because the question you are really asking is "will
-this work for *my* product", and three unrelated shapes is the only honest
-answer to that.
+Headphones, a cosmetic bottle, a table lamp and a three-legged side table,
+switchable from a tab, all drawn by one renderer — because the question you
+are really asking is "will this work for *my* product", and four unrelated
+shapes is the only honest answer to that.
 
 No three.js. No framework. No CDN request. No `.glb`, `.gltf`, `.obj` or
 texture files to download — the geometry is generated in code when the page
@@ -47,11 +47,12 @@ Everything lives in one file, in this order:
 | Which product loads first | `CONFIG.defaultProduct` |
 | The four lighting presets | the `ENVS` array (shared by all products) |
 
-### Adding a fourth product
+### Adding a fifth product
 
 Add one entry to `PRODUCTS` and it appears in the switcher. Nothing else
-changes — the renderer knows nothing about headphones, bottles or lamps. The
-lamp was added exactly this way: one object, no other edit.
+changes — the renderer knows nothing about headphones, bottles, lamps or
+tables. The lamp and the table were both added exactly this way: one object
+each, no other edit.
 
 ```js
 candle: {
@@ -71,9 +72,17 @@ to drop a part entirely: the bottle uses it so the "None" label option removes
 the band instead of painting it, and the lamp uses it to swap between three
 different base geometries from one control.
 
-**Profiles must run bottom-to-top.** `lathe()` derives outward normals from the
-direction of travel, so a profile written top-down comes out inside-out and
-renders unlit. If a new part looks strangely dark, check this first.
+**Profiles must run bottom-to-top.** `lathe()` derives both the outward normals
+and the triangle winding from the direction of travel, so a profile written
+top-down comes out inside-out: it renders unlit, and a flat cap disappears
+entirely because backface culling removes it. If a new part looks strangely
+dark or is missing, check this first.
+
+**Parts are placed with `add(geometry, partName, position, rotation)`**, where
+rotation is `[x, y, z]` applied as Rz·Ry·Rx. To array something around an axis
+and splay it outward — the table's legs — rotate about X first and then about
+Y: `[tilt, angle, 0]`. Doing it the other way tilts every copy in the same
+world direction instead of its own.
 
 ### Colours are linear, not hex
 
