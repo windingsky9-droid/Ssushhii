@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sushir 3D Studio">
 <meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta property="og:description" content="A real-time WebGL product configurator. Four products, four lighting presets, shareable configurations, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta property="og:description" content="A real-time WebGL product configurator. Four products, shareable configurations, and a working cart integration. No plugin, no download, no framework.">
 <meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
 <meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <meta property="og:image:width" content="1200">
@@ -15,7 +15,7 @@
 <meta property="og:image:alt" content="A pair of headphones rendered in real time beside the words Configure it live, in the browser.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta name="twitter:description" content="A real-time WebGL product configurator. Four products, four lighting presets, shareable configurations, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta name="twitter:description" content="A real-time WebGL product configurator. Four products, shareable configurations, and a working cart integration. No plugin, no download, no framework.">
 <meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
 <!-- Link-preview tags. Uncomment and set YOUR absolute URLs before going live:
@@ -193,19 +193,25 @@ const CONFIG = {
 
   eyebrow:     "Live demo \u00b7 runs on your GPU",
   heading:     "Product configurator",
-  intro:       "Four completely different products, one renderer, one file. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded. Copy the link to share your exact configuration.",
+  intro:       "Four completely different products, one renderer, one file. Shaded in real time on your GPU \u2014 nothing downloaded. Copy the link to share a configuration, or see it writing into a shop cart in the demo store.",
 
   defaultProduct: "headphones",   // must be a key of PRODUCTS below
   currency:    "$",
 
   cta: {
     heading: "Want this for your product?",
-    body:    "I build configurators like this from your CAD, photos or sketches \u2014 embedded straight into your store page. No plugin for the customer, no app to install.",
+    body:    "I build configurators like this from your CAD, photos or sketches \u2014 embedded straight into your store page, writing the customer\u2019s exact build into your cart. No plugin for the customer, no app to install.",
     button:  { text: "Get a quote", href: "mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A" }
   },
 
-  note:        "The four products shown are samples built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All four are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone. Enquiries: windingsky9@gmail.com",
-  autoSpin:    true
+  note:        "The four products shown are samples built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All four are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. See it wired into a shop cart at /3d/store/. Enquiries: windingsky9@gmail.com",
+  autoSpin:    true,
+
+  // When this page is embedded in an iframe it posts the current configuration
+  // to the parent window on every change, so a store page can put it in the
+  // cart. Set this to YOUR storefront's origin before going live: "*" lets any
+  // page that frames the configurator read the message.
+  postMessageTarget: "*"
 };
 /* ============ END OF EDITABLE BLOCK ================================ */
 /* ------------------------------------------------------------------ *
@@ -1050,6 +1056,27 @@ function start() {
     $('sPrice').textContent = CONFIG.currency + total;
     $('sCode').textContent = [prod.codePrefix].concat(prod.groups.map(g => opts[g.key].id)).join('-');
     writeHash();
+    publish(prod, opts, total);
+  }
+
+  // Embedded in a store page? Hand the configuration to the parent so it can
+  // be added to a cart. Only fires when actually framed.
+  function publish(prod, opts, total) {
+    if (window.parent === window) return;
+    try {
+      window.parent.postMessage({
+        type:    'configurator',
+        product:  cfg.product,
+        model:    prod.name,
+        code:     $('sCode').textContent,
+        price:    total,
+        currency: CONFIG.currency,
+        url:      location.href,
+        options:  prod.groups.map(g => ({
+          key: g.key, label: g.label, id: opts[g.key].id, name: opts[g.key].name
+        }))
+      }, CONFIG.postMessageTarget || '*');
+    } catch (_) { /* a framing page that rejects the message is not our problem */ }
   }
 
   function productTabs() {
