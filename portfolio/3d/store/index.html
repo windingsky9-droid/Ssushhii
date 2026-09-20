@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cart integration demo — Sushir 3D Studio</title>
+<meta name="description" content="A mock product page showing a live 3D configurator writing its configuration straight into the cart, build code and all.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b8ff73'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='sans-serif' font-size='26' font-weight='700' fill='%230a1106'%3E3D%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#12161c;--muted:#68717d;--line:#e3e7ec;--accent:#12161c;--good:#1a7f4b;--radius:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+a{color:inherit}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.025em;margin:0}
+.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}
+
+/* A deliberately plain storefront chrome: the point is the configurator,
+   not this page's design. */
+.bar{background:var(--card);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.02em;font-size:14px}
+.logo i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;font:800 10px Inter,sans-serif;font-style:normal}
+.navlinks{display:flex;gap:22px;color:var(--muted);font-size:13px;font-weight:500}
+.cartbtn{position:relative;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:600 13px Inter,sans-serif;cursor:pointer}
+.cartbtn b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px}
+
+.banner{background:#fff8e6;border-bottom:1px solid #f0e2bd;color:#7a6320;font-size:12.5px}
+.banner .wrap{padding:9px 0}
+
+.grid{display:grid;grid-template-columns:1.35fr .65fr;gap:26px;padding:26px 0 60px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.viewer{overflow:hidden}
+.viewer iframe{display:block;width:100%;height:640px;border:0}
+
+.buy{padding:22px}
+.crumb{color:var(--muted);font-size:12px;margin-bottom:10px}
+.buy h1{font-size:25px;margin-bottom:6px}
+.sku{color:var(--muted);font:500 12px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}
+.price{margin:16px 0 4px;font:700 30px "Space Grotesk",sans-serif}
+.stock{display:inline-flex;align-items:center;gap:7px;color:var(--good);font-size:12.5px;font-weight:600}
+.stock:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--good)}
+
+.specs{margin:18px 0 0;border-top:1px solid var(--line)}
+.specs .row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:13px;border-bottom:1px solid var(--line)}
+.specs .row span{color:var(--muted)}
+.specs .row b{font-weight:600;text-align:right}
+.specs .row.code b{font:600 12px ui-monospace,monospace;letter-spacing:.04em}
+.pending{color:var(--muted);font-size:13px;padding:14px 0}
+
+.qty{display:flex;align-items:center;gap:10px;margin:18px 0 0}
+.qty label{color:var(--muted);font-size:12.5px;font-weight:600}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stepper button{width:34px;height:36px;border:0;background:var(--card);font-size:16px;cursor:pointer;color:var(--ink)}
+.stepper button:hover{background:#f1f3f6}
+.stepper span{min-width:34px;text-align:center;font-weight:600;font-size:14px}
+
+.add{width:100%;margin-top:16px;padding:14px;border:0;border-radius:11px;background:var(--ink);color:#fff;font:700 14px Inter,sans-serif;cursor:pointer}
+.add:hover{opacity:.9}
+.add:disabled{opacity:.45;cursor:not-allowed}
+.added{margin-top:10px;color:var(--good);font-size:12.5px;font-weight:600;min-height:18px}
+.hint{margin-top:14px;color:var(--muted);font-size:11.5px;line-height:1.5}
+
+.drawer{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--card);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(10,15,25,.14);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:20;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer header{display:flex;align-items:center;justify-content:space-between;padding:18px;border-bottom:1px solid var(--line)}
+.drawer header h2{font-size:17px}
+.drawer .close{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--muted)}
+.lines{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.empty{color:var(--muted);font-size:13px}
+.line{border:1px solid var(--line);border-radius:12px;padding:14px}
+.line .top{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:14px}
+.line .props{margin:9px 0 0;padding:0;list-style:none;color:var(--muted);font-size:12px}
+.line .props li{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.line .props li b{color:var(--ink);font-weight:600}
+.line .prop-code{margin-top:9px;padding:6px 9px;border-radius:7px;background:#f1f3f6;font:600 11.5px ui-monospace,monospace;letter-spacing:.04em}
+.line .reopen{display:inline-block;margin-top:9px;font-size:12px;font-weight:600;color:#1550c8;text-decoration:none}
+.drawer footer{padding:18px;border-top:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:12px}
+.checkout{width:100%;padding:13px;border:0;border-radius:11px;background:var(--ink);color:#fff;font:700 14px Inter,sans-serif;cursor:pointer}
+.scrim{position:fixed;inset:0;background:rgba(12,16,22,.4);opacity:0;pointer-events:none;transition:opacity .28s;z-index:19}
+.scrim.open{opacity:1;pointer-events:auto}
+
+.note{padding:22px;color:var(--muted);font-size:12.5px;line-height:1.6}
+.note b{color:var(--ink)}
+.note code{background:#eef1f4;padding:1px 5px;border-radius:5px;font-size:11.5px}
+
+@media(max-width:940px){
+  .grid{grid-template-columns:1fr}
+  .viewer iframe{height:76vh;min-height:560px}
+  .navlinks{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="banner"><div class="wrap">Demo store — nothing here is for sale and no payment is taken. It exists to show a 3D configurator writing straight into a cart.</div></div>
+
+<div class="bar"><div class="wrap">
+  <div class="logo"><i>NS</i> NORTHSIDE SUPPLY</div>
+  <nav class="navlinks"><a href="#">Audio</a><a href="#">Lighting</a><a href="#">Furniture</a><a href="#">Care</a></nav>
+  <button class="cartbtn" id="openCart">Cart <b id="count">0</b></button>
+</div></div>
+
+<div class="wrap grid">
+  <div class="panel viewer">
+    <iframe id="cfg" title="Product configurator" src="../index.html" allow="accelerometer; gyroscope"></iframe>
+  </div>
+
+  <div class="panel buy">
+    <div class="crumb">Home / Audio / Configurable</div>
+    <h1 id="title">Choose a product</h1>
+    <div class="sku" id="sku">awaiting configuration…</div>
+    <div class="price" id="price">—</div>
+    <div class="stock">In stock · made to order</div>
+
+    <div class="specs" id="specs"><div class="pending">Change anything in the configurator and this panel fills in — it is listening, not polling.</div></div>
+
+    <div class="qty">
+      <label for="q">Quantity</label>
+      <div class="stepper"><button id="minus" aria-label="Decrease">−</button><span id="q">1</span><button id="plus" aria-label="Increase">+</button></div>
+    </div>
+
+    <button class="add" id="add" disabled>Add to cart</button>
+    <div class="added" id="added"></div>
+
+    <p class="hint">The configurator runs in an iframe and posts its configuration to this page on every change. This page never reads inside the frame — it only receives messages, and it checks where they came from.</p>
+  </div>
+</div>
+
+<div class="wrap"><div class="panel note">
+  <b>What this demo is showing.</b> The build code in the cart line is the same string the configurator displays, and the same string in its URL — so a customer quoting a code, sending a link, or placing an order all give you one identifier. <b>Reopen this configuration</b> on a cart line restores the exact build.<br><br>
+  <b>What a real store would do differently.</b> This page trusts the price in the message because it is a demo. A real store must not: the price is computed in the browser and anyone can edit it in devtools. Charge from a real variant or a server-side price rule, and carry the build code as a line-item property. The bundled <code>examples/shopify-liquid.txt</code> says the same thing and shows the Liquid.
+</div></div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Cart">
+  <header><h2>Your cart</h2><button class="close" id="closeCart" aria-label="Close">×</button></header>
+  <div class="lines" id="lines"><div class="empty">Nothing in the cart yet.</div></div>
+  <footer>
+    <div class="total"><span>Subtotal</span><span id="subtotal">$0</span></div>
+    <button class="checkout" id="checkout">Checkout</button>
+  </footer>
+</aside>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+// Trust messages only from the origin the configurator is actually served
+// from. Deriving it from the iframe's own src is correct whether you host the
+// configurator alongside your store or on a CDN — assuming same-origin would
+// silently drop every message in the CDN case.
+const EXPECTED_ORIGIN = new URL($('cfg').src, location.href).origin;
+
+let current = null;          // latest configuration received from the frame
+let qty = 1;
+const cart = [];
+
+function money(n, cur) { return (cur || '$') + n.toLocaleString('en-US'); }
+
+window.addEventListener('message', e => {
+  if (e.origin !== EXPECTED_ORIGIN) return;              // wrong sender
+  const d = e.data;
+  if (!d || d.type !== 'configurator') return;           // not for us
+  if (!Array.isArray(d.options) || typeof d.price !== 'number') return;
+  current = d;
+
+  $('title').textContent = d.model;
+  $('sku').textContent = d.code;
+  $('price').textContent = money(d.price, d.currency);
+  $('specs').innerHTML =
+    d.options.map(o => `<div class="row"><span>${esc(o.label)}</span><b>${esc(o.name)}</b></div>`).join('') +
+    `<div class="row code"><span>Build code</span><b>${esc(d.code)}</b></div>`;
+  $('add').disabled = false;
+  $('added').textContent = '';
+});
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+$('minus').addEventListener('click', () => { qty = Math.max(1, qty - 1); $('q').textContent = qty; });
+$('plus').addEventListener('click', () => { qty = Math.min(99, qty + 1); $('q').textContent = qty; });
+
+$('add').addEventListener('click', () => {
+  if (!current) return;
+  const existing = cart.find(l => l.code === current.code);
+  if (existing) existing.qty += qty;
+  else cart.push({ model: current.model, code: current.code, price: current.price,
+                   currency: current.currency, options: current.options, url: current.url, qty });
+  qty = 1; $('q').textContent = qty;
+  $('added').textContent = 'Added — build code travels with the line.';
+  renderCart();
+  openCart();
+});
+
+function renderCart() {
+  const n = cart.reduce((a, l) => a + l.qty, 0);
+  $('count').textContent = n;
+  $('subtotal').textContent = money(cart.reduce((a, l) => a + l.price * l.qty, 0), cart[0] && cart[0].currency);
+  $('lines').innerHTML = cart.length ? cart.map(l => `
+    <div class="line">
+      <div class="top"><span>${esc(l.model)} × ${l.qty}</span><span>${esc(money(l.price * l.qty, l.currency))}</span></div>
+      <ul class="props">${l.options.map(o => `<li><span>${esc(o.label)}</span><b>${esc(o.name)}</b></li>`).join('')}</ul>
+      <div class="prop-code">${esc(l.code)}</div>
+      <a class="reopen" href="${esc(l.url)}" target="_blank" rel="noopener">Reopen this configuration ↗</a>
+    </div>`).join('') : '<div class="empty">Nothing in the cart yet.</div>';
+}
+
+function openCart() { $('drawer').classList.add('open'); $('scrim').classList.add('open'); }
+function closeCart() { $('drawer').classList.remove('open'); $('scrim').classList.remove('open'); }
+$('openCart').addEventListener('click', openCart);
+$('closeCart').addEventListener('click', closeCart);
+$('scrim').addEventListener('click', closeCart);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
+
+$('checkout').addEventListener('click', () => {
+  alert('This is a demo store — no checkout and no payment.\n\nA real integration would send each line\'s build code to your cart as a line-item property, and charge from a real variant or a server-side price rule rather than the price shown in the browser.');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Live 3D Product Configurator — Sushir 3D Studio</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sushir 3D Studio">
+<meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
+<meta property="og:description" content="A real-time WebGL product configurator. Four products, shareable configurations, and a working cart integration. No plugin, no download, no framework.">
+<meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
+<meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A pair of headphones rendered in real time beside the words Configure it live, in the browser.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
+<meta name="twitter:description" content="A real-time WebGL product configurator. Four products, shareable configurations, and a working cart integration. No plugin, no download, no framework.">
+<meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
+<link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
+<!-- Link-preview tags. Uncomment and set YOUR absolute URLs before going live:
+     relative og:image / og:url values are silently dropped by every unfurler.
+<meta property="og:type" content="website">
+<meta property="og:title" content="Configure it live, in the browser">
+<meta property="og:description" content="Real-time 3D product viewer.">
+<meta property="og:url" content="https://example.com/configurator/">
+<meta property="og:image" content="https://example.com/configurator/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+-->
+<meta name="description" content="A real-time 3D product configurator running in the browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b8ff73'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='sans-serif' font-size='26' font-weight='700' fill='%230a1106'%3E3D%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--void:#05070b;--ink:#0b1017;--panel:rgba(15,22,31,.78);--line:rgba(224,242,255,.13);--text:#f4f8fc;--muted:#93a2b3;--acid:#b8ff73;--cyan:#6fe9ff;--radius:20px}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--void);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.04em;line-height:1.05;margin:0}
+
+#app{position:fixed;inset:0;display:grid;grid-template-columns:1fr 344px}
+#stage{position:relative;overflow:hidden;background:
+  radial-gradient(ellipse 70% 55% at 50% 42%,rgba(111,233,255,.08),transparent 70%),
+  radial-gradient(ellipse 60% 50% at 78% 88%,rgba(184,255,115,.05),transparent 70%),
+  linear-gradient(180deg,#070b11,#05070b 60%,#03050a)}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+
+.top{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;gap:14px;align-items:center;justify-content:space-between;padding:16px 20px;pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:.03em;font-size:13px}
+.brand i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--acid);color:#0a1106;font:900 10px/1 Inter,sans-serif;font-style:normal}
+.back{padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(5,8,13,.6);backdrop-filter:blur(14px);font-size:11.5px;font-weight:700;color:var(--muted)}
+.back:hover{color:var(--text);border-color:rgba(184,255,115,.35)}
+
+.hud{position:absolute;z-index:3;left:20px;bottom:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font:10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#6d7d8e}
+.hud b{color:var(--acid);font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(5,10,16,.55);backdrop-filter:blur(12px)}
+.pill.tap{cursor:pointer}
+.pill.tap:hover{border-color:rgba(184,255,115,.4);color:var(--text)}
+.pill.on b{color:var(--acid)}
+.pill.off b{color:#5b6877}
+
+#loading{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:var(--void);font:11px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);transition:opacity .5s ease}
+#loading.gone{opacity:0;pointer-events:none}
+
+#panel{position:relative;z-index:2;overflow-y:auto;overscroll-behavior:contain;border-left:1px solid var(--line);background:linear-gradient(180deg,rgba(11,16,23,.97),rgba(6,10,15,.97));backdrop-filter:blur(20px);padding:22px 22px 26px}
+.eyebrow{display:inline-flex;gap:7px;align-items:center;padding:6px 10px;border:1px solid rgba(184,255,115,.2);border-radius:999px;background:rgba(184,255,115,.05);color:var(--acid);text-transform:uppercase;letter-spacing:.15em;font-size:9px;font-weight:800}
+.eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 12px var(--acid)}
+#panel h1{margin:14px 0 8px;font-size:27px}
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 4px}
+
+.group{margin-top:22px}
+.glabel{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:9px}
+.glabel span{color:#6f7e8f;text-transform:uppercase;letter-spacing:.14em;font:800 9px Inter,sans-serif}
+.glabel b{color:var(--text);font:600 11.5px "Space Grotesk",sans-serif}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:34px;height:34px;border-radius:11px;border:1px solid rgba(255,255,255,.14);position:relative;transition:transform .15s ease}
+.sw:hover{transform:translateY(-2px)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--void),0 0 0 3.5px var(--acid)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:5px;padding:4px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025)}
+.seg button{padding:8px 4px;border-radius:9px;font-size:11px;font-weight:700;color:var(--muted);transition:.15s}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{background:var(--acid);color:#091107}
+
+.spec{margin-top:24px;padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.022)}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:12px;border-bottom:1px solid rgba(224,242,255,.06)}
+.row:last-child{border:0;padding-bottom:0}
+.row span{color:#73818f}
+.row b{font-weight:600}
+.code{margin-top:12px;padding:9px 11px;border-radius:10px;background:rgba(184,255,115,.07);border:1px solid rgba(184,255,115,.18);color:var(--acid);font:600 11px ui-monospace,monospace;letter-spacing:.08em;text-align:center}
+
+.cta{margin-top:20px;padding:18px;border:1px solid rgba(184,255,115,.25);border-radius:16px;background:linear-gradient(145deg,rgba(184,255,115,.09),rgba(9,16,21,.7))}
+.cta h3{font-size:17px;margin-bottom:7px}
+.cta p{margin:0;color:var(--muted);font-size:12px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.primary{padding:11px 15px;border-radius:11px;background:var(--acid);color:#091107;font-size:12px;font-weight:800}
+.ghost{padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.04);font-size:12px;font-weight:700}
+.primary:hover,.ghost:hover{transform:translateY(-1px)}
+.note{margin-top:18px;color:#5f6d7c;font-size:10.5px;line-height:1.55}
+#fallback{display:none;padding:16px;border:1px solid rgba(255,201,121,.3);border-radius:14px;background:rgba(255,201,121,.07);color:#ffc979;font-size:12px}
+
+@media (max-width:920px){
+  body{overflow:auto}
+  #app{position:static;display:block;height:auto}
+  #stage{height:56vh;min-height:360px}
+  #panel{border-left:0;border-top:1px solid var(--line);padding:20px 16px 40px}
+  .hud{left:16px;bottom:14px}
+  /* 33px was under the 44px minimum touch target on a phone. */
+  .seg button{min-height:44px}
+  #fps{display:none}
+  .hud .pill:first-child:after{content:""}
+  .sw{width:40px;height:40px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="c"></canvas>
+    <div id="loading">compiling shaders…</div>
+    <div class="top">
+      <div class="brand"><i></i><span></span></div>
+      <a class="back" href="/"></a>
+    </div>
+    <div class="hud">
+      <span class="pill">drag to orbit · scroll to zoom</span>
+      <span class="pill tap on" id="spin">auto-spin <b>ON</b></span>
+      <span class="pill" id="fps">— fps</span>
+    </div>
+  </div>
+
+  <aside id="panel">
+    <span class="eyebrow" id="eyebrow"></span>
+    <h1></h1>
+    <p class="sub"></p>
+
+    <div id="fallback">This browser has no WebGL2 context, so the live viewer can't start. Everything else on the page still works — and on a client project this is the point where a pre-rendered fallback image would load instead.</div>
+
+    <div class="seg" id="product" style="margin:18px 0 4px"></div>
+
+    <div id="groups"></div>
+
+    <div class="spec">
+      <div class="row"><span>Model</span><b id="sModel"></b></div>
+      <div id="specRows"></div>
+      <div class="row"><span>Indicative price</span><b id="sPrice">$349</b></div>
+      <div class="code" id="sCode">ORB1-GRA-MT-STL-NAP</div>
+    </div>
+
+    <div class="cta">
+      <h3 id="ctaHead"></h3>
+      <p id="ctaBody"></p>
+      <div class="btns">
+        <a class="primary" id="ctaBtn" href="#"></a>
+        <button class="ghost" id="share">Copy link</button>
+        <button class="ghost" id="shot">Download this view</button>
+      </div>
+    </div>
+
+    <p class="note" id="note"></p>
+  </aside>
+</div>
+
+<script>
+"use strict";
+
+/* Analytics hooks. These do nothing unless the page defines
+   window.__configuratorTrack(eventName, properties). Wire it to whatever you
+   already use — PostHog, Plausible, GA, your own endpoint — or leave it unset
+   and nothing is sent anywhere. Events fired: product_changed,
+   option_changed, link_copied, view_downloaded, cta_clicked. */
+function track(name, props) {
+  try {
+    if (typeof window.__configuratorTrack === 'function') window.__configuratorTrack(name, props || {});
+  } catch (_) { /* instrumentation must never break the configurator */ }
+}
+
+/* ===================================================================
+   EDIT THIS BLOCK — and only this block.
+   Everything here is copy, pricing and branding. You should not need
+   to touch a line of the renderer below to ship your own product.
+   =================================================================== */
+const CONFIG = {
+  brand:       "SUSHIR 3D STUDIO",
+  brandMark:   "3D",                       // 2-3 characters for the square logo
+  backLink:    { text: "\u2190 Portfolio", href: "/" },
+
+  eyebrow:     "Live demo \u00b7 runs on your GPU",
+  heading:     "Product configurator",
+  intro:       "Four completely different products, one renderer, one file. Shaded in real time on your GPU \u2014 nothing downloaded. Copy the link to share a configuration, or see it writing into a shop cart in the demo store.",
+
+  defaultProduct: "headphones",   // must be a key of PRODUCTS below
+  currency:    "$",
+
+  cta: {
+    heading: "Want this for your product?",
+    body:    "I build configurators like this from your CAD, photos or sketches \u2014 embedded straight into your store page, writing the customer\u2019s exact build into your cart. No plugin for the customer, no app to install.",
+    button:  { text: "Get a quote", href: "mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A" }
+  },
+
+  note:        "The four products shown are samples built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All four are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. See it wired into a shop cart at /3d/store/. Enquiries: windingsky9@gmail.com",
+  autoSpin:    true,
+
+  // When this page is embedded in an iframe it posts the current configuration
+  // to the parent window on every change, so a store page can put it in the
+  // cart. Set this to YOUR storefront's origin before going live: "*" lets any
+  // page that frames the configurator read the message.
+  postMessageTarget: "*"
+};
+/* ============ END OF EDITABLE BLOCK ================================ */
+/* ------------------------------------------------------------------ *
+ * Real-time product configurator.
+ * Hand-written WebGL2 renderer. No framework, no CDN, no model files:
+ * every surface is generated procedurally at load time.
+ *
+ * To rebrand: edit the CONFIG block below. To change the product's
+ * colours, finishes, hardware, cushions or lighting: edit the SHELLS /
+ * FINISHES / METALS / PADS / ENVS arrays. To change the product's shape:
+ * edit the profiles passed to lathe() and ring() inside start().
+ * ------------------------------------------------------------------ */
+
+/* ---------- tiny matrix math (column-major, like GL expects) ------- */
+const M4 = {
+  ident: () => new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]),
+  mul(a, b, out) {
+    out = out || new Float32Array(16);
+    for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) {
+      out[c*4+r] = a[r]*b[c*4] + a[4+r]*b[c*4+1] + a[8+r]*b[c*4+2] + a[12+r]*b[c*4+3];
+    }
+    return out;
+  },
+  perspective(fovy, aspect, near, far) {
+    const f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
+    return new Float32Array([f/aspect,0,0,0, 0,f,0,0, 0,0,(far+near)*nf,-1, 0,0,2*far*near*nf,0]);
+  },
+  lookAt(eye, target, up) {
+    let z = V3.norm(V3.sub(eye, target));
+    let x = V3.norm(V3.cross(up, z));
+    let y = V3.cross(z, x);
+    return new Float32Array([
+      x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+      -V3.dot(x,eye), -V3.dot(y,eye), -V3.dot(z,eye), 1]);
+  },
+  // T * Rz * Ry * Rx * S — enough for every part in this scene
+  compose(t, rot, s) {
+    const [rx, ry, rz] = rot;
+    const cx = Math.cos(rx), sx = Math.sin(rx);
+    const cy = Math.cos(ry), sy = Math.sin(ry);
+    const cz = Math.cos(rz), sz = Math.sin(rz);
+    const r = [
+      [cz*cy, cz*sy*sx - sz*cx, cz*sy*cx + sz*sx],
+      [sz*cy, sz*sy*sx + cz*cx, sz*sy*cx - cz*sx],
+      [-sy,   cy*sx,            cy*cx]
+    ];
+    return new Float32Array([
+      r[0][0]*s[0], r[1][0]*s[0], r[2][0]*s[0], 0,
+      r[0][1]*s[1], r[1][1]*s[1], r[2][1]*s[1], 0,
+      r[0][2]*s[2], r[1][2]*s[2], r[2][2]*s[2], 0,
+      t[0], t[1], t[2], 1
+    ]);
+  },
+  // normal matrix = transpose(inverse(upper-left 3x3))
+  normalMat(m) {
+    const a=m[0],b=m[1],c=m[2], d=m[4],e=m[5],f=m[6], g=m[8],h=m[9],i=m[10];
+    const A=e*i-f*h, B=f*g-d*i, C=d*h-e*g;
+    let det = a*A + b*B + c*C;
+    if (Math.abs(det) < 1e-12) det = 1e-12;
+    const id = 1/det;
+    // inverse(3x3) then transpose == cofactor matrix / det
+    return new Float32Array([A*id, B*id, C*id,
+                             (c*h-b*i)*id, (a*i-c*g)*id, (b*g-a*h)*id,
+                             (b*f-c*e)*id, (c*d-a*f)*id, (a*e-b*d)*id]);
+  }
+};
+const V3 = {
+  sub: (a,b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]],
+  cross: (a,b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]],
+  dot: (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  norm(a) { const l = Math.hypot(a[0],a[1],a[2]) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+};
+
+/* ---------- procedural geometry ------------------------------------ *
+ * Everything is a surface of revolution or a box, so one lathe builder
+ * plus one box builder covers the whole product. Hard edges come from
+ * repeating a profile point; smooth ones from averaging the adjacent
+ * segment normals.                                                     */
+const TAU = Math.PI * 2;
+
+function lathe(profile, segments, opts) {
+  opts = opts || {};
+  const smoothAngle = Math.cos((opts.smooth === undefined ? 55 : opts.smooth) * Math.PI / 180);
+  const n = profile.length;
+  // 2D normal of each profile segment (revolved around +Y)
+  const segN = [];
+  for (let i = 0; i < n - 1; i++) {
+    const dx = profile[i+1][0] - profile[i][0], dy = profile[i+1][1] - profile[i][1];
+    const l = Math.hypot(dx, dy) || 1;
+    segN.push([dy / l, -dx / l]);
+  }
+  // per-point 2D normal, averaged only across edges gentle enough to be smooth
+  const ptN = [];
+  for (let i = 0; i < n; i++) {
+    const a = segN[i - 1], b = segN[i];
+    if (!a) { ptN.push(b); continue; }
+    if (!b) { ptN.push(a); continue; }
+    if (a[0]*b[0] + a[1]*b[1] >= smoothAngle) {
+      const x = a[0]+b[0], y = a[1]+b[1], l = Math.hypot(x, y) || 1;
+      ptN.push([x/l, y/l]);
+    } else ptN.push(b); // treat as a crease: this vertex belongs to the next face
+  }
+  const pos = [], nor = [], idx = [];
+  for (let s = 0; s <= segments; s++) {
+    const t = (s / segments) * TAU, ct = Math.cos(t), st = Math.sin(t);
+    for (let i = 0; i < n; i++) {
+      const r = profile[i][0], y = profile[i][1], nn = ptN[i];
+      pos.push(r * ct, y, r * st);
+      nor.push(nn[0] * ct, nn[1], nn[0] * st);
+    }
+  }
+  for (let s = 0; s < segments; s++) for (let i = 0; i < n - 1; i++) {
+    const a = s * n + i, b = a + n;
+    // Wound so the face normal agrees with the shading normal: for a profile
+    // running bottom-to-top, cross((a+1)-a, b-a) points outward. The reverse
+    // order leaves every lathed surface front-facing on its INSIDE, which
+    // backface culling then removes — a flat cap vanishes outright, and a
+    // closed shape merely looks subtly wrong.
+    idx.push(a, a + 1, b, a + 1, b + 1, b);
+  }
+  return { pos: new Float32Array(pos), nor: new Float32Array(nor), idx: new Uint16Array(idx) };
+}
+
+// closed circular profile -> a torus around the Y axis
+function ring(R, tube, yc, seg, tubeSeg, squashY) {
+  squashY = squashY || 1;
+  const p = [];
+  for (let i = 0; i <= tubeSeg; i++) {
+    const a = (i / tubeSeg) * TAU;
+    p.push([R + Math.cos(a) * tube, yc + Math.sin(a) * tube * squashY]);
+  }
+  return lathe(p, seg, { smooth: 180 });
+}
+
+// arc of a torus lying in the XY plane, with a flattened (elliptical) cross-section
+function bandArc(R, a0, a1, thick, width, arcSeg, tubeSeg) {
+  const pos = [], nor = [], idx = [];
+  for (let s = 0; s <= arcSeg; s++) {
+    const t = a0 + (a1 - a0) * (s / arcSeg);
+    const cx = Math.cos(t), cy = Math.sin(t);
+    for (let u = 0; u <= tubeSeg; u++) {
+      const a = (u / tubeSeg) * TAU, ca = Math.cos(a), sa = Math.sin(a);
+      // radial axis = (cx, cy, 0); the band is wide along Z
+      pos.push(cx * (R + ca * thick), cy * (R + ca * thick), sa * width);
+      const nx = ca * width, nz = sa * thick, l = Math.hypot(nx, nz) || 1;
+      nor.push(cx * nx / l, cy * nx / l, nz / l);
+    }
+  }
+  const w = tubeSeg + 1;
+  for (let s = 0; s < arcSeg; s++) for (let u = 0; u < tubeSeg; u++) {
+    const a = s * w + u, b = a + w;
+    idx.push(a, b, a + 1, a + 1, b, b + 1);
+  }
+  return { pos: new Float32Array(pos), nor: new Float32Array(nor), idx: new Uint16Array(idx) };
+}
+
+function box(w, h, d) {
+  const x = w/2, y = h/2, z = d/2;
+  const f = [
+    [[-x,-y,z],[x,-y,z],[x,y,z],[-x,y,z],[0,0,1]],
+    [[x,-y,-z],[-x,-y,-z],[-x,y,-z],[x,y,-z],[0,0,-1]],
+    [[x,-y,z],[x,-y,-z],[x,y,-z],[x,y,z],[1,0,0]],
+    [[-x,-y,-z],[-x,-y,z],[-x,y,z],[-x,y,-z],[-1,0,0]],
+    [[-x,y,z],[x,y,z],[x,y,-z],[-x,y,-z],[0,1,0]],
+    [[-x,-y,-z],[x,-y,-z],[x,-y,z],[-x,-y,z],[0,-1,0]]
+  ];
+  const pos = [], nor = [], idx = [];
+  f.forEach((q, i) => {
+    for (let k = 0; k < 4; k++) { pos.push(...q[k]); nor.push(...q[4]); }
+    const b = i * 4;
+    idx.push(b, b+1, b+2, b, b+2, b+3);
+  });
+  return { pos: new Float32Array(pos), nor: new Float32Array(nor), idx: new Uint16Array(idx) };
+}
+
+function plane(size) {
+  const s = size / 2;
+  return {
+    pos: new Float32Array([-s,0,-s, s,0,-s, s,0,s, -s,0,s]),
+    nor: new Float32Array([0,1,0, 0,1,0, 0,1,0, 0,1,0]),
+    idx: new Uint16Array([0,2,1, 0,3,2])
+  };
+}
+
+/* ---------- shaders ------------------------------------------------ *
+ * One program for everything. Lighting is a fully analytic environment:
+ * a sky/ground gradient plus three directional lobes that stand in for
+ * softboxes. Roughness widens the lobes, which is a cheap but convincing
+ * stand-in for a prefiltered environment map — and it means the page
+ * ships no HDR texture at all.                                         */
+const VERT = `#version 300 es
+in vec3 aPos;
+in vec3 aNor;
+uniform mat4 uM, uV, uP;
+uniform mat3 uN;
+out vec3 vWP;
+out vec3 vN;
+void main(){
+  vec4 wp = uM * vec4(aPos, 1.0);
+  vWP = wp.xyz;
+  vN  = uN * aNor;
+  gl_Position = uP * uV * wp;
+}`;
+
+const FRAG = `#version 300 es
+precision highp float;
+in vec3 vWP;
+in vec3 vN;
+out vec4 frag;
+
+uniform vec3  uCam, uAlbedo, uSky, uGnd, uBg;
+uniform float uMetal, uRough, uIsGround, uAoX;
+uniform vec3  uLdir[3];
+uniform vec3  uLcol[3];
+uniform float uLsharp[3];
+
+vec3 envSample(vec3 d, float rough){
+  vec3 c = mix(uGnd, uSky, smoothstep(-0.30, 0.45, d.y));
+  float b = clamp(rough, 0.0, 1.0);
+  for (int i = 0; i < 3; i++){
+    float sh = mix(uLsharp[i], 2.5, b * b);
+    c += uLcol[i] * pow(max(dot(d, uLdir[i]), 0.0), sh) * (1.0 + (1.0 - b) * 0.38);
+  }
+  return c;
+}
+vec3 irradiance(vec3 n){
+  // Each lobe's diffuse contribution has to be weighted by how much sky it
+  // actually covers. A pow(cos, s) lobe subtends roughly 2*PI/(s+1), so a
+  // sharpness-150 specular pinpoint contributes almost no diffuse while a
+  // sharpness-4 softbox contributes most of it. Weighting them equally is
+  // what was washing matte surfaces out under a bright key.
+  vec3 c = mix(uGnd, uSky, n.y * 0.5 + 0.5) * 0.62;
+  for (int i = 0; i < 3; i++)
+    c += uLcol[i] * max(dot(n, uLdir[i]), 0.0) * (2.4 / (uLsharp[i] + 2.0));
+  return c;
+}
+vec3 fresnelRough(float ct, vec3 F0, float r){
+  return F0 + (max(vec3(1.0 - r), F0) - F0) * pow(clamp(1.0 - ct, 0.0, 1.0), 5.0);
+}
+vec2 envBRDF(float NoV, float r){            // Lazarov's analytic split-sum fit
+  vec4 c0 = vec4(-1.0, -0.0275, -0.572,  0.022);
+  vec4 c1 = vec4( 1.0,  0.0425,  1.040, -0.040);
+  vec4 r4 = r * c0 + c1;
+  float a = min(r4.x * r4.x, exp2(-9.28 * NoV)) * r4.x + r4.y;
+  return vec2(-1.04, 1.04) * a + r4.zw;
+}
+vec3 aces(vec3 x){
+  return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);
+}
+void main(){
+  vec3  N    = normalize(vN);
+  vec3  V    = normalize(uCam - vWP);
+  float NoV  = max(dot(N, V), 1e-4);
+  float rough = clamp(uRough, 0.045, 1.0);
+
+  float ao = 1.0;
+  if (uIsGround > 0.5){
+    float d = length(vec2(vWP.x * uAoX, vWP.z));
+    ao = clamp(1.0 - 0.86 * exp(-d * d * 0.85) - 0.22 * exp(-d * d * 0.16), 0.04, 1.0);
+  }
+  vec3 F0   = mix(vec3(0.04), uAlbedo, uMetal);
+  vec3 pre  = envSample(reflect(-V, N), rough);
+  vec2 ab   = envBRDF(NoV, rough);
+  vec3 spec = pre * (fresnelRough(NoV, F0, rough) * ab.x + ab.y);
+  vec3 diff = irradiance(N) * uAlbedo * (1.0 - uMetal);
+  vec3 col  = (diff + spec) * ao;
+
+  if (uIsGround > 0.5) col = mix(col, uBg, smoothstep(2.0, 6.2, length(vWP.xz)));
+  frag = vec4(pow(aces(col), vec3(1.0 / 2.2)), 1.0);
+}`;
+
+/* ---------- configuration data -------------------------------------- */
+/* ===================================================================
+   PRODUCTS — each entry is a complete configurable product: its geometry,
+   its option groups, how those options map to materials, and its pricing.
+   The renderer below knows nothing about headphones or bottles; add a
+   third product here and it appears in the switcher with no other change.
+   =================================================================== */
+const PRODUCTS = {
+
+  headphones: {
+    label: 'Headphones', name: 'ORBIT ONE', codePrefix: 'ORB1', basePrice: 349,
+    camera: { yaw: -0.62, pitch: 0.22, dist: 3.35, target: [0, -0.16, 0] },
+    aoX: 0.58, groundY: -0.98,   // wide product: stretch the contact shadow along X
+    groups: [
+      { key:'shell', label:'Shell colour', kind:'swatch', spec:'Shell', items:[
+        { id:'GRA', name:'Graphite',      c:[0.075,0.082,0.092], price:0 },
+        { id:'IVO', name:'Ivory',         c:[0.855,0.835,0.785], price:0 },
+        { id:'MID', name:'Midnight blue', c:[0.050,0.085,0.200], price:0 },
+        { id:'CLY', name:'Terracotta',    c:[0.520,0.255,0.185], price:0 },
+        { id:'SGE', name:'Sage',          c:[0.300,0.400,0.285], price:0 },
+        { id:'ACD', name:'Acid',          c:[0.575,0.905,0.320], price:0 }]},
+      { key:'finish', label:'Finish', kind:'seg', spec:'Finish', items:[
+        { id:'MT', name:'Matte',    r:0.62, m:0.00, price:0  },
+        { id:'ST', name:'Satin',    r:0.34, m:0.00, price:15 },
+        { id:'GL', name:'Gloss',    r:0.09, m:0.00, price:30 },
+        { id:'AN', name:'Anodised', r:0.27, m:0.85, price:45 }]},
+      { key:'metal', label:'Hardware', kind:'swatch', spec:'Hardware', items:[
+        { id:'STL', name:'Brushed steel',  c:[0.560,0.570,0.585], r:0.30, price:0  },
+        { id:'GLD', name:'Champagne gold', c:[0.855,0.660,0.335], r:0.20, price:60 },
+        { id:'GUN', name:'Gunmetal',       c:[0.205,0.215,0.235], r:0.34, price:20 },
+        { id:'BLK', name:'Matte black',    c:[0.042,0.045,0.050], r:0.56, price:10 }]},
+      { key:'pad', label:'Ear cushion', kind:'seg', spec:'Cushion', items:[
+        { id:'NAP', name:'Nappa leather', c:[0.048,0.050,0.056], r:0.54, price:0   },
+        { id:'SUE', name:'Suede',         c:[0.160,0.140,0.155], r:0.93, price:25  },
+        { id:'MSH', name:'Cooling mesh',  c:[0.095,0.115,0.135], r:0.78, price:-20 }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'shell':  return { c: o.shell.c, m: o.finish.m, r: o.finish.r };
+        case 'metal':  return { c: o.metal.c, m: 1.0, r: o.metal.r };
+        case 'arm':    return { c: o.metal.c, m: 1.0, r: Math.min(o.metal.r + 0.26, 0.95) };
+        case 'pad':    return { c: o.pad.c,   m: 0.0, r: o.pad.r };
+        default:       return { c: [0.020,0.022,0.026], m: 0.0, r: 0.85 };
+      }
+    },
+    build(up, add) {
+      const RB = 1.02, H = Math.PI / 2;
+      const gBand    = up(bandArc(RB, 0.055*Math.PI, 0.945*Math.PI, 0.052, 0.155, 112, 22));
+      const gBandPad = up(bandArc(RB - 0.086, 0.22*Math.PI, 0.78*Math.PI, 0.040, 0.125, 72, 18));
+      const gArm     = up(box(0.068, 0.46, 0.125));
+      const gCup     = up(lathe([
+          [0,0.115],[0.09,0.113],[0.17,0.106],[0.245,0.092],[0.300,0.068],[0.340,0.030],
+          [0.362,-0.022],[0.372,-0.082],[0.372,-0.155],[0.372,-0.155],[0.338,-0.176],[0.300,-0.182]
+        ], 80));
+      const gTrim   = up(ring(0.374, 0.0155, -0.030, 80, 16));
+      const gBadge  = up(ring(0.072, 0.0125,  0.112, 52, 12));
+      const gPad    = up(ring(0.268, 0.097, -0.246, 80, 26, 0.88));
+      const gBaffle = up(lathe([[0,-0.206],[0.16,-0.200],[0.265,-0.188],[0.300,-0.196]], 64));
+      const armX = RB * Math.cos(0.055 * Math.PI), armY = RB * Math.sin(0.055 * Math.PI);
+      const cupY = -0.30;
+      add(gBand, 'shell', [0,0,0]);
+      add(gBandPad, 'pad', [0,0,0]);
+      for (const side of [1, -1]) {
+        const rz = side > 0 ? -H : H;
+        add(gArm,    'arm',    [side * (armX - 0.015), armY - 0.20, 0]);
+        add(gCup,    'shell',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gTrim,   'metal',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gBadge,  'metal',  [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gPad,    'pad',    [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+        add(gBaffle, 'baffle', [side * (armX - 0.020), cupY, 0], [0,0,rz]);
+      }
+    }
+  },
+
+  bottle: {
+    label: 'Bottle', name: 'SERUM 30ML', codePrefix: 'SER1', basePrice: 28,
+    camera: { yaw: -0.45, pitch: 0.10, dist: 4.25, target: [0, 0.06, 0] },
+    aoX: 1.0, groundY: -0.902,   // narrow product: a round shadow, sitting on its base
+    groups: [
+      { key:'body', label:'Body colour', kind:'swatch', spec:'Body', items:[
+        { id:'FRW', name:'Frosted white', c:[0.760,0.755,0.735], price:0 },
+        { id:'AMB', name:'Amber',         c:[0.430,0.190,0.045], price:0 },
+        { id:'SGE', name:'Sage',          c:[0.255,0.330,0.235], price:0 },
+        { id:'OBS', name:'Obsidian',      c:[0.030,0.032,0.036], price:0 },
+        { id:'BLS', name:'Blush',         c:[0.640,0.420,0.395], price:0 },
+        { id:'COB', name:'Cobalt',        c:[0.045,0.110,0.320], price:0 }]},
+      { key:'finish', label:'Finish', kind:'seg', spec:'Finish', items:[
+        { id:'FR', name:'Frosted',  r:0.86, m:0.00, price:0 },
+        { id:'ST', name:'Satin',    r:0.42, m:0.00, price:2 },
+        { id:'GL', name:'Gloss',    r:0.08, m:0.00, price:4 },
+        { id:'MT', name:'Metallic', r:0.24, m:0.90, price:8 }]},
+      { key:'cap', label:'Cap', kind:'swatch', spec:'Cap', items:[
+        { id:'GLD', name:'Brushed gold', c:[0.845,0.655,0.330], r:0.26, m:1.0, price:6 },
+        { id:'BLK', name:'Matte black',  c:[0.030,0.032,0.036], r:0.62, m:0.0, price:0 },
+        { id:'WAL', name:'Walnut',       c:[0.155,0.080,0.042], r:0.58, m:0.0, price:5 },
+        { id:'SLV', name:'Silver',       c:[0.560,0.570,0.585], r:0.22, m:1.0, price:3 }]},
+      { key:'label', label:'Label', kind:'seg', spec:'Label', items:[
+        { id:'IVO', name:'Ivory',     c:[0.820,0.805,0.760], r:0.74, m:0.0, price:0, on:true },
+        { id:'BLK', name:'Black',     c:[0.022,0.024,0.028], r:0.70, m:0.0, price:0, on:true },
+        { id:'FOI', name:'Gold foil', c:[0.845,0.655,0.330], r:0.18, m:1.0, price:3, on:true },
+        { id:'NON', name:'None',      c:[0,0,0], r:1, m:0, price:-2, on:false }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'body':   return { c: o.body.c, m: o.finish.m, r: o.finish.r };
+        case 'cap':    return { c: o.cap.c,  m: o.cap.m,    r: o.cap.r };
+        case 'collar': return { c: o.cap.c,  m: 1.0,        r: Math.max(o.cap.r - 0.10, 0.10) };
+        default:       return { c: o.label.c, m: o.label.m, r: o.label.r };
+      }
+    },
+    hidden(key, o) { return key === 'label' && !o.label.on; },
+    build(up, add) {
+      const gBody = up(lathe([
+        [0,-0.90],[0.30,-0.90],[0.345,-0.888],[0.360,-0.862],[0.362,-0.80],
+        [0.362,0.06],[0.358,0.20],[0.330,0.33],[0.268,0.43],[0.190,0.49],
+        [0.148,0.515],[0.146,0.84],[0.146,0.84],[0.120,0.845]
+      ], 96));
+      // A thin band standing just proud of the body — a printed label, not a decal,
+      // because a decal would need a texture and this file ships none.
+      const gLabel = up(lathe([[0.362,-0.345],[0.381,-0.320],[0.381,0.230],[0.362,0.255]], 96));
+      const gCap = up(lathe([
+        [0,1.132],[0.085,1.130],[0.140,1.118],[0.170,1.092],[0.178,1.045],
+        [0.180,0.98],[0.180,0.63],[0.180,0.63],[0.164,0.615],[0.150,0.612]
+      ], 80));
+      const gCollar = up(ring(0.1815, 0.0115, 0.672, 80, 14));
+      add(gBody,   'body',   [0,0,0]);
+      add(gLabel,  'label',  [0,0,0]);
+      add(gCap,    'cap',    [0,0,0]);
+      add(gCollar, 'collar', [0,0,0]);
+    }
+  }
+,
+
+  lamp: {
+    label: 'Lamp', name: 'ARC TABLE LAMP', codePrefix: 'ARC1', basePrice: 119,
+    camera: { yaw: -0.52, pitch: 0.14, dist: 4.05, target: [0, 0.06, 0] },
+    aoX: 0.85, groundY: -0.86,
+    groups: [
+      { key:'shade', label:'Shade', kind:'swatch', spec:'Shade', items:[
+        { id:'LIN', name:'Linen',      c:[0.700,0.665,0.590], r:0.92, m:0.0, price:0  },
+        { id:'CHR', name:'Charcoal',   c:[0.048,0.050,0.056], r:0.88, m:0.0, price:0  },
+        { id:'OLV', name:'Olive',      c:[0.180,0.205,0.110], r:0.90, m:0.0, price:8  },
+        { id:'RST', name:'Rust',       c:[0.400,0.145,0.075], r:0.90, m:0.0, price:8  },
+        { id:'BRS', name:'Spun brass', c:[0.780,0.590,0.270], r:0.28, m:1.0, price:34 },
+        { id:'OPL', name:'Opal glass', c:[0.860,0.870,0.880], r:0.16, m:0.0, price:28 }]},
+      { key:'stem', label:'Stem', kind:'swatch', spec:'Stem', items:[
+        { id:'BRS', name:'Brushed brass', c:[0.780,0.590,0.270], r:0.30, m:1.0, price:0  },
+        { id:'BLK', name:'Matte black',   c:[0.030,0.032,0.038], r:0.62, m:0.0, price:0  },
+        { id:'CHR', name:'Chrome',        c:[0.560,0.570,0.585], r:0.09, m:1.0, price:12 },
+        { id:'WAL', name:'Walnut',        c:[0.155,0.080,0.042], r:0.56, m:0.0, price:22 }]},
+      { key:'base', label:'Base', kind:'seg', spec:'Base', items:[
+        { id:'DSC', name:'Disc',    price:0,  wide:false },
+        { id:'DOM', name:'Dome',    price:14, wide:false },
+        { id:'PLT', name:'Platter', price:9,  wide:true  }]},
+      { key:'switch', label:'Cord switch', kind:'seg', spec:'Switch', items:[
+        { id:'INL', name:'Inline', price:0, on:true  },
+        { id:'NON', name:'None',   price:-6, on:false }]}
+    ],
+    material(key, o) {
+      switch (key) {
+        case 'shade':  return { c: o.shade.c, m: o.shade.m, r: o.shade.r };
+        // The inside of the shade is what a lit lamp shows most of, so it gets
+        // a bright neutral regardless of the outside colour.
+        case 'lining': return { c: [0.880,0.855,0.790], m: 0.0, r: 0.88 };
+        case 'switch': return { c: [0.040,0.042,0.048], m: 0.0, r: 0.70 };
+        // baseDisc / baseDome / basePlatter / rim / stem all fall through to the stem finish.
+        default:       return { c: o.stem.c, m: o.stem.m, r: o.stem.r };
+      }
+    },
+    hidden(key, o) {
+      if (key === 'switch') return !o.switch.on;
+      if (key === 'baseDisc')    return o.base.id !== 'DSC';
+      if (key === 'baseDome')    return o.base.id !== 'DOM';
+      if (key === 'basePlatter') return o.base.id !== 'PLT';
+      return false;
+    },
+    build(up, add) {
+      // Shade: a truncated cone, built as two lathes so the inside can carry
+      // its own material. The inner one is wound to face inward via a
+      // reversed profile, since the renderer culls back faces.
+      // lathe() derives outward normals from the profile's direction of travel,
+      // so a profile has to run bottom-to-top. Written top-down, the shade's
+      // normals pointed inward and it rendered unlit.
+      const shadeOut = [[0.565,-0.315],[0.560,-0.300],[0.305,0.325],[0.300,0.340]];
+      const shadeIn  = [[0.292,0.336],[0.296,0.322],[0.552,-0.298],[0.556,-0.312]];
+      const gShade  = up(lathe(shadeOut, 88));
+      const gLining = up(lathe(shadeIn, 88));
+      const gRim    = up(ring(0.562, 0.010, -0.307, 88, 12));
+      const gStem   = up(lathe([[0.055,-0.755],[0.055,-0.740],[0.032,-0.700],[0.032,0.340],[0.030,0.355],[0,0.360]], 44));
+      const gDisc    = up(lathe([[0,-0.855],[0.30,-0.855],[0.325,-0.845],[0.330,-0.815],[0.310,-0.790],[0.055,-0.780]], 72));
+      const gDome    = up(lathe([[0,-0.855],[0.26,-0.855],[0.295,-0.840],[0.300,-0.780],[0.250,-0.680],[0.150,-0.620],[0.055,-0.600]], 72));
+      const gPlatter = up(lathe([[0,-0.858],[0.42,-0.858],[0.445,-0.850],[0.448,-0.832],[0.430,-0.818],[0.055,-0.812]], 80));
+      const gSwitch  = up(lathe([[0,-0.545],[0.026,-0.542],[0.030,-0.530],[0.030,-0.470],[0.028,-0.458],[0,-0.455]], 28));
+      add(gShade,   'shade',  [0,0,0]);
+      add(gLining,  'lining', [0,0,0]);
+      add(gRim,     'stem',   [0,0,0]);
+      add(gStem,    'stem',   [0,0,0]);
+      add(gDisc,    'baseDisc',    [0,0,0]);
+      add(gDome,    'baseDome',    [0,0,0]);
+      add(gPlatter, 'basePlatter', [0,0,0]);
+      add(gSwitch,  'switch', [0.052,0,0]);
+    }
+  },
+
+  table: {
+    label: 'Side table', name: 'FORM 62', codePrefix: 'FRM1', basePrice: 185,
+    camera: { yaw: -0.55, pitch: 0.20, dist: 4.30, target: [0, -0.04, 0] },
+    aoX: 1.0, groundY: -0.864,
+    groups: [
+      { key:'top', label:'Table top', kind:'swatch', spec:'Top', items:[
+        { id:'OAK', name:'White oak', c:[0.470,0.330,0.170], r:0.70, m:0.0, price:0  },
+        { id:'WAL', name:'Walnut',    c:[0.155,0.080,0.042], r:0.62, m:0.0, price:35 },
+        { id:'MAR', name:'Carrara',   c:[0.790,0.790,0.775], r:0.22, m:0.0, price:90 },
+        { id:'CHR', name:'Charcoal',  c:[0.040,0.042,0.048], r:0.66, m:0.0, price:12 },
+        { id:'SGE', name:'Sage',      c:[0.255,0.330,0.235], r:0.68, m:0.0, price:12 },
+        { id:'BRS', name:'Brass',     c:[0.780,0.590,0.270], r:0.26, m:1.0, price:120 }]},
+      { key:'finish', label:'Top finish', kind:'seg', spec:'Finish', items:[
+        { id:'MT', name:'Matte',  dr: 0.10, price:0  },
+        { id:'OL', name:'Oiled',  dr:-0.06, price:14 },
+        { id:'LQ', name:'Lacquer',dr:-0.42, price:26 }]},
+      { key:'legs', label:'Legs', kind:'swatch', spec:'Legs', items:[
+        { id:'BLK', name:'Black steel', c:[0.028,0.030,0.034], r:0.58, m:0.0, price:0  },
+        { id:'BRS', name:'Brass',       c:[0.780,0.590,0.270], r:0.30, m:1.0, price:48 },
+        { id:'CHR', name:'Chrome',      c:[0.560,0.570,0.585], r:0.10, m:1.0, price:36 },
+        { id:'OAK', name:'White oak',   c:[0.470,0.330,0.170], r:0.70, m:0.0, price:20 }]},
+      { key:'ring', label:'Stretcher', kind:'seg', spec:'Stretcher', items:[
+        { id:'RNG', name:'Ring', price:24, on:true  },
+        { id:'NON', name:'None', price:0,  on:false }]}
+    ],
+    material(key, o) {
+      if (key === 'top') {
+        // Finish shifts the top's roughness rather than replacing it, so a
+        // lacquered oak still reads as oak and not as plastic.
+        return { c: o.top.c, m: o.top.m, r: Math.min(Math.max(o.top.r + o.finish.dr, 0.05), 1.0) };
+      }
+      return { c: o.legs.c, m: o.legs.m, r: o.legs.r };
+    },
+    hidden(key, o) { return key === 'ring' && !o.ring.on; },
+    build(up, add) {
+      // Profiles run bottom-to-top: centre of the underside, out along it, up
+      // the rim, then back in across the face.
+      const gTop = up(lathe([
+        [0,0.440],[0.560,0.440],[0.600,0.446],[0.618,0.458],
+        [0.620,0.474],[0.616,0.490],[0.598,0.500],[0,0.500]
+      ], 96));
+      const gLeg  = up(box(0.052, 1.330, 0.052));
+      const gRing = up(ring(0.455, 0.0165, -0.470, 72, 14));
+      const tilt = -0.107;   // ~6 degrees: top of each leg leans in, foot splays out
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * TAU;
+        add(gLeg, 'leg', [0.492 * Math.sin(a), -0.205, 0.492 * Math.cos(a)], [tilt, a, 0]);
+      }
+      add(gTop,  'top',  [0,0,0]);
+      add(gRing, 'ring', [0,0,0]);
+    }
+  }
+};
+
+const ENVS = [
+  // A metal's only colour is what it reflects. A tight lobe gives it one white
+  // streak and nothing else, which is why gold was rendering as grey. Real
+  // studios light product with a broad warm softbox the whole surface can
+  // reflect, plus a tight source for the sparkle — so model it that way.
+  { id:'studio', name:'Studio', sky:[0.055,0.064,0.084], gnd:[0.012,0.013,0.017], L:[
+      { d:[-0.45, 0.70, 0.55], c:[2.20,1.92,1.46], s:4   },   // warm softbox
+      { d:[-0.40, 0.78, 0.50], c:[5.40,5.10,4.60], s:150 },   // specular hit
+      { d:[ 0.85, 0.22, 0.35], c:[0.42,0.56,0.82], s:5   }] },// cool fill
+  { id:'sunset', name:'Sunset', sky:[0.090,0.058,0.056], gnd:[0.030,0.016,0.015], L:[
+      { d:[-0.62, 0.26, 0.52], c:[2.60,1.16,0.44], s:3   },
+      { d:[-0.58, 0.32, 0.48], c:[6.20,3.00,1.10], s:130 },
+      { d:[ 0.68, 0.46,-0.38], c:[0.60,0.30,0.86], s:6   }] },
+  { id:'showroom', name:'Showroom', sky:[0.56,0.59,0.65], gnd:[0.110,0.118,0.138], L:[
+      { d:[ 0.00, 1.00, 0.18], c:[2.10,2.10,2.12], s:28 },
+      { d:[-0.70, 0.52, 0.48], c:[1.35,1.40,1.48], s:44 },
+      { d:[ 0.72, 0.40,-0.50], c:[0.95,1.00,1.12], s:34 }] },
+  { id:'neon', name:'Neon', sky:[0.055,0.075,0.125], gnd:[0.018,0.020,0.030], L:[
+      { d:[-0.50, 0.42, 0.72], c:[0.35,2.55,3.00], s:68 },
+      { d:[ 0.82, 0.18,-0.42], c:[2.20,2.95,0.85], s:52 },
+      { d:[ 0.00, 0.92,-0.38], c:[0.80,0.50,1.80], s:28 }] }
+];
+const BG = [0.004, 0.006, 0.011];
+
+const cfg = { product: CONFIG.defaultProduct || 'headphones', env: 0, sel: {} };
+for (const [id, p] of Object.entries(PRODUCTS)) {
+  cfg.sel[id] = Object.fromEntries(p.groups.map(g => [g.key, 0]));
+}
+// Resolve the current product's selections to the actual option objects.
+const chosen = () => Object.fromEntries(PRODUCTS[cfg.product].groups
+  .map(g => [g.key, g.items[cfg.sel[cfg.product][g.key]]]));
+// JS twin of the ACES curve in the fragment shader — used for the clear colour
+// so the background and the ground plane's far fade resolve to the same pixel.
+const acesJS = x => Math.min(Math.max((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0), 1);
+const linToHex = c => '#' + c.map(v => Math.round(Math.pow(Math.min(Math.max(v,0),1), 1/2.2) * 255).toString(16).padStart(2,'0')).join('');
+
+/* ---------- renderer ------------------------------------------------ */
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl2', { antialias:true, alpha:false, preserveDrawingBuffer:true, powerPreference:'high-performance' });
+
+if (!gl) {
+  document.getElementById('loading').classList.add('gone');
+  document.getElementById('fallback').style.display = 'block';
+} else {
+  start();
+}
+
+function compile(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+function upload(g) {
+  const vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  const pb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferData(gl.ARRAY_BUFFER, g.pos, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+  const nb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, nb); gl.bufferData(gl.ARRAY_BUFFER, g.nor, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
+  const ib = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, g.idx, gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+  return { vao, count: g.idx.length };
+}
+
+function start() {
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+  gl.bindAttribLocation(prog, 0, 'aPos');
+  gl.bindAttribLocation(prog, 1, 'aNor');
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  const U = n => gl.getUniformLocation(prog, n);
+  const u = { M:U('uM'), V:U('uV'), P:U('uP'), N:U('uN'), cam:U('uCam'), albedo:U('uAlbedo'),
+              metal:U('uMetal'), rough:U('uRough'), ground:U('uIsGround'), aoX:U('uAoX'),
+              sky:U('uSky'), gnd:U('uGnd'), bg:U('uBg'),
+              ldir:U('uLdir'), lcol:U('uLcol'), lsharp:U('uLsharp') };
+
+  /* ---- build every product once; switching between them is then free ---- */
+  const built = {};
+  for (const [id, prod] of Object.entries(PRODUCTS)) {
+    const parts = [];
+    prod.build(upload, (geo, mat, t, rot, sc) =>
+      parts.push({ geo, mat, m: M4.compose(t, rot || [0,0,0], sc || [1,1,1]) }));
+    built[id] = parts;
+  }
+  const gGround = upload(plane(26));
+  const ground = {};
+  for (const [id, prod] of Object.entries(PRODUCTS)) {
+    ground[id] = { geo: gGround, mat: 'ground',
+                   m: M4.compose([0, prod.groundY === undefined ? -0.98 : prod.groundY, 0], [0,0,0], [1,1,1]) };
+  }
+
+  /* ---- camera + input ---- */
+  const cam = Object.assign({}, PRODUCTS[cfg.product].camera);
+  function loadCamera(id) { Object.assign(cam, PRODUCTS[id].camera); vYaw = 0; }
+  let spinning = CONFIG.autoSpin !== false, dragging = false, lastX = 0, lastY = 0, vYaw = 0;
+
+  canvas.addEventListener('pointerdown', e => {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    cam.yaw += dx * 0.0062;
+    cam.pitch = Math.max(-0.75, Math.min(1.15, cam.pitch + dy * 0.0055));
+    vYaw = dx * 0.0062;
+    setSpin(false);
+  });
+  const stop = e => { dragging = false; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
+  canvas.addEventListener('pointerup', stop);
+  canvas.addEventListener('pointercancel', stop);
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    cam.dist = Math.max(1.9, Math.min(6.5, cam.dist * (1 + Math.sign(e.deltaY) * 0.09)));
+  }, { passive: false });
+
+  const spinEl = document.getElementById('spin');
+  function setSpin(on) {
+    spinning = on;
+    spinEl.querySelector('b').textContent = on ? 'ON' : 'OFF';
+    spinEl.classList.toggle('on', on);
+    spinEl.classList.toggle('off', !on);
+  }
+  spinEl.addEventListener('click', () => setSpin(!spinning));
+
+  /* ---- resize ---- */
+  let W = 0, H2 = 0;
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
+    const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+    if (w === W && h === H2) return;
+    W = canvas.width = w; H2 = canvas.height = h;
+    gl.viewport(0, 0, W, H2);
+  }
+  window.addEventListener('resize', resize);
+
+  /* ---- draw loop ---- */
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+  // Must match the shader's output transform exactly, or the ground plane's
+  // far edge shows as a hard seam where it fades to uBg. See acesJS below.
+  const clear = BG.map(v => Math.pow(acesJS(v), 1 / 2.2));
+  gl.clearColor(clear[0], clear[1], clear[2], 1);
+
+  let frames = 0, fpsT = performance.now();
+  const fpsEl = document.getElementById('fps');
+
+  function frame(now) {
+    resize();
+    if (spinning) cam.yaw += 0.0034;
+    else if (!dragging && Math.abs(vYaw) > 1e-5) { cam.yaw += vYaw; vYaw *= 0.92; }
+
+    const aspect = W / H2;
+    // The product is ~2.8 units wide but only ~1.5 tall, so a portrait canvas
+    // has to back off or the earcups sit outside the frustum.
+    const fit = aspect < 1.25 ? Math.min(1.25 / aspect, 1.75) : 1;
+    const dist = cam.dist * fit;
+    const cp = Math.cos(cam.pitch);
+    const eye = [
+      cam.target[0] + Math.sin(cam.yaw) * cp * dist,
+      cam.target[1] + Math.sin(cam.pitch) * dist,
+      cam.target[2] + Math.cos(cam.yaw) * cp * dist
+    ];
+    const view = M4.lookAt(eye, cam.target, [0, 1, 0]);
+    const proj = M4.perspective(0.72, aspect, 0.1, 100);
+
+    const env = ENVS[cfg.env];
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.uniformMatrix4fv(u.V, false, view);
+    gl.uniformMatrix4fv(u.P, false, proj);
+    gl.uniform3fv(u.cam, eye);
+    gl.uniform3fv(u.sky, env.sky);
+    gl.uniform3fv(u.gnd, env.gnd);
+    gl.uniform3fv(u.bg, BG);
+    gl.uniform3fv(u.ldir, new Float32Array(env.L.flatMap(l => V3.norm(l.d))));
+    gl.uniform3fv(u.lcol, new Float32Array(env.L.flatMap(l => l.c)));
+    gl.uniform1fv(u.lsharp, new Float32Array(env.L.map(l => l.s)));
+
+    const prod = PRODUCTS[cfg.product];
+    const opts = chosen();
+    gl.uniform1f(u.aoX, prod.aoX === undefined ? 1.0 : prod.aoX);
+    for (const p of built[cfg.product].concat(ground[cfg.product])) {
+      if (p.mat !== 'ground' && prod.hidden && prod.hidden(p.mat, opts)) continue;
+      const mt = p.mat === 'ground' ? { c: [0.030,0.034,0.042], m: 0, r: 0.58 }
+                                    : prod.material(p.mat, opts);
+      gl.uniformMatrix4fv(u.M, false, p.m);
+      gl.uniformMatrix3fv(u.N, false, M4.normalMat(p.m));
+      gl.uniform3fv(u.albedo, mt.c);
+      gl.uniform1f(u.metal, mt.m);
+      gl.uniform1f(u.rough, mt.r);
+      gl.uniform1f(u.ground, p.mat === 'ground' ? 1 : 0);
+      gl.bindVertexArray(p.geo.vao);
+      gl.drawElements(gl.TRIANGLES, p.geo.count, gl.UNSIGNED_SHORT, 0);
+    }
+
+    frames++;
+    if (now - fpsT > 700) {
+      fpsEl.textContent = Math.round(frames * 1000 / (now - fpsT)) + ' fps';
+      frames = 0; fpsT = now;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---- UI, generated from whichever product is selected ---- */
+  const $ = id => document.getElementById(id);
+
+  function control(group) {
+    const wrap = document.createElement('div');
+    wrap.className = 'group';
+    const sel = cfg.sel[cfg.product];
+    const head = document.createElement('div');
+    head.className = 'glabel';
+    head.innerHTML = '<span></span><b></b>';
+    head.querySelector('span').textContent = group.label;
+    const value = head.querySelector('b');
+    const host = document.createElement('div');
+    host.className = group.kind === 'swatch' ? 'swatches' : 'seg';
+
+    group.items.forEach((item, i) => {
+      const btn = document.createElement('button');
+      if (group.kind === 'swatch') {
+        btn.className = 'sw';
+        btn.style.background = linToHex(item.c);
+        btn.title = item.name;
+        btn.setAttribute('aria-label', item.name);
+      } else {
+        btn.textContent = item.name;
+      }
+      btn.setAttribute('aria-pressed', String(sel[group.key] === i));
+      btn.addEventListener('click', () => {
+        sel[group.key] = i;
+        [...host.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
+        value.textContent = item.name;
+        sync();
+        track('option_changed', { product: cfg.product, option: group.key, value: item.id });
+      });
+      host.appendChild(btn);
+    });
+    value.textContent = group.items[sel[group.key]].name;
+    wrap.append(head, host);
+    return wrap;
+  }
+
+  function buildGroups() {
+    const host = $('groups');
+    host.innerHTML = '';
+    PRODUCTS[cfg.product].groups.forEach(g => host.appendChild(control(g)));
+
+    // Lighting is a property of the scene, not of the product, so it is
+    // rendered last and kept when you switch products.
+    const wrap = document.createElement('div');
+    wrap.className = 'group';
+    wrap.innerHTML = '<div class="glabel"><span>Lighting</span><b></b></div><div class="seg"></div>';
+    const value = wrap.querySelector('b'), seg = wrap.querySelector('.seg');
+    ENVS.forEach((e, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = e.name;
+      btn.setAttribute('aria-pressed', String(cfg.env === i));
+      btn.addEventListener('click', () => {
+        cfg.env = i;
+        [...seg.children].forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
+        value.textContent = e.name;
+        writeHash();
+      });
+      seg.appendChild(btn);
+    });
+    value.textContent = ENVS[cfg.env].name;
+    host.appendChild(wrap);
+  }
+
+  function readHash() {
+    // "#FRM1-MAR-LQ-BRS-RNG:studio" — the build code, plus the lighting preset.
+    // Anything unrecognised is ignored wholesale rather than applied in part:
+    // a half-restored configuration is worse than the default one.
+    const raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+    if (!raw) return false;
+    const [code, envId] = raw.split(':');
+    const parts = (code || '').split('-');
+    const entry = Object.entries(PRODUCTS).find(([, p]) => p.codePrefix === parts[0]);
+    if (!entry) return false;
+    const [id, prod] = entry;
+    if (parts.length !== prod.groups.length + 1) return false;
+    const picks = prod.groups.map((g, i) => g.items.findIndex(it => it.id === parts[i + 1]));
+    if (picks.some(i => i < 0)) return false;
+    cfg.product = id;
+    prod.groups.forEach((g, i) => { cfg.sel[id][g.key] = picks[i]; });
+    const env = ENVS.findIndex(e => e.id === envId);
+    if (env >= 0) cfg.env = env;
+    return true;
+  }
+
+  function writeHash() {
+    const hash = '#' + $('sCode').textContent + ':' + ENVS[cfg.env].id;
+    if (location.hash !== hash) history.replaceState(null, '', hash);
+  }
+
+  function sync() {
+    const prod = PRODUCTS[cfg.product], opts = chosen();
+    const rows = prod.groups.filter(g => g.spec)
+      .map(g => '<div class="row"><span>' + g.spec + '</span><b>' + opts[g.key].name + '</b></div>');
+    $('specRows').innerHTML = rows.join('');
+    $('sModel').textContent = prod.name;
+    const total = prod.groups.reduce((n, g) => n + (opts[g.key].price || 0), prod.basePrice);
+    $('sPrice').textContent = CONFIG.currency + total;
+    $('sCode').textContent = [prod.codePrefix].concat(prod.groups.map(g => opts[g.key].id)).join('-');
+    writeHash();
+    publish(prod, opts, total);
+  }
+
+  // Embedded in a store page? Hand the configuration to the parent so it can
+  // be added to a cart. Only fires when actually framed.
+  function publish(prod, opts, total) {
+    if (window.parent === window) return;
+    try {
+      window.parent.postMessage({
+        type:    'configurator',
+        product:  cfg.product,
+        model:    prod.name,
+        code:     $('sCode').textContent,
+        price:    total,
+        currency: CONFIG.currency,
+        url:      location.href,
+        options:  prod.groups.map(g => ({
+          key: g.key, label: g.label, id: opts[g.key].id, name: opts[g.key].name
+        }))
+      }, CONFIG.postMessageTarget || '*');
+    } catch (_) { /* a framing page that rejects the message is not our problem */ }
+  }
+
+  function productTabs() {
+    const host = $('product');
+    host.innerHTML = '';
+    Object.entries(PRODUCTS).forEach(([id, prod]) => {
+      const btn = document.createElement('button');
+      btn.textContent = prod.label;
+      btn.setAttribute('aria-pressed', String(cfg.product === id));
+      btn.addEventListener('click', () => {
+        if (cfg.product === id) return;
+        cfg.product = id;
+        [...host.children].forEach(el =>
+          el.setAttribute('aria-pressed', String(el.textContent === prod.label)));
+        loadCamera(id);
+        buildGroups();
+        sync();
+        track('product_changed', { product: id });
+      });
+      host.appendChild(btn);
+    });
+    // One product needs no switcher.
+    if (Object.keys(PRODUCTS).length < 2) host.style.display = 'none';
+  }
+
+  // Copy and branding come from CONFIG so the markup stays untouched.
+  document.title = CONFIG.brand + " \u2014 " + CONFIG.heading;
+  $('eyebrow').textContent = CONFIG.eyebrow;
+  document.querySelector('.brand i').textContent = CONFIG.brandMark;
+  document.querySelector('.brand span').textContent = CONFIG.brand;
+  const back = document.querySelector('.back');
+  if (CONFIG.backLink) { back.textContent = CONFIG.backLink.text; back.href = CONFIG.backLink.href; }
+  else back.style.display = 'none';
+  document.querySelector('#panel h1').textContent = CONFIG.heading;
+  document.querySelector('.sub').textContent = CONFIG.intro;
+  $('ctaHead').textContent = CONFIG.cta.heading;
+  $('ctaBody').textContent = CONFIG.cta.body;
+  $('ctaBtn').textContent  = CONFIG.cta.button.text;
+  $('ctaBtn').href         = CONFIG.cta.button.href;
+  $('note').textContent    = CONFIG.note;
+  setSpin(spinning);
+
+  if (readHash()) loadCamera(cfg.product);
+  // The call to action is the only event that matters commercially.
+  $('ctaBtn').addEventListener('click', () =>
+    track('cta_clicked', { product: cfg.product, code: $('sCode').textContent }));
+
+  productTabs();
+  buildGroups();
+  sync();
+
+  // Someone else's link should restore their exact configuration.
+  window.addEventListener('hashchange', () => {
+    if (!readHash()) return;
+    loadCamera(cfg.product);
+    productTabs();
+    buildGroups();
+    sync();
+  });
+
+  $('share').addEventListener('click', async e => {
+    const btn = e.currentTarget, was = btn.textContent;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(location.href);
+      ok = true;
+    } catch (_) {
+      // Clipboard access needs a secure context and can be blocked outright,
+      // so fall back to selecting the URL rather than failing silently.
+      const f = document.createElement('input');
+      f.value = location.href;
+      document.body.appendChild(f);
+      f.select();
+      try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+      f.remove();
+    }
+    track('link_copied', { code: $('sCode').textContent, copied: ok });
+    btn.textContent = ok ? 'Link copied' : location.href;
+    setTimeout(() => { btn.textContent = was; }, ok ? 1600 : 4000);
+  });
+
+  $('shot').addEventListener('click', () => {
+    const a = document.createElement('a');
+    track('view_downloaded', { code: $('sCode').textContent });
+    a.download = $('sCode').textContent + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+
+  resize();
+  requestAnimationFrame(frame);
+  setTimeout(() => document.getElementById('loading').classList.add('gone'), 120);
+}
+</script>
+</body>
+</html>
