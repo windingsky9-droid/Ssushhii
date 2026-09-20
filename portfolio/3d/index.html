@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sushir 3D Studio">
 <meta property="og:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta property="og:description" content="A real-time WebGL product configurator. Three products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta property="og:description" content="A real-time WebGL product configurator. Four products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
 <meta property="og:url" content="https://sushir-saxon.upfling.site/3d/index.html">
 <meta property="og:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <meta property="og:image:width" content="1200">
@@ -15,7 +15,7 @@
 <meta property="og:image:alt" content="A pair of headphones rendered in real time beside the words Configure it live, in the browser.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Configure it live, in the browser — Sushir 3D Studio">
-<meta name="twitter:description" content="A real-time WebGL product configurator. Three products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
+<meta name="twitter:description" content="A real-time WebGL product configurator. Four products, four lighting presets, every surface re-shaded instantly on your own GPU. No plugin, no download, no framework.">
 <meta name="twitter:image" content="https://sushir-saxon.upfling.site/3d/og-card.png">
 <link rel="canonical" href="https://sushir-saxon.upfling.site/3d/index.html">
 <!-- Link-preview tags. Uncomment and set YOUR absolute URLs before going live:
@@ -181,7 +181,7 @@ const CONFIG = {
 
   eyebrow:     "Live demo \u00b7 runs on your GPU",
   heading:     "Product configurator",
-  intro:       "Three completely different products, one renderer, one file. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded.",
+  intro:       "Four completely different products, one renderer, one file. Every surface is shaded in real time on your GPU \u2014 no video, no pre-rendered turntable, nothing downloaded.",
 
   defaultProduct: "headphones",   // must be a key of PRODUCTS below
   currency:    "$",
@@ -192,7 +192,7 @@ const CONFIG = {
     button:  { text: "Get a quote", href: "mailto:windingsky9@gmail.com?subject=3D%20product%20configurator%20%E2%80%94%20quote&body=Product%3A%0AWhat%20should%20be%20configurable%3A%0AAssets%20I%20have%20(CAD%2Fphotos%2Fsketches)%3A%0ATimeline%3A" }
   },
 
-  note:        "ORBIT ONE, SERUM 30ML and ARC TABLE LAMP are sample products built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All three are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone.",
+  note:        "The four products shown are samples built to demonstrate the renderer \u2014 none is for sale and the prices are illustrative. All four are drawn by the same hand-written WebGL2 renderer in a single HTML file: no three.js, no framework, nothing to download. That is why it starts in well under a second on a phone. Enquiries: windingsky9@gmail.com",
   autoSpin:    true
 };
 /* ============ END OF EDITABLE BLOCK ================================ */
@@ -307,7 +307,12 @@ function lathe(profile, segments, opts) {
   }
   for (let s = 0; s < segments; s++) for (let i = 0; i < n - 1; i++) {
     const a = s * n + i, b = a + n;
-    idx.push(a, b, a + 1, a + 1, b, b + 1);
+    // Wound so the face normal agrees with the shading normal: for a profile
+    // running bottom-to-top, cross((a+1)-a, b-a) points outward. The reverse
+    // order leaves every lathed surface front-facing on its INSIDE, which
+    // backface culling then removes — a flat cap vanishes outright, and a
+    // closed shape merely looks subtly wrong.
+    idx.push(a, a + 1, b, a + 1, b + 1, b);
   }
   return { pos: new Float32Array(pos), nor: new Float32Array(nor), idx: new Uint16Array(idx) };
 }
@@ -661,6 +666,59 @@ const PRODUCTS = {
       add(gDome,    'baseDome',    [0,0,0]);
       add(gPlatter, 'basePlatter', [0,0,0]);
       add(gSwitch,  'switch', [0.052,0,0]);
+    }
+  },
+
+  table: {
+    label: 'Side table', name: 'FORM 62', codePrefix: 'FRM1', basePrice: 185,
+    camera: { yaw: -0.55, pitch: 0.20, dist: 4.30, target: [0, -0.04, 0] },
+    aoX: 1.0, groundY: -0.864,
+    groups: [
+      { key:'top', label:'Table top', kind:'swatch', spec:'Top', items:[
+        { id:'OAK', name:'White oak', c:[0.470,0.330,0.170], r:0.70, m:0.0, price:0  },
+        { id:'WAL', name:'Walnut',    c:[0.155,0.080,0.042], r:0.62, m:0.0, price:35 },
+        { id:'MAR', name:'Carrara',   c:[0.790,0.790,0.775], r:0.22, m:0.0, price:90 },
+        { id:'CHR', name:'Charcoal',  c:[0.040,0.042,0.048], r:0.66, m:0.0, price:12 },
+        { id:'SGE', name:'Sage',      c:[0.255,0.330,0.235], r:0.68, m:0.0, price:12 },
+        { id:'BRS', name:'Brass',     c:[0.780,0.590,0.270], r:0.26, m:1.0, price:120 }]},
+      { key:'finish', label:'Top finish', kind:'seg', spec:'Finish', items:[
+        { id:'MT', name:'Matte',  dr: 0.10, price:0  },
+        { id:'OL', name:'Oiled',  dr:-0.06, price:14 },
+        { id:'LQ', name:'Lacquer',dr:-0.42, price:26 }]},
+      { key:'legs', label:'Legs', kind:'swatch', spec:'Legs', items:[
+        { id:'BLK', name:'Black steel', c:[0.028,0.030,0.034], r:0.58, m:0.0, price:0  },
+        { id:'BRS', name:'Brass',       c:[0.780,0.590,0.270], r:0.30, m:1.0, price:48 },
+        { id:'CHR', name:'Chrome',      c:[0.560,0.570,0.585], r:0.10, m:1.0, price:36 },
+        { id:'OAK', name:'White oak',   c:[0.470,0.330,0.170], r:0.70, m:0.0, price:20 }]},
+      { key:'ring', label:'Stretcher', kind:'seg', spec:'Stretcher', items:[
+        { id:'RNG', name:'Ring', price:24, on:true  },
+        { id:'NON', name:'None', price:0,  on:false }]}
+    ],
+    material(key, o) {
+      if (key === 'top') {
+        // Finish shifts the top's roughness rather than replacing it, so a
+        // lacquered oak still reads as oak and not as plastic.
+        return { c: o.top.c, m: o.top.m, r: Math.min(Math.max(o.top.r + o.finish.dr, 0.05), 1.0) };
+      }
+      return { c: o.legs.c, m: o.legs.m, r: o.legs.r };
+    },
+    hidden(key, o) { return key === 'ring' && !o.ring.on; },
+    build(up, add) {
+      // Profiles run bottom-to-top: centre of the underside, out along it, up
+      // the rim, then back in across the face.
+      const gTop = up(lathe([
+        [0,0.440],[0.560,0.440],[0.600,0.446],[0.618,0.458],
+        [0.620,0.474],[0.616,0.490],[0.598,0.500],[0,0.500]
+      ], 96));
+      const gLeg  = up(box(0.052, 1.330, 0.052));
+      const gRing = up(ring(0.455, 0.0165, -0.470, 72, 14));
+      const tilt = -0.107;   // ~6 degrees: top of each leg leans in, foot splays out
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * TAU;
+        add(gLeg, 'leg', [0.492 * Math.sin(a), -0.205, 0.492 * Math.cos(a)], [tilt, a, 0]);
+      }
+      add(gTop,  'top',  [0,0,0]);
+      add(gRing, 'ring', [0,0,0]);
     }
   }
 };
