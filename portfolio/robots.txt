@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sushir-saxon.upfling.site/sitemap.xml
+# Plain-text sitemap: one URL per line. The host rejects .xml uploads, and
+# sitemaps.org accepts this format, so it is a real sitemap rather than a
+# workaround.
+Sitemap: https://sushir-saxon.upfling.site/sitemap.txt
