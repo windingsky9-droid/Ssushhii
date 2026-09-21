@@ -50,3 +50,30 @@ That writes `probe.png`, one hero per product side by side.
 The shot list is built from the renderer's own `PRODUCTS` registry, so a fifth
 product appears in the output with no change here. Lighting presets come from
 `ENVS` the same way. Only `ANGLES` and `FRAME` live in this script.
+
+## build_gallery.py
+
+Writes `portfolio/renders/index.html` — the public gallery — from the pack's
+own `manifest.csv` and `gallery.json`.
+
+```sh
+python build_gallery.py <pack-assets-dir> <manifest-sample.csv> [out.html]
+python build_gallery.py ../../products/3d-render-pack \
+       ../../portfolio/renders/sample/manifest-sample.csv \
+       ../../portfolio/renders/index.html
+```
+
+The pack directory supplies `gallery.json` (the cards) and `manifest.csv` (the
+full grid). Without an output path it writes `index.html` beside them.
+
+Every number and name on that page is read off those manifests: the render
+count, the product and colourway counts, the lighting and angle counts, the
+lighting preset names, the invented model names, and the size of the free
+sample. Nothing is a literal, because the page shipped reading "384 renders,
+4 products" after a fifth product had already been added and the manifest said
+480. Adding a product to the renderer and re-running this is the whole update.
+
+It refuses to build rather than print a number it cannot justify: the card
+count must match the manifest's configuration count, the manifest must be a
+complete product x lighting x angle grid, and an unrecognised product or
+lighting preset is an error naming what to add.
