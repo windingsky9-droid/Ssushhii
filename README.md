@@ -77,3 +77,33 @@ Keep `FACTORWEAVE_API_KEY`, `STRIPE_PRO_URL`, and `STRIPE_CREATOR_URL` in the ho
 The privacy-safe Sushir 3D Studio showcase is included under [`portfolio/`](portfolio/). Open `portfolio/index.html` locally or serve the folder from any static host. It includes a cinematic still, a synthetic public observatory demo, service positioning, and buyer-facing contact links. Private/name-specific source files are intentionally not included.
 
 **Live:** <https://sushir-saxon.upfling.site>
+
+| | |
+|---|---|
+| Real-time 3D configurator, five products | <https://sushir-saxon.upfling.site/3d/index.html> |
+| The same configurator writing into a shop cart | <https://sushir-saxon.upfling.site/3d/store/index.html> |
+| Studio render gallery, thirty configurations | <https://sushir-saxon.upfling.site/renders/> |
+
+## Products for sale
+
+Two finished digital products live under [`products/`](products/). Both are
+built from the same hand-written WebGL2 renderer — no three.js, no framework,
+no model files — and each carries a `LISTING.md` with the copy, price and
+upload steps already written.
+
+| Product | Price | What it is |
+|---|---|---|
+| [`3d-configurator-template/`](products/3d-configurator-template/) | $49 | The configurator as a licensable single-file template. Five products, four lighting presets, shareable build URLs, and a working cart integration. 59 KB, zero dependencies. |
+| [`3d-render-pack/`](products/3d-render-pack/) | $29 | 480 royalty-free studio product renders at 2000 × 2000 — five products × six colourways × four lighting setups × four camera angles. 357 MB. |
+
+The render pack's files are **not** committed; they are outputs.
+[`tools/render-farm/`](tools/render-farm/) regenerates the whole set in about
+sixteen minutes, at any resolution, and picks up new products automatically.
+
+### Neither is listed yet
+
+Both are finished. Neither has earned anything, because selling needs a
+storefront with a payout account in the seller's own name — and that is the
+one step no tooling here can do on someone's behalf. The steps are in
+[`products/3d-configurator-template/LISTING.md`](products/3d-configurator-template/LISTING.md);
+account setup is described once there and applies to both.
