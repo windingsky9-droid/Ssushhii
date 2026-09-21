@@ -5,7 +5,7 @@ colour, finish, hardware and cushion and the product re-renders immediately —
 not a video, not a pre-rendered turntable, not a sprite sheet.
 
 **Five complete products, and a cart integration that works. One file.
-59 KB. Zero dependencies.**
+61 KB. Zero dependencies.**
 
 Headphones, a cosmetic bottle, a table lamp, a three-legged side table and a
 bookshelf speaker, switchable from a tab, all drawn by one renderer — because

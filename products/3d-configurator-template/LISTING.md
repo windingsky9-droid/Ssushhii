@@ -51,7 +51,7 @@ Do not discount it below $29. Below that, buyers assume it is a toy.
 ## Summary (the one-line field under the title)
 
 ```
-A browser-native 3D product configurator in a single 59 KB HTML file. Five demo products, a working cart integration, no three.js, no build step.
+A browser-native 3D product configurator in a single 61 KB HTML file. Five demo products, a working cart integration, no three.js, no build step.
 ```
 
 ---
@@ -62,7 +62,7 @@ A browser-native 3D product configurator in a single 59 KB HTML file. Five demo 
 Not a video. Not a pre-rendered turntable. Not a sprite sheet.**
 
 This is a real-time 3D product configurator that runs entirely in the
-browser, in **one HTML file, 59 KB, with zero dependencies.**
+browser, in **one HTML file, 61 KB, with zero dependencies.**
 
 No three.js. No framework. No CDN request. No `.glb`, `.gltf`, `.obj` or
 texture files to download — the geometry is generated in code when the page
@@ -94,7 +94,7 @@ land in a cart end to end.
 
 **What's included**
 
-- `index.html` — the entire configurator, 59 KB, commented throughout
+- `index.html` — the entire configurator, 61 KB, commented throughout
 - `examples/store-demo/` — a working store page that receives the cart event
 - `examples/embed-iframe.html` — the minimal embed
 - `examples/shopify-liquid.txt` — a Shopify section drop-in
@@ -171,7 +171,7 @@ zip out of git — rebuild it rather than committing it.
 Post the live demo, not the product page, and let the demo sell it:
 
 - **r/webdev** and **r/ecommerce** — lead with "I built a 3D configurator in
-  one 59 KB file with no dependencies, here's the demo", link the live page,
+  one 61 KB file with no dependencies, here's the demo", link the live page,
   put the Gumroad link in a comment. Leading with the paid link gets removed.
 - **Hacker News (Show HN)** — same framing. The zero-dependency angle is the
   story.

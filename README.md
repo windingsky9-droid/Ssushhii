@@ -93,7 +93,7 @@ upload steps already written.
 
 | Product | Price | What it is |
 |---|---|---|
-| [`3d-configurator-template/`](products/3d-configurator-template/) | $49 | The configurator as a licensable single-file template. Five products, four lighting presets, shareable build URLs, and a working cart integration. 59 KB, zero dependencies. |
+| [`3d-configurator-template/`](products/3d-configurator-template/) | $49 | The configurator as a licensable single-file template. Five products, four lighting presets, shareable build URLs, and a working cart integration. 61 KB, zero dependencies. |
 | [`3d-render-pack/`](products/3d-render-pack/) | $29 | 480 royalty-free studio product renders at 2000 × 2000 — five products × six colourways × four lighting setups × four camera angles. 357 MB. |
 
 The render pack's files are **not** committed; they are outputs.
