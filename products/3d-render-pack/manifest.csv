@@ -287,6 +287,102 @@ lamp_ARC1-RST-BRS-PLT-INL_sunset_front.png,lamp,ARC TABLE LAMP,Rust,ARC1-RST-BRS
 lamp_ARC1-RST-BRS-PLT-INL_sunset_hero.png,lamp,ARC TABLE LAMP,Rust,ARC1-RST-BRS-PLT-INL,sunset,hero
 lamp_ARC1-RST-BRS-PLT-INL_sunset_high.png,lamp,ARC TABLE LAMP,Rust,ARC1-RST-BRS-PLT-INL,sunset,high
 lamp_ARC1-RST-BRS-PLT-INL_sunset_profile.png,lamp,ARC TABLE LAMP,Rust,ARC1-RST-BRS-PLT-INL,sunset,profile
+speaker_MON5-ASH-MT-BLK-ON_neon_front.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,neon,front
+speaker_MON5-ASH-MT-BLK-ON_neon_hero.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,neon,hero
+speaker_MON5-ASH-MT-BLK-ON_neon_high.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,neon,high
+speaker_MON5-ASH-MT-BLK-ON_neon_profile.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,neon,profile
+speaker_MON5-ASH-MT-BLK-ON_showroom_front.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,showroom,front
+speaker_MON5-ASH-MT-BLK-ON_showroom_hero.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,showroom,hero
+speaker_MON5-ASH-MT-BLK-ON_showroom_high.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,showroom,high
+speaker_MON5-ASH-MT-BLK-ON_showroom_profile.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,showroom,profile
+speaker_MON5-ASH-MT-BLK-ON_studio_front.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,studio,front
+speaker_MON5-ASH-MT-BLK-ON_studio_hero.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,studio,hero
+speaker_MON5-ASH-MT-BLK-ON_studio_high.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,studio,high
+speaker_MON5-ASH-MT-BLK-ON_studio_profile.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,studio,profile
+speaker_MON5-ASH-MT-BLK-ON_sunset_front.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,sunset,front
+speaker_MON5-ASH-MT-BLK-ON_sunset_hero.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,sunset,hero
+speaker_MON5-ASH-MT-BLK-ON_sunset_high.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,sunset,high
+speaker_MON5-ASH-MT-BLK-ON_sunset_profile.png,speaker,MONITOR 5,Black ash,MON5-ASH-MT-BLK-ON,sunset,profile
+speaker_MON5-IVO-ST-SLV-OFF_neon_front.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,neon,front
+speaker_MON5-IVO-ST-SLV-OFF_neon_hero.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,neon,hero
+speaker_MON5-IVO-ST-SLV-OFF_neon_high.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,neon,high
+speaker_MON5-IVO-ST-SLV-OFF_neon_profile.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,neon,profile
+speaker_MON5-IVO-ST-SLV-OFF_showroom_front.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,showroom,front
+speaker_MON5-IVO-ST-SLV-OFF_showroom_hero.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,showroom,hero
+speaker_MON5-IVO-ST-SLV-OFF_showroom_high.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,showroom,high
+speaker_MON5-IVO-ST-SLV-OFF_showroom_profile.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,showroom,profile
+speaker_MON5-IVO-ST-SLV-OFF_studio_front.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,studio,front
+speaker_MON5-IVO-ST-SLV-OFF_studio_hero.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,studio,hero
+speaker_MON5-IVO-ST-SLV-OFF_studio_high.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,studio,high
+speaker_MON5-IVO-ST-SLV-OFF_studio_profile.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,studio,profile
+speaker_MON5-IVO-ST-SLV-OFF_sunset_front.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,sunset,front
+speaker_MON5-IVO-ST-SLV-OFF_sunset_hero.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,sunset,hero
+speaker_MON5-IVO-ST-SLV-OFF_sunset_high.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,sunset,high
+speaker_MON5-IVO-ST-SLV-OFF_sunset_profile.png,speaker,MONITOR 5,Bone white,MON5-IVO-ST-SLV-OFF,sunset,profile
+speaker_MON5-OAK-GL-CPR-OFF_neon_front.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,neon,front
+speaker_MON5-OAK-GL-CPR-OFF_neon_hero.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,neon,hero
+speaker_MON5-OAK-GL-CPR-OFF_neon_high.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,neon,high
+speaker_MON5-OAK-GL-CPR-OFF_neon_profile.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,neon,profile
+speaker_MON5-OAK-GL-CPR-OFF_showroom_front.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,showroom,front
+speaker_MON5-OAK-GL-CPR-OFF_showroom_hero.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,showroom,hero
+speaker_MON5-OAK-GL-CPR-OFF_showroom_high.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,showroom,high
+speaker_MON5-OAK-GL-CPR-OFF_showroom_profile.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,showroom,profile
+speaker_MON5-OAK-GL-CPR-OFF_studio_front.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,studio,front
+speaker_MON5-OAK-GL-CPR-OFF_studio_hero.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,studio,hero
+speaker_MON5-OAK-GL-CPR-OFF_studio_high.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,studio,high
+speaker_MON5-OAK-GL-CPR-OFF_studio_profile.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,studio,profile
+speaker_MON5-OAK-GL-CPR-OFF_sunset_front.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,sunset,front
+speaker_MON5-OAK-GL-CPR-OFF_sunset_hero.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,sunset,hero
+speaker_MON5-OAK-GL-CPR-OFF_sunset_high.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,sunset,high
+speaker_MON5-OAK-GL-CPR-OFF_sunset_profile.png,speaker,MONITOR 5,White oak,MON5-OAK-GL-CPR-OFF,sunset,profile
+speaker_MON5-OXB-MT-CPR-OFF_neon_front.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,neon,front
+speaker_MON5-OXB-MT-CPR-OFF_neon_hero.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,neon,hero
+speaker_MON5-OXB-MT-CPR-OFF_neon_high.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,neon,high
+speaker_MON5-OXB-MT-CPR-OFF_neon_profile.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,neon,profile
+speaker_MON5-OXB-MT-CPR-OFF_showroom_front.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,showroom,front
+speaker_MON5-OXB-MT-CPR-OFF_showroom_hero.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,showroom,hero
+speaker_MON5-OXB-MT-CPR-OFF_showroom_high.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,showroom,high
+speaker_MON5-OXB-MT-CPR-OFF_showroom_profile.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,showroom,profile
+speaker_MON5-OXB-MT-CPR-OFF_studio_front.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,studio,front
+speaker_MON5-OXB-MT-CPR-OFF_studio_hero.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,studio,hero
+speaker_MON5-OXB-MT-CPR-OFF_studio_high.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,studio,high
+speaker_MON5-OXB-MT-CPR-OFF_studio_profile.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,studio,profile
+speaker_MON5-OXB-MT-CPR-OFF_sunset_front.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,sunset,front
+speaker_MON5-OXB-MT-CPR-OFF_sunset_hero.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,sunset,hero
+speaker_MON5-OXB-MT-CPR-OFF_sunset_high.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,sunset,high
+speaker_MON5-OXB-MT-CPR-OFF_sunset_profile.png,speaker,MONITOR 5,Oxblood,MON5-OXB-MT-CPR-OFF,sunset,profile
+speaker_MON5-SGE-GL-BRS-ON_neon_front.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,neon,front
+speaker_MON5-SGE-GL-BRS-ON_neon_hero.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,neon,hero
+speaker_MON5-SGE-GL-BRS-ON_neon_high.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,neon,high
+speaker_MON5-SGE-GL-BRS-ON_neon_profile.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,neon,profile
+speaker_MON5-SGE-GL-BRS-ON_showroom_front.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,showroom,front
+speaker_MON5-SGE-GL-BRS-ON_showroom_hero.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,showroom,hero
+speaker_MON5-SGE-GL-BRS-ON_showroom_high.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,showroom,high
+speaker_MON5-SGE-GL-BRS-ON_showroom_profile.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,showroom,profile
+speaker_MON5-SGE-GL-BRS-ON_studio_front.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,studio,front
+speaker_MON5-SGE-GL-BRS-ON_studio_hero.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,studio,hero
+speaker_MON5-SGE-GL-BRS-ON_studio_high.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,studio,high
+speaker_MON5-SGE-GL-BRS-ON_studio_profile.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,studio,profile
+speaker_MON5-SGE-GL-BRS-ON_sunset_front.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,sunset,front
+speaker_MON5-SGE-GL-BRS-ON_sunset_hero.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,sunset,hero
+speaker_MON5-SGE-GL-BRS-ON_sunset_high.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,sunset,high
+speaker_MON5-SGE-GL-BRS-ON_sunset_profile.png,speaker,MONITOR 5,Sage,MON5-SGE-GL-BRS-ON,sunset,profile
+speaker_MON5-WAL-ST-BRS-ON_neon_front.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,neon,front
+speaker_MON5-WAL-ST-BRS-ON_neon_hero.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,neon,hero
+speaker_MON5-WAL-ST-BRS-ON_neon_high.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,neon,high
+speaker_MON5-WAL-ST-BRS-ON_neon_profile.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,neon,profile
+speaker_MON5-WAL-ST-BRS-ON_showroom_front.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,showroom,front
+speaker_MON5-WAL-ST-BRS-ON_showroom_hero.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,showroom,hero
+speaker_MON5-WAL-ST-BRS-ON_showroom_high.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,showroom,high
+speaker_MON5-WAL-ST-BRS-ON_showroom_profile.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,showroom,profile
+speaker_MON5-WAL-ST-BRS-ON_studio_front.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,studio,front
+speaker_MON5-WAL-ST-BRS-ON_studio_hero.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,studio,hero
+speaker_MON5-WAL-ST-BRS-ON_studio_high.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,studio,high
+speaker_MON5-WAL-ST-BRS-ON_studio_profile.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,studio,profile
+speaker_MON5-WAL-ST-BRS-ON_sunset_front.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,sunset,front
+speaker_MON5-WAL-ST-BRS-ON_sunset_hero.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,sunset,hero
+speaker_MON5-WAL-ST-BRS-ON_sunset_high.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,sunset,high
+speaker_MON5-WAL-ST-BRS-ON_sunset_profile.png,speaker,MONITOR 5,Walnut,MON5-WAL-ST-BRS-ON,sunset,profile
 table_FRM1-BRS-MT-OAK-RNG_neon_front.png,table,FORM 62,Brass,FRM1-BRS-MT-OAK-RNG,neon,front
 table_FRM1-BRS-MT-OAK-RNG_neon_hero.png,table,FORM 62,Brass,FRM1-BRS-MT-OAK-RNG,neon,hero
 table_FRM1-BRS-MT-OAK-RNG_neon_high.png,table,FORM 62,Brass,FRM1-BRS-MT-OAK-RNG,neon,high

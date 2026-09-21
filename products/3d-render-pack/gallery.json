@@ -3,240 +3,300 @@
   "file": "bottle_SER1-AMB-GL-SLV-IVO_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Amber",
   "code": "SER1-AMB-GL-SLV-IVO",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-AMB-GL-SLV-IVO_studio_hero.jpg",
-  "colour": "Amber"
+  "jpg": "bottle_SER1-AMB-GL-SLV-IVO_studio_hero.jpg"
  },
  {
   "file": "bottle_SER1-BLS-ST-WAL-NON_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Blush",
   "code": "SER1-BLS-ST-WAL-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-BLS-ST-WAL-NON_studio_hero.jpg",
-  "colour": "Blush"
+  "jpg": "bottle_SER1-BLS-ST-WAL-NON_studio_hero.jpg"
  },
  {
   "file": "bottle_SER1-COB-GL-SLV-IVO_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Cobalt",
   "code": "SER1-COB-GL-SLV-IVO",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-COB-GL-SLV-IVO_studio_hero.jpg",
-  "colour": "Cobalt"
+  "jpg": "bottle_SER1-COB-GL-SLV-IVO_studio_hero.jpg"
  },
  {
   "file": "bottle_SER1-FRW-ST-WAL-NON_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Frosted white",
   "code": "SER1-FRW-ST-WAL-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-FRW-ST-WAL-NON_studio_hero.jpg",
-  "colour": "Frosted white"
+  "jpg": "bottle_SER1-FRW-ST-WAL-NON_studio_hero.jpg"
  },
  {
   "file": "bottle_SER1-OBS-FR-BLK-FOI_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Obsidian",
   "code": "SER1-OBS-FR-BLK-FOI",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-OBS-FR-BLK-FOI_studio_hero.jpg",
-  "colour": "Obsidian"
+  "jpg": "bottle_SER1-OBS-FR-BLK-FOI_studio_hero.jpg"
  },
  {
   "file": "bottle_SER1-SGE-MT-GLD-BLK_studio_hero.png",
   "product": "bottle",
   "model": "SERUM 30ML",
+  "colour": "Sage",
   "code": "SER1-SGE-MT-GLD-BLK",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "bottle_SER1-SGE-MT-GLD-BLK_studio_hero.jpg",
-  "colour": "Sage"
+  "jpg": "bottle_SER1-SGE-MT-GLD-BLK_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-ACD-GL-BLK-MSH_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Acid",
   "code": "ORB1-ACD-GL-BLK-MSH",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-ACD-GL-BLK-MSH_studio_hero.jpg",
-  "colour": "Acid"
+  "jpg": "headphones_ORB1-ACD-GL-BLK-MSH_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-CLY-MT-GLD-NAP_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Terracotta",
   "code": "ORB1-CLY-MT-GLD-NAP",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-CLY-MT-GLD-NAP_studio_hero.jpg",
-  "colour": "Terracotta"
+  "jpg": "headphones_ORB1-CLY-MT-GLD-NAP_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-GRA-ST-GUN-NAP_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Graphite",
   "code": "ORB1-GRA-ST-GUN-NAP",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-GRA-ST-GUN-NAP_studio_hero.jpg",
-  "colour": "Graphite"
+  "jpg": "headphones_ORB1-GRA-ST-GUN-NAP_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-IVO-GL-BLK-SUE_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Ivory",
   "code": "ORB1-IVO-GL-BLK-SUE",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-IVO-GL-BLK-SUE_studio_hero.jpg",
-  "colour": "Ivory"
+  "jpg": "headphones_ORB1-IVO-GL-BLK-SUE_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-MID-AN-STL-MSH_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Midnight blue",
   "code": "ORB1-MID-AN-STL-MSH",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-MID-AN-STL-MSH_studio_hero.jpg",
-  "colour": "Midnight blue"
+  "jpg": "headphones_ORB1-MID-AN-STL-MSH_studio_hero.jpg"
  },
  {
   "file": "headphones_ORB1-SGE-ST-GUN-SUE_studio_hero.png",
   "product": "headphones",
   "model": "ORBIT ONE",
+  "colour": "Sage",
   "code": "ORB1-SGE-ST-GUN-SUE",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "headphones_ORB1-SGE-ST-GUN-SUE_studio_hero.jpg",
-  "colour": "Sage"
+  "jpg": "headphones_ORB1-SGE-ST-GUN-SUE_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-BRS-BLK-DSC-NON_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Spun brass",
   "code": "ARC1-BRS-BLK-DSC-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-BRS-BLK-DSC-NON_studio_hero.jpg",
-  "colour": "Brass"
+  "jpg": "lamp_ARC1-BRS-BLK-DSC-NON_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-CHR-CHR-DSC-INL_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Charcoal",
   "code": "ARC1-CHR-CHR-DSC-INL",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-CHR-CHR-DSC-INL_studio_hero.jpg",
-  "colour": "Chrome"
+  "jpg": "lamp_ARC1-CHR-CHR-DSC-INL_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-LIN-BLK-PLT-NON_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Linen",
   "code": "ARC1-LIN-BLK-PLT-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-LIN-BLK-PLT-NON_studio_hero.jpg",
-  "colour": "Linen"
+  "jpg": "lamp_ARC1-LIN-BLK-PLT-NON_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-OLV-WAL-DOM-NON_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Olive",
   "code": "ARC1-OLV-WAL-DOM-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-OLV-WAL-DOM-NON_studio_hero.jpg",
-  "colour": "Olive"
+  "jpg": "lamp_ARC1-OLV-WAL-DOM-NON_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-OPL-CHR-DOM-INL_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Opal glass",
   "code": "ARC1-OPL-CHR-DOM-INL",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-OPL-CHR-DOM-INL_studio_hero.jpg",
-  "colour": "Opal glass"
+  "jpg": "lamp_ARC1-OPL-CHR-DOM-INL_studio_hero.jpg"
  },
  {
   "file": "lamp_ARC1-RST-BRS-PLT-INL_studio_hero.png",
   "product": "lamp",
   "model": "ARC TABLE LAMP",
+  "colour": "Rust",
   "code": "ARC1-RST-BRS-PLT-INL",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "lamp_ARC1-RST-BRS-PLT-INL_studio_hero.jpg",
-  "colour": "Rust"
+  "jpg": "lamp_ARC1-RST-BRS-PLT-INL_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-ASH-MT-BLK-ON_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "Black ash",
+  "code": "MON5-ASH-MT-BLK-ON",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-ASH-MT-BLK-ON_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-IVO-ST-SLV-OFF_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "Bone white",
+  "code": "MON5-IVO-ST-SLV-OFF",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-IVO-ST-SLV-OFF_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-OAK-GL-CPR-OFF_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "White oak",
+  "code": "MON5-OAK-GL-CPR-OFF",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-OAK-GL-CPR-OFF_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-OXB-MT-CPR-OFF_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "Oxblood",
+  "code": "MON5-OXB-MT-CPR-OFF",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-OXB-MT-CPR-OFF_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-SGE-GL-BRS-ON_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "Sage",
+  "code": "MON5-SGE-GL-BRS-ON",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-SGE-GL-BRS-ON_studio_hero.jpg"
+ },
+ {
+  "file": "speaker_MON5-WAL-ST-BRS-ON_studio_hero.png",
+  "product": "speaker",
+  "model": "MONITOR 5",
+  "colour": "Walnut",
+  "code": "MON5-WAL-ST-BRS-ON",
+  "lighting": "studio",
+  "angle": "hero",
+  "jpg": "speaker_MON5-WAL-ST-BRS-ON_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-BRS-MT-OAK-RNG_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "Brass",
   "code": "FRM1-BRS-MT-OAK-RNG",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-BRS-MT-OAK-RNG_studio_hero.jpg",
-  "colour": "Brass"
+  "jpg": "table_FRM1-BRS-MT-OAK-RNG_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-CHR-OL-BRS-RNG_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "Charcoal",
   "code": "FRM1-CHR-OL-BRS-RNG",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-CHR-OL-BRS-RNG_studio_hero.jpg",
-  "colour": "Chrome"
+  "jpg": "table_FRM1-CHR-OL-BRS-RNG_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-MAR-MT-BLK-NON_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "Carrara",
   "code": "FRM1-MAR-MT-BLK-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-MAR-MT-BLK-NON_studio_hero.jpg",
-  "colour": "Carrara"
+  "jpg": "table_FRM1-MAR-MT-BLK-NON_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-OAK-OL-CHR-NON_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "White oak",
   "code": "FRM1-OAK-OL-CHR-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-OAK-OL-CHR-NON_studio_hero.jpg",
-  "colour": "White oak"
+  "jpg": "table_FRM1-OAK-OL-CHR-NON_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-SGE-LQ-CHR-NON_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "Sage",
   "code": "FRM1-SGE-LQ-CHR-NON",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-SGE-LQ-CHR-NON_studio_hero.jpg",
-  "colour": "Sage"
+  "jpg": "table_FRM1-SGE-LQ-CHR-NON_studio_hero.jpg"
  },
  {
   "file": "table_FRM1-WAL-LQ-OAK-RNG_studio_hero.png",
   "product": "table",
   "model": "FORM 62",
+  "colour": "Walnut",
   "code": "FRM1-WAL-LQ-OAK-RNG",
   "lighting": "studio",
   "angle": "hero",
-  "jpg": "table_FRM1-WAL-LQ-OAK-RNG_studio_hero.jpg",
-  "colour": "Walnut"
+  "jpg": "table_FRM1-WAL-LQ-OAK-RNG_studio_hero.jpg"
  }
 ]
