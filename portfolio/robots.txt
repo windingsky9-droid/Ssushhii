@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sushir-saxon.upfling.site/sitemap.xml

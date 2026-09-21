@@ -783,7 +783,10 @@ const PRODUCTS = {
       const gCab   = up(box(0.64, 1.06, 0.50));
       const gPlin  = up(box(0.58, 0.05, 0.44));
       const gBaf   = up(box(0.60, 1.00, 0.024));
-      const gGril  = up(box(0.585, 0.985, 0.010));
+      // Deep enough to swallow the drivers whole: it spans the baffle face
+      // (0.274) to 0.326, and the deepest thing behind it is the woofer's
+      // flange at 0.319.
+      const gGril  = up(box(0.585, 0.985, 0.052));
       // Drivers are surfaces of revolution about +Y, so each is turned a
       // quarter turn about X to face the listener. The profile runs from the
       // dust cap outward and forward to the surround, so the cone dishes in.
@@ -794,19 +797,25 @@ const PRODUCTS = {
       // removes the whole cone. A real cone is concave — you look at the
       // inside of the dish — so the profile runs from the surround inward and
       // back to the dust cap, and the surface faces front.
+      // Shallow on purpose. The first pass stood the drivers 0.096 proud of the
+      // baffle, which meant a fitted grille either sat behind them — drivers
+      // poking straight through the cloth — or had to float a fifth of the
+      // cabinet's depth off the front. Halving the dish lets the grille be a
+      // shallow box that CONTAINS the drivers, which is both what a real one
+      // looks like and why the interpenetration never shows.
       const gWoof  = up(lathe([
-        [0.228,0.080],[0.216,0.070],[0.204,0.061],[0.184,0.051],
-        [0.120,0.029],[0.052,0.013],[0.030,0.021],[0,0.026]
+        [0.228,0.036],[0.216,0.032],[0.204,0.028],[0.184,0.023],
+        [0.120,0.013],[0.052,0.006],[0.030,0.009],[0,0.012]
       ], 96));
       const gTweet = up(lathe([
-        [0.088,0.055],[0.082,0.046],[0.077,0.038],[0.063,0.028],
-        [0.043,0.019],[0.027,0.029],[0,0.034]
+        [0.088,0.025],[0.082,0.021],[0.077,0.017],[0.063,0.013],
+        [0.043,0.009],[0.027,0.013],[0,0.015]
       ], 64));
       // Flanges ride just outside each cone's rim, which is where the trim
       // finish belongs: a whole cone in brass reads as a solid disc, not a
       // driver.
-      const gWoofRim  = up(ring(0.236, 0.016, 0, 56, 12));
-      const gTweetRim = up(ring(0.096, 0.010, 0, 44, 10));
+      const gWoofRim  = up(ring(0.236, 0.009, 0, 56, 12));
+      const gTweetRim = up(ring(0.096, 0.006, 0, 44, 10));
       const gPort     = up(ring(0.056, 0.015, 0, 40, 12));
       const face   = [Math.PI / 2, 0, 0];
       // Mounted ON the baffle (front face z = 0.274), not recessed into it:
@@ -816,11 +825,11 @@ const PRODUCTS = {
       add(gPlin,     'plinth', [0, -0.555, 0]);
       add(gBaf,      'baffle', [0, 0, 0.262]);
       add(gWoof,     'cone',   [0, -0.205, 0.274], face);
-      add(gWoofRim,  'driver', [0, -0.205, 0.354], face);
+      add(gWoofRim,  'driver', [0, -0.205, 0.310], face);
       add(gTweet,    'driver', [0,  0.300, 0.274], face);
-      add(gTweetRim, 'driver', [0,  0.300, 0.329], face);
+      add(gTweetRim, 'driver', [0,  0.300, 0.299], face);
       add(gPort,     'baffle', [0,  0.105, 0.276], face);
-      add(gGril,     'grille', [0, 0, 0.285]);
+      add(gGril,     'grille', [0, 0, 0.300]);
     }
   }
 };
