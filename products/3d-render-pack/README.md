@@ -1,13 +1,13 @@
 # Studio Product Renders — Volume 1
 
-480 royalty-free 3D product renders. 2000 × 2000 PNG. Studio-lit, four camera
-angles, four lighting setups, thirty product configurations.
+600 royalty-free 3D product renders. 2000 × 2000 PNG. Studio-lit, four camera
+angles, five lighting setups, thirty product configurations.
 
 Nothing here was photographed, licensed or scraped. Every frame was generated
 by a hand-written WebGL2 renderer — the same one that powers the live
 configurator in this repository — which means the set is internally consistent
 in a way stock photography never is: identical lighting rig, identical camera
-geometry, identical tone mapping across all 480 files.
+geometry, identical tone mapping across all 600 files.
 
 ---
 
@@ -21,7 +21,7 @@ geometry, identical tone mapping across all 480 files.
 | Angles | 4 — hero three-quarter, front, high three-quarter, profile |
 | Resolution | 2000 × 2000 px |
 | Format | PNG, 8-bit RGB |
-| Total | 5 products × 6 colourways × 4 lighting × 4 angles = **480 files** |
+| Total | 5 products × 6 colourways × 5 lighting × 4 angles = **600 files** |
 
 Every filename carries its own configuration, so the set is searchable without
 opening anything:
@@ -87,6 +87,6 @@ an angle, and re-run:
 python render_farm.py 0 1400     # all configurations, 2800 x 2800
 ```
 
-That property matters more than the 480 files. A stock pack you cannot extend
+That property matters more than the 600 files. A stock pack you cannot extend
 is a dead end; this one regenerates to any size, and a sixth product is one
 object in the renderer's `PRODUCTS` registry.

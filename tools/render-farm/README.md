@@ -6,7 +6,7 @@ This is what produced `products/3d-render-pack/`.
 
 ```sh
 pip install playwright && playwright install chromium
-python render_farm.py 0 1000          # all 480 configurations at 2000 x 2000
+python render_farm.py 0 1000          # all 600 configurations at 2000 x 2000
 python render_farm.py 8 700           # eight-frame sample, fast
 python render_farm.py 0 1400 ../../portfolio/3d/index.html
 ```

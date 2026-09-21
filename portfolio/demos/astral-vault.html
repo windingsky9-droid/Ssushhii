@@ -341,10 +341,12 @@ const fmt = lon => `${String(Math.floor(degInSign(lon))).padStart(2,'0')}°` +
                    signOf(lon)[1];
 
 /* ---- render -------------------------------------------------------- */
-const cv = document.getElementById('sky'), ctx = cv.getContext('2d');
+const cv = document.getElementById('sky');
+let ctx = cv.getContext('2d');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let W = 1, H = 1, DPR = 1;
-const view = { turn: 0, drag: false, lastX: 0, lastY: 0, spin: !reduced, hot: -1, mode: '2d' };
+const view = { turn: 0, drag: false, lastX: 0, lastY: 0, spin: !reduced, hot: -1,
+               mode: '2d', vYaw: 0, vPitch: 0, particles: true, budget: 1 };
 let chart, place = { lat: 0, lon: 0 }, liveMode = true, shownDate = new Date();
 
 // Deterministic so the sky is the same every load. Points are distributed
@@ -592,7 +594,35 @@ const SURFACE = {
 };
 SURFACE.Jupiter.pal[5] = '#a8794f';
 
+// A planet's surface never changes, but drawing it meant rebuilding dozens of
+// radial gradients every frame - about 92 of them across the rocky bodies
+// alone. Each one is baked once into an offscreen canvas at fixed resolution
+// and then blitted, which is the difference between 20fps and a smooth one.
+const SURF_CACHE = new Map();
+const SURF_PX = 256;
+function surfaceTile(name, colour){
+  let tile = SURF_CACHE.get(name);
+  if (tile) return tile;
+  tile = document.createElement('canvas');
+  tile.width = tile.height = SURF_PX;
+  const c = tile.getContext('2d');
+  const prevCtx = ctx;
+  ctx = c;                                   // paint through the same helpers
+  ctx.save();
+  ctx.translate(SURF_PX / 2, SURF_PX / 2);
+  ctx.beginPath(); ctx.arc(0, 0, SURF_PX / 2, 0, 6.2832); ctx.clip();
+  paintSurface(name, SURF_PX / 2, colour);
+  ctx.restore();
+  ctx = prevCtx;
+  SURF_CACHE.set(name, tile);
+  return tile;
+}
 function drawSurface(name, rad, colour){
+  const tile = surfaceTile(name, colour);
+  ctx.drawImage(tile, -rad, -rad, rad * 2, rad * 2);
+}
+
+function paintSurface(name, rad, colour){
   const sp = SURFACE[name];
   if (!sp){ ctx.fillStyle = colour; ctx.fillRect(-rad,-rad,rad*2,rad*2); return; }
 
@@ -754,6 +784,90 @@ const galToEcl = g => [
   GAL.u[2]*g[0] + GAL.n[2]*g[1] + GAL.v[2]*g[2]
 ];
 
+// Nebulae sit at fixed directions on the sky at large radius, so they swing
+// with the camera instead of being a flat wash pinned to the canvas. That
+// parallax is most of what sells the depth.
+const NEBULAE = (() => {
+  let seed = 991;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const cols = [[90,150,230],[150,90,210],[60,180,190],[200,110,160],[70,110,220],[130,160,90]];
+  return Array.from({ length: 16 }, (_, i) => {
+    const u = rnd()*2-1, th = rnd()*Math.PI*2, r = Math.sqrt(1-u*u);
+    return { g: [r*Math.cos(th), u*0.55, r*Math.sin(th)],
+             c: cols[i % cols.length],
+             sz: 0.7 + rnd()*1.9,
+             a: 0.07 + rnd()*0.13 };
+  });
+})();
+
+/* ===================================================================
+   PARTICLE FIELD
+   Smooth gradients read as a backdrop; particles read as volume. The
+   clouds are clustered rather than uniform - a few dense cores with
+   falloff - because uniform noise looks like film grain, not gas.
+   Drawn additively and batched by colour, so the whole field costs a
+   handful of fills rather than one per particle.
+   =================================================================== */
+const PARTICLES = (() => {
+  let seed = 424242;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) * 0.5;
+  const TINTS = ['#61e8ff', '#a891ff', '#ff86c8', '#b8ff73', '#7aa8ff', '#ffc979'];
+  // Cores strung along a tilted band rather than scattered over a sphere:
+  // scattered clouds average out to an even haze, a band reads as structure.
+  const cores = Array.from({ length: 14 }, (_, i) => {
+    const along = (i / 13) * Math.PI * 2 + rnd() * 0.35;
+    const R = 1.45 + rnd() * 1.25;
+    return { c: [Math.cos(along) * R,
+                 (gauss() * 0.34) + Math.sin(along * 1.7) * 0.22,
+                 Math.sin(along) * R * 0.78],
+             spread: 0.26 + rnd() * 0.44,
+             tint: TINTS[Math.floor(rnd() * TINTS.length)] };
+  });
+  return Array.from({ length: 4200 }, () => {
+    const core = cores[Math.floor(rnd() * cores.length)];
+    return {
+      p: [core.c[0] + gauss()*core.spread,
+          core.c[1] + gauss()*core.spread*0.55,
+          core.c[2] + gauss()*core.spread],
+      c: core.tint,
+      sz: 0.5 + Math.pow(rnd(), 2.2) * 3.0,
+      a: 0.22 + Math.pow(rnd(), 1.5) * 0.9,
+      tw: rnd() * 6.28
+    };
+  });
+})();
+
+function drawParticles(cx, cy, S, t, budget){
+  const step = budget >= 1 ? 1 : Math.max(1, Math.round(1 / budget));
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const ABINS = 6;
+  const bins = new Map();
+  for (let i = 0; i < PARTICLES.length; i += step){
+    const pt = PARTICLES[i];
+    const q = proj(pt.p, cx, cy, S);
+    if (q.z > cam.dist - 0.25) continue;
+    const tw = 0.75 + 0.25 * Math.sin(t * 4 + pt.tw);
+    const a = pt.a * tw * Math.min(1.6, q.q);
+    const key = pt.c + '|' + Math.min(ABINS - 1, Math.floor(a * ABINS));
+    let arr = bins.get(key);
+    if (!arr){ arr = []; bins.set(key, arr); }
+    arr.push(q.x, q.y, pt.sz * Math.min(2.2, q.q));
+  }
+  bins.forEach((arr, key) => {
+    const [col, b] = key.split('|');
+    ctx.globalAlpha = Math.min(0.95, (Number(b) + 0.6) / ABINS);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    for (let i = 0; i < arr.length; i += 3){
+      ctx.moveTo(arr[i] + arr[i+2], arr[i+1]);
+      ctx.arc(arr[i], arr[i+1], arr[i+2], 0, 6.2832);
+    }
+    ctx.fill();
+  });
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
 let traces = null, tracesFor = null;
 function buildTraces(){
   // Three synodic periods per planet, so every trace carries exactly three
@@ -779,54 +893,130 @@ function buildTraces(){
   tracesFor = chart.jd;
 }
 
-// Segment by segment, so the far side of a ring genuinely dims. A uniform
-// stroke is what makes a projected circle read as a flat ellipse.
-function strokePath(pts, cx, cy, S, colour, width, alpha, radius){
-  let prev = null;
+// The far side of a ring has to dim or a projected circle reads as a flat
+// ellipse. Doing that per segment meant one stroke call per sample - about
+// 9,200 a frame across every trace, which cost two thirds of the frame rate.
+// Segments are binned into a few depth buckets instead and each bucket is
+// stroked once: same gradient, ~8 calls instead of 460.
+const DEPTH_BINS = 7;
+function strokePath(pts, cx, cy, S, colour, width, alpha, radius, flat){
+  const proj1 = p => proj([p[0]*radius, p[1]*radius, p[2]*radius], cx, cy, S);
   ctx.strokeStyle = colour; ctx.lineCap = 'round';
+
+  if (flat){                       // glow pass: no depth shading, one stroke
+    ctx.globalAlpha = alpha; ctx.lineWidth = width;
+    ctx.beginPath();
+    pts.forEach((p, i) => { const s = proj1(p); i ? ctx.lineTo(s.x, s.y) : ctx.moveTo(s.x, s.y); });
+    ctx.stroke(); ctx.globalAlpha = 1;
+    return;
+  }
+
+  const bins = Array.from({ length: DEPTH_BINS }, () => []);
+  let prev = null;
   for (const p of pts){
-    const s = proj([p[0]*radius, p[1]*radius, p[2]*radius], cx, cy, S);
+    const s = proj1(p);
     if (prev){
-      const depth = 0.18 + 0.82 * (0.5 + 0.5 * ((prev.z + s.z) / 2) / radius);
-      ctx.globalAlpha = alpha * depth;
-      ctx.lineWidth = width * (0.55 + 0.75 * depth);
-      ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(s.x, s.y); ctx.stroke();
+      const d = 0.5 + 0.5 * ((prev.z + s.z) / 2) / radius;
+      const b = Math.max(0, Math.min(DEPTH_BINS - 1, Math.floor(d * DEPTH_BINS)));
+      bins[b].push(prev, s);
     }
     prev = s;
   }
+  bins.forEach((seg, b) => {
+    if (!seg.length) return;
+    const depth = 0.18 + 0.82 * ((b + 0.5) / DEPTH_BINS);
+    ctx.globalAlpha = alpha * depth;
+    ctx.lineWidth = width * (0.55 + 0.75 * depth);
+    ctx.beginPath();
+    for (let i = 0; i < seg.length; i += 2){
+      ctx.moveTo(seg[i].x, seg[i].y); ctx.lineTo(seg[i+1].x, seg[i+1].y);
+    }
+    ctx.stroke();
+  });
   ctx.globalAlpha = 1;
 }
 
 function draw3d(t){
   const cx = W/2, cy = H/2, S = Math.min(W, H) * 0.40;
-  if (view.spin && !view.drag && !reduced) cam.yaw += 0.0016;
+  if (!view.drag){
+    if (Math.abs(view.vYaw) > 1e-5 || Math.abs(view.vPitch) > 1e-5){
+      cam.yaw += view.vYaw;
+      cam.pitch = Math.max(-1.5707, Math.min(1.5707, cam.pitch + view.vPitch));
+      view.vYaw *= 0.94; view.vPitch *= 0.94;      // glide, then settle
+    } else if (view.spin && !reduced){
+      cam.yaw += 0.0016;
+    }
+  }
   if (tracesFor !== chart.jd) buildTraces();
 
   const neb = ctx.createRadialGradient(cx, cy, 0, cx, cy, S*2.6);
-  neb.addColorStop(0, 'rgba(90,150,210,.10)');
-  neb.addColorStop(.3, 'rgba(120,90,190,.055)');
-  neb.addColorStop(.62, 'rgba(40,60,120,.03)');
+  neb.addColorStop(0, 'rgba(90,150,210,.09)');
+  neb.addColorStop(.3, 'rgba(120,90,190,.05)');
+  neb.addColorStop(.62, 'rgba(40,60,120,.028)');
   neb.addColorStop(1, 'transparent');
   ctx.fillStyle = neb; ctx.fillRect(0, 0, W, H);
 
-  stars.forEach(st => {
-    const q = proj(galToEcl(st.g).map(k => k * 9), cx, cy, S);
-    if (q.z > cam.dist - 0.2) return;
-    const tw = 0.82 + 0.18 * Math.sin(t * 6 + st.tw);
-    ctx.globalAlpha = st.br * tw * 0.9;
-    ctx.fillStyle = st.c;
-    ctx.beginPath(); ctx.arc(q.x, q.y, st.sz, 0, 6.2832); ctx.fill();
-    if (st.br > 0.72){            // only the bright few earn a diffraction cross
-      ctx.globalAlpha = st.br * tw * 0.30;
-      ctx.strokeStyle = st.c; ctx.lineWidth = 0.7;
-      const L = st.sz * 3.6;
-      ctx.beginPath();
-      ctx.moveTo(q.x - L, q.y); ctx.lineTo(q.x + L, q.y);
-      ctx.moveTo(q.x, q.y - L); ctx.lineTo(q.x, q.y + L);
-      ctx.stroke();
-    }
+  // deep field clouds, behind everything
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  NEBULAE.forEach(n => {
+    // Skybox placement, not perspective. Under perspective anything this far
+    // away projects to a small dot near the vanishing point - the opposite of
+    // a background. Direction decides where it sits; distance decides nothing.
+    const r = rot(galToEcl(n.g));
+    if (r[2] > 0.25) return;                    // behind the viewer
+    const spread = S * 1.75;
+    const qx = cx + r[0] * spread, qy = cy - r[1] * spread;
+    const fade = Math.min(1, (0.25 - r[2]) / 0.9);
+    const R2 = S * n.sz;
+    const g = ctx.createRadialGradient(qx, qy, 0, qx, qy, R2);
+    const [r0,g0,b0] = n.c, a = n.a * fade;
+    g.addColorStop(0,   `rgba(${r0},${g0},${b0},${a})`);
+    g.addColorStop(.38, `rgba(${r0},${g0},${b0},${a*0.45})`);
+    g.addColorStop(1,   'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(qx, qy, R2, 0, 6.2832); ctx.fill();
   });
+  ctx.restore();
+
+  // Binned by colour and brightness so the whole sky is a dozen fills rather
+  // than one per star. Twinkle still works: a star crosses bins as it varies.
+  const SBINS = 5, spread = S * 1.75;
+  const bins = new Map();
+  const bright = [];
+  stars.forEach(st => {
+    const rv = rot(galToEcl(st.g));
+    if (rv[2] > 0.25) return;
+    const x = cx + rv[0]*spread, y = cy - rv[1]*spread;
+    const tw = 0.82 + 0.18 * Math.sin(t * 6 + st.tw);
+    const a = st.br * tw * 0.9;
+    const key = st.c + '|' + Math.min(SBINS - 1, Math.floor(a * SBINS));
+    let arr = bins.get(key);
+    if (!arr){ arr = []; bins.set(key, arr); }
+    arr.push(x, y, st.sz);
+    if (st.br > 0.72) bright.push(x, y, st.sz, a);
+  });
+  bins.forEach((arr, key) => {
+    const [col, b] = key.split('|');
+    ctx.globalAlpha = (Number(b) + 0.5) / SBINS;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    for (let i = 0; i < arr.length; i += 3){
+      ctx.moveTo(arr[i] + arr[i+2], arr[i+1]);
+      ctx.arc(arr[i], arr[i+1], arr[i+2], 0, 6.2832);
+    }
+    ctx.fill();
+  });
+  ctx.globalAlpha = .28; ctx.strokeStyle = '#eef4fb'; ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  for (let i = 0; i < bright.length; i += 4){
+    const L = bright[i+2] * 3.6;
+    ctx.moveTo(bright[i] - L, bright[i+1]); ctx.lineTo(bright[i] + L, bright[i+1]);
+    ctx.moveTo(bright[i], bright[i+1] - L); ctx.lineTo(bright[i], bright[i+1] + L);
+  }
+  ctx.stroke();
   ctx.globalAlpha = 1;
+
+  if (view.particles) drawParticles(cx, cy, S, t, view.budget);
 
   const zen = eqToEcl(dir_eq(place.lat, gmst(chart.jd) + place.lon));
 
@@ -889,8 +1079,12 @@ function draw3d(t){
   // geocentric traces - the retrograde loops
   chart.pos.forEach((p, i) => {
     const live = view.hot < 0 || view.hot === i;
-    strokePath(traces[p.name], cx, cy, S, p.colour, live ? 1.5 : .9,
-               live ? .62 : .2, 1.0);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    strokePath(traces[p.name], cx, cy, S, p.colour, live ? 4.5 : 2.5,
+               live ? .14 : .05, 1.0, true);
+    ctx.restore();
+    strokePath(traces[p.name], cx, cy, S, p.colour, live ? 1.4 : .85,
+               live ? .66 : .22, 1.0);
   });
 
   // aspect chords, drawn through the sphere
@@ -900,9 +1094,15 @@ function draw3d(t){
     const A = chart.pos[asp.a], B = chart.pos[asp.b];
     const pa = proj(dir(A.lon,A.lat).map(c=>c*shellOf(A.name)), cx, cy, S),
           pb = proj(dir(B.lon,B.lat).map(c=>c*shellOf(B.name)), cx, cy, S);
+    const tight = 1 - asp.off / 9;
+    const base = live ? (view.hot < 0 ? .12 : .38) + .36*tight : .03;
     ctx.strokeStyle = asp.colour;
-    ctx.globalAlpha = live ? (view.hot < 0 ? .10 : .34) + .34*(1 - asp.off/9) : .03;
-    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 1.6 : 1.1);
+    // wide soft pass first, hairline on top - a cheap bloom
+    ctx.globalAlpha = base * .30;
+    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 5.5 : 4);
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+    ctx.globalAlpha = base;
+    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 1.5 : 1.0);
     ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
   });
   ctx.restore(); ctx.globalAlpha = 1;
@@ -948,12 +1148,29 @@ function draw3d(t){
     ctx.globalAlpha = live ? depth : depth * 0.25;
 
     if (p.name === 'Sun'){
-      const cor = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad*6);
-      cor.addColorStop(0,'rgba(255,240,200,.95)'); cor.addColorStop(.12,'rgba(255,206,120,.7)');
-      cor.addColorStop(.4,'rgba(255,150,60,.18)'); cor.addColorStop(1,'transparent');
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const cor = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad*7.5);
+      cor.addColorStop(0,'rgba(255,244,214,.95)'); cor.addColorStop(.10,'rgba(255,214,140,.62)');
+      cor.addColorStop(.30,'rgba(255,162,70,.20)'); cor.addColorStop(.62,'rgba(255,120,50,.07)');
+      cor.addColorStop(1,'transparent');
       ctx.fillStyle = cor;
-      ctx.beginPath(); ctx.arc(s.x, s.y, rad*6, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = '#fff6df';
+      ctx.beginPath(); ctx.arc(s.x, s.y, rad*7.5, 0, 6.2832); ctx.fill();
+      // corona spikes, breathing slightly
+      for (let a = 0; a < 16; a++){
+        const th = a * Math.PI / 8 + t * 0.25;
+        const len = rad * (3.4 + 1.7 * Math.sin(t * 5 + a * 1.7));
+        const gx = ctx.createLinearGradient(s.x, s.y,
+                     s.x + Math.cos(th)*len, s.y + Math.sin(th)*len);
+        gx.addColorStop(0, 'rgba(255,226,160,.5)'); gx.addColorStop(1, 'transparent');
+        ctx.strokeStyle = gx; ctx.lineWidth = a % 2 ? 1.1 : 2.2;
+        ctx.beginPath(); ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + Math.cos(th)*len, s.y + Math.sin(th)*len); ctx.stroke();
+      }
+      ctx.restore();
+      const disc = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad);
+      disc.addColorStop(0, '#fffdf4'); disc.addColorStop(.7, '#fff0cf');
+      disc.addColorStop(1, '#ffd79a');
+      ctx.fillStyle = disc;
       ctx.beginPath(); ctx.arc(s.x, s.y, rad*0.95, 0, 6.2832); ctx.fill();
     } else {
       // soft halo so a body still reads against the star field
@@ -1104,8 +1321,11 @@ cv.addEventListener('pointermove', e => {
   if (view.drag){
     const dx = e.clientX - view.lastX, dy = e.clientY - view.lastY;
     if (view.mode === '3d'){
+      // free orbit: the throw carries on after the pointer lifts, and pitch
+      // runs the full pole-to-pole range instead of stopping short of it
       cam.yaw += dx * 0.006;
-      cam.pitch = Math.max(-1.45, Math.min(1.45, cam.pitch + dy * 0.005));
+      cam.pitch = Math.max(-1.5707, Math.min(1.5707, cam.pitch + dy * 0.005));
+      view.vYaw = dx * 0.006; view.vPitch = dy * 0.005;
     } else {
       view.turn += dx * 0.22;
     }

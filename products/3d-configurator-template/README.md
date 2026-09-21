@@ -46,7 +46,7 @@ Everything lives in one file, in this order:
 | How an option maps to a surface | that product's `material()` |
 | **A product's actual shape** | that product's `build()` |
 | Which product loads first | `CONFIG.defaultProduct` |
-| The four lighting presets | the `ENVS` array (shared by all products) |
+| The five lighting presets | the `ENVS` array (shared by all products) |
 
 ### Adding a sixth product
 

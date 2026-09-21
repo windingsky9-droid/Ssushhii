@@ -146,7 +146,7 @@ Different product, different room. Lead with the free ten.
 **Title**
 
 ```
-480 studio product renders from a renderer I wrote myself — 10 of them free, full resolution
+600 studio product renders from a renderer I wrote myself — 10 of them free, full resolution
 ```
 
 **Body**
@@ -157,7 +157,7 @@ All thirty configurations: https://sushir-saxon.upfling.site/renders/index.html
 
 2000x2000 PNG, commercial use, no attribution, no email gate.
 
-Five products in six colourways each, under four lighting setups, from four
+Five products in six colourways each, under five lighting setups, from four
 camera angles. Every frame came out of the same hand-written WebGL2 renderer,
 so the whole set matches — same lighting rig, same camera geometry, same tone
 mapping. That is the part stock photography cannot do: twelve photos from
@@ -202,7 +202,7 @@ A 3D product configurator that runs in one 61 KB HTML file.
 No three.js. No framework. No model files — the geometry is written in code
 and the lighting is analytic, so there are no textures to download either.
 
-Five products, four lighting rigs, drag to orbit:
+Five products, five lighting rigs, drag to orbit:
 https://sushir-saxon.upfling.site/3d/index.html
 ```
 

@@ -11,9 +11,10 @@ Usage:  render_farm.py [limit] [css_side] [source.html]
 
 Needs Playwright with Chromium. Set CHROME to override the browser binary.
 """
-import asyncio, base64, json, pathlib, sys, tempfile, time
+import asyncio, base64, json, os, pathlib, sys, tempfile, time
 from playwright.async_api import async_playwright
 
+ONLY_ENVS = {e for e in os.environ.get("ONLY_ENVS", "").split(",") if e}
 SRC   = pathlib.Path(sys.argv[3]) if len(sys.argv) > 3 else (
     pathlib.Path(__file__).parents[2] / "products/3d-configurator-template/index.html")
 OUT   = pathlib.Path(__file__).parent / "renders"
@@ -112,6 +113,12 @@ async def main():
 
         combos = []
         for env_i, env in enumerate(await page.evaluate("__rig.ENVS.map(e => e.id)")):
+            # ONLY_ENVS lets a new lighting preset be rendered on its own and
+            # merged into an existing set, instead of re-rendering everything
+            # that has not changed. The manifest is rebuilt from the directory
+            # either way, so a partial run still produces a complete manifest.
+            if ONLY_ENVS and env not in ONLY_ENVS:
+                continue
             for s in shots:
                 for a in ANGLES:
                     combos.append((s, env_i, env, a))

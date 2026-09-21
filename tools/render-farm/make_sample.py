@@ -21,9 +21,12 @@ WANT = [("headphones", "studio",   "hero",    None),
         ("speaker",    "studio",   "hero",    "-OFF"),
         ("speaker",    "showroom", "front",   "-ON"),
         ("headphones", "neon",     "profile", None),
-        ("bottle",     "studio",   "high",    None),
+        # White is the preset a marketplace listing actually needs, so the free
+        # sample has to contain it - two frames, on the two products where a
+        # white sweep is least forgiving.
+        ("bottle",     "white",    "high",    None),
         ("lamp",       "sunset",   "front",   None),
-        ("table",      "showroom", "profile", None)]
+        ("table",      "white",    "profile", None)]
 
 LABEL = {"headphones": "Headphones", "bottle": "Cosmetic bottle",
          "lamp": "Table lamp", "table": "Side table", "speaker": "Bookshelf speaker"}
@@ -36,9 +39,17 @@ def main():
 
     picked = []
     for pid, light, angle, code_contains in WANT:
-        hit = next((r for r in man
-                    if r["product"] == pid and r["lighting"] == light and r["angle"] == angle
-                    and (code_contains is None or code_contains in r["code"])), None)
+        # Sorted by code, not "first in the manifest". Taking scan order meant
+        # that inserting a lighting preset reordered the manifest and silently
+        # changed all ten sample files - so every URL a buyer had already
+        # downloaded or linked went 404. The set has to be stable under any
+        # manifest change that does not remove the configuration it names.
+        cands = sorted((r for r in man
+                        if r["product"] == pid and r["lighting"] == light
+                        and r["angle"] == angle
+                        and (code_contains is None or code_contains in r["code"])),
+                       key=lambda r: r["code"])
+        hit = cands[0] if cands else None
         if hit is None:
             raise SystemExit(f"make_sample: no render matches {pid} {light} {angle} {code_contains}")
         shutil.copy2(REN / hit["file"], OUT / hit["file"])
@@ -73,7 +84,7 @@ TEMPLATE = '''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Free sample — Studio Product Renders</title>
-<meta name="description" content="Ten free full-resolution 2000x2000 product renders. All five products, all four lighting presets, four camera angles. Commercial use, no attribution.">
+<meta name="description" content="Ten free full-resolution 2000x2000 product renders. All five products, all five lighting presets, four camera angles. Commercial use, no attribution.">
 <link rel="canonical" href="https://sushir-saxon.upfling.site/renders/sample/index.html">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <style>
@@ -102,7 +113,7 @@ footer{padding:34px 0 66px;color:var(--dim);font-size:14px;border-top:1px solid 
 <header>
   <h1>Ten renders, free</h1>
   <p>Full resolution, 2000&thinsp;×&thinsp;2000 PNG. Chosen to describe the set
-  rather than flatter it: all five products, all four lighting presets, four
+  rather than flatter it: all five products, all five lighting presets, four
   different camera angles. Click any image to download it.</p>
   <p>Commercial use, unlimited projects, no attribution. Don&rsquo;t resell them
   as a stock pack.</p>
@@ -127,7 +138,7 @@ footer{padding:34px 0 66px;color:var(--dim);font-size:14px;border-top:1px solid 
 
 <section>
   <h2>The full set</h2>
-  <p>480 renders: five products × six colourways × four lighting presets × four
+  <p>600 renders: five products × six colourways × five lighting presets × four
   camera angles, all at this resolution. Every frame out of the same
   hand-written WebGL2 renderer, so the whole set matches.
   <a href="../index.html">Browse all thirty configurations →</a></p>

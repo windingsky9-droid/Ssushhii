@@ -25,7 +25,7 @@ N_SAMPLE_LIGHTS   = len({r["lighting"] for r in sample})
 N_SAMPLE_ANGLES   = len({r["angle"] for r in sample})
 # manifest.csv is sorted alphabetically, so derive the reading order from the
 # renderer's own ENVS declaration instead - it is what the product calls them in.
-LIGHT_ORDER = ["studio", "sunset", "showroom", "neon"]
+LIGHT_ORDER = ["studio", "sunset", "showroom", "neon", "white"]
 unknown = {r["lighting"] for r in full} - set(LIGHT_ORDER)
 if unknown:
     raise SystemExit(f"build_gallery: add {sorted(unknown)} to LIGHT_ORDER")

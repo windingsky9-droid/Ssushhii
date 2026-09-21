@@ -7,7 +7,7 @@ account setup and payouts, and you only do those once.
 ## Product name
 
 ```
-480 Studio Product Renders — 2000×2000, Royalty-Free
+600 Studio Product Renders — 2000×2000, Royalty-Free
 ```
 
 ## Price
@@ -18,7 +18,7 @@ account setup and payouts, and you only do those once.
 
 USD, one-time.
 
-**Why 29.** Stock render and mockup packs cluster at $15–49. At 480 files
+**Why 29.** Stock render and mockup packs cluster at $15–49. At 600 files
 that's about 6 cents a render, which is an easy yes for anyone who needs
 three of them. It also sits deliberately below the $49 configurator template,
 because this is the impulse buy and that is the considered one — and someone
@@ -27,18 +27,18 @@ who buys this for $29 is exactly who buys that for $49 next.
 ## Summary
 
 ```
-480 royalty-free 3D product renders at 2000×2000. Five products, six colourways each, four lighting setups, four camera angles — one consistent studio rig across every frame.
+600 royalty-free 3D product renders at 2000×2000. Five products, six colourways each, five lighting setups, four camera angles — one consistent studio rig across every frame.
 ```
 
 ---
 
 ## Description (paste into the description box)
 
-**480 studio product renders. One lighting rig. No photography.**
+**600 studio product renders. One lighting rig. No photography.**
 
 Five products — over-ear headphones, a cosmetic pump bottle, a table lamp, a
 three-legged side table and a bookshelf speaker — in six colourways each, shot
-under four lighting setups from four camera angles. 2000 × 2000 PNG.
+under five lighting setups from four camera angles. 2000 × 2000 PNG.
 
 **Why they match, and stock photos don't**
 
@@ -49,7 +49,7 @@ photos from three photographers never will.
 
 **What's inside**
 
-- 5 products × 6 colourways × 4 lighting presets × 4 camera angles = 480 PNGs
+- 5 products × 6 colourways × 5 lighting presets × 4 camera angles = 600 PNGs
 - 2000 × 2000, 8-bit RGB
 - `manifest.csv` — every file mapped to product, colourway, build code, lighting and angle
 - Self-describing filenames: `bottle_SER1-AMB-GL-SLV-IVO_studio_hero.png`
@@ -86,11 +86,11 @@ themselves as a stock pack.
 
 ## Gallery — upload in this order
 
-1. The contact sheet (`contact-sheet.png`) — 480 files in one image is the
+1. The contact sheet (`contact-sheet.png`) — 600 files in one image is the
    whole pitch; lead with it.
 2. A headphones hero at full resolution
 3. A bottle colourway row — same product, six finishes, proving the range
-4. The same product under all four lighting presets
+4. The same product under all five lighting presets
 5. A lamp or table hero
 
 ## Tags
@@ -118,7 +118,7 @@ zip -r ../../3d-render-pack-vol1.zip renders ../../products/3d-render-pack/READM
 ```
 
 About 16 minutes on software rendering, and considerably less on a machine
-with a real GPU. The archive comes to 357 MB across 483 files — measured, not
+with a real GPU. The archive comes to 444 MB across 483 files — measured, not
 estimated; the build above was run end to end before this was written.
 
 Want it bigger? `python render_farm.py 0 1400` gives 2800 × 2800 and a

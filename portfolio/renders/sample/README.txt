@@ -1,16 +1,16 @@
 STUDIO PRODUCT RENDERS - VOLUME 1
-Free sample: 10 of 480 renders.
+Free sample: 10 of 600 renders.
 
 WHAT THIS IS
   Ten full-resolution renders at 2000 x 2000, chosen to describe the set
-  rather than flatter it: all five products, all four lighting presets, and
+  rather than flatter it: all five products, all five lighting presets, and
   four different camera angles. manifest-sample.csv maps each file to its
   product, colourway, build code, lighting and angle, in the same format as
   the full pack.
 
 WHAT THE FULL PACK ADDS
-  480 renders. Five products x six colourways each x four lighting presets
-  x four camera angles, all 2000 x 2000 PNG. 357 MB.
+  600 renders. Five products x six colourways each x five lighting presets
+  x four camera angles, all 2000 x 2000 PNG. 444 MB.
 
 WHAT THESE ARE NOT
   - No alpha channel. Each render is a finished studio scene - backdrop,
