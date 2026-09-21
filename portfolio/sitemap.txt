@@ -3,3 +3,4 @@ https://sushir-saxon.upfling.site/3d/index.html
 https://sushir-saxon.upfling.site/renders/index.html
 https://sushir-saxon.upfling.site/renders/sample/index.html
 https://sushir-saxon.upfling.site/3d/store/index.html
+https://sushir-saxon.upfling.site/demos/astral-vault.html
