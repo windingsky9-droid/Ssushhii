@@ -1,0 +1,63 @@
+SHOPIFY — Custom Liquid block
+=============================
+
+1. Settings -> Files -> Upload index.html.
+   Shopify gives you a CDN URL that looks like:
+     https://cdn.shopify.com/s/files/1/0000/0000/files/index.html
+
+2. Product template -> Add block -> Custom Liquid. Paste:
+
+<div style="position:relative;width:100%;aspect-ratio:16/10;min-height:520px">
+  <iframe
+    src="https://cdn.shopify.com/s/files/1/0000/0000/files/index.html"
+    title="Configure this product"
+    loading="lazy"
+    style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:16px"
+  ></iframe>
+</div>
+
+
+OPTIONAL — send the chosen configuration to the cart
+----------------------------------------------------
+
+The configurator does not post anything anywhere by default. If you want the
+customer's choice to travel with the order, do it in two halves.
+
+a) In index.html, inside sync(), after the build code is written:
+
+     if (window.parent !== window) {
+       window.parent.postMessage({
+         type: 'configurator',
+         code:  $('sCode').textContent,
+         price: $('sPrice').textContent,
+         spec:  $('sSpec').textContent
+       }, '*');   // replace '*' with your storefront origin before going live
+     }
+
+b) On the product page, beside the iframe:
+
+<input type="hidden" name="properties[Configuration]" id="cfg-code">
+<script>
+  window.addEventListener('message', function (e) {
+    // Only trust messages from where you actually hosted the configurator.
+    if (e.origin !== 'https://cdn.shopify.com') return;
+    if (!e.data || e.data.type !== 'configurator') return;
+    document.getElementById('cfg-code').value = e.data.code;
+  });
+</script>
+
+The configuration then appears as a line-item property on the order.
+
+SECURITY: always check e.origin, and replace the '*' in postMessage with your
+real storefront origin. '*' is fine while you are testing on localhost and a
+bad idea in production - it lets any page that frames your configurator read
+the message.
+
+
+PRICING NOTE
+------------
+The price the configurator shows is display only. It is computed in the
+browser, so a customer can change it with devtools. Shopify must charge from
+a real variant or a server-side price rule - never from the number in the
+panel. Map each build code to a variant, or use the configuration as a
+line-item property against a base variant.

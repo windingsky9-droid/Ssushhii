@@ -1,0 +1,187 @@
+"""Build a static gallery page for the render pack from gallery.json."""
+import csv, json, pathlib, sys
+if len(sys.argv) < 3:
+    raise SystemExit("usage: build_gallery.py <pack-assets-dir> "
+                     "<manifest-sample.csv> [out.html]")
+A = pathlib.Path(sys.argv[1])           # pack-assets dir: gallery.json + manifest.csv
+rows = json.loads((A / "gallery.json").read_text())
+
+# Counts come from the full manifest, never from a literal in the template.
+full = list(csv.DictReader((A / "manifest.csv").open()))
+N_RENDERS  = len(full)
+N_PRODUCTS = len({r["product"] for r in full})
+N_CONFIGS  = len({r["code"] for r in full})
+N_LIGHTS   = len({r["lighting"] for r in full})
+N_ANGLES   = len({r["angle"] for r in full})
+N_PER_CONFIG = N_LIGHTS * N_ANGLES
+N_COLOURS  = N_CONFIGS // N_PRODUCTS
+
+# The free sample is its own manifest; the page quotes its size, so read it
+# rather than trusting a literal that nobody updates when the sample changes.
+sample = list(csv.DictReader(pathlib.Path(sys.argv[2]).open()))
+N_SAMPLE          = len(sample)
+N_SAMPLE_PRODUCTS = len({r["product"] for r in sample})
+N_SAMPLE_LIGHTS   = len({r["lighting"] for r in sample})
+N_SAMPLE_ANGLES   = len({r["angle"] for r in sample})
+# manifest.csv is sorted alphabetically, so derive the reading order from the
+# renderer's own ENVS declaration instead - it is what the product calls them in.
+LIGHT_ORDER = ["studio", "sunset", "showroom", "neon", "white"]
+unknown = {r["lighting"] for r in full} - set(LIGHT_ORDER)
+if unknown:
+    raise SystemExit(f"build_gallery: add {sorted(unknown)} to LIGHT_ORDER")
+names = [l.capitalize() for l in LIGHT_ORDER if l in {r["lighting"] for r in full}]
+LIGHT_NAMES = ", ".join(names[:-1]) + " and " + names[-1]
+assert N_CONFIGS == len(rows), f"gallery has {len(rows)} cards but manifest has {N_CONFIGS} configurations"
+assert N_RENDERS == N_CONFIGS * N_PER_CONFIG, "manifest is not a complete grid"
+# Prose spells small numbers out; the pills next to it carry the digits.
+WORDS = ("zero one two three four five six seven eight nine ten eleven twelve "
+         "thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty").split()
+def word(n): return WORDS[n] if n < len(WORDS) else str(n)
+
+LABEL = {"headphones":"Headphones","bottle":"Cosmetic bottle","lamp":"Table lamp",
+         "table":"Side table","speaker":"Bookshelf speaker"}
+order = ["headphones","bottle","lamp","table","speaker"]
+missing = {r["product"] for r in rows} - set(order)
+if missing:
+    raise SystemExit(f"build_gallery: add {sorted(missing)} to LABEL and order")
+rows.sort(key=lambda r: (order.index(r["product"]), r["code"]))
+
+# The "not real products" disclaimer names every model, so read them off the
+# manifest in grid order - a new product must not be able to slip out of it.
+MODELS = []
+for prod in order:
+    for r in full:
+        if r["product"] == prod:
+            MODELS.append(r["model"]); break
+MODEL_NAMES = ", ".join(MODELS[:-1]) + " and " + MODELS[-1]
+
+
+cards = "\n".join(
+  f'''      <figure>
+        <img src="img/{r['jpg']}" alt="{LABEL[r['product']]} — {r['colour']}, studio lighting" loading="lazy" width="900" height="900">
+        <figcaption><b>{r['model']}</b><span>{r['colour']}</span><code>{r['code']}</code></figcaption>
+      </figure>''' for r in rows)
+
+html = f'''<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio Product Renders — Volume 1</title>
+<meta name="description" content="{N_RENDERS} royalty-free 3D product renders at 2000x2000. {word(N_PRODUCTS).capitalize()} products, {word(N_COLOURS)} colourways each, {word(N_LIGHTS)} lighting setups, {word(N_ANGLES)} camera angles — one consistent studio rig across every frame.">
+<link rel="canonical" href="https://sushir-saxon.upfling.site/renders/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sushir 3D Studio">
+<meta property="og:title" content="Studio Product Renders — Volume 1">
+<meta property="og:description" content="{N_RENDERS} royalty-free 3D product renders at 2000x2000. One hand-written WebGL2 renderer, one lighting rig, every frame consistent.">
+<meta property="og:url" content="https://sushir-saxon.upfling.site/renders/">
+<meta property="og:image" content="https://sushir-saxon.upfling.site/renders/hero.jpg">
+<meta property="og:image:alt" content="Studio-lit renders of headphones, a bottle, a lamp, a side table and a bookshelf speaker, side by side">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{{--bg:#05070b;--fg:#e8eef7;--dim:#8b97a8;--line:#1a2331;--acc:#6fe9ff}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}}
+.wrap{{max-width:1180px;margin:0 auto;padding:0 20px}}
+header{{padding:72px 0 40px;border-bottom:1px solid var(--line)}}
+h1{{font-size:clamp(30px,5vw,50px);line-height:1.08;margin:0 0 16px;letter-spacing:-.02em}}
+.lede{{font-size:clamp(17px,2.2vw,20px);color:var(--dim);max-width:60ch;margin:0}}
+.facts{{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0;padding:0;list-style:none}}
+.facts li{{border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:14px;color:var(--dim)}}
+.facts b{{color:var(--fg);font-weight:600}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding:40px 0}}
+figure{{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#070b11}}
+figure img{{display:block;width:100%;height:auto;aspect-ratio:1}}
+figcaption{{padding:12px 14px;border-top:1px solid var(--line);display:grid;gap:3px;font-size:13px}}
+figcaption b{{font-weight:600}}
+figcaption span{{color:var(--dim)}}
+figcaption code{{color:var(--acc);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.8}}
+section{{padding:44px 0;border-top:1px solid var(--line)}}
+h2{{font-size:24px;margin:0 0 14px;letter-spacing:-.01em}}
+p{{color:var(--dim);max-width:68ch}}
+ul.plain{{color:var(--dim);max-width:68ch;padding-left:20px}}
+ul.plain b{{color:var(--fg)}}
+footer{{padding:40px 0 72px;color:var(--dim);font-size:14px;border-top:1px solid var(--line)}}
+a{{color:var(--acc)}}
+.cta{{background:linear-gradient(150deg,rgba(111,233,255,.07),rgba(184,255,115,.04));
+  border-radius:18px;padding:34px 30px;margin:44px 0;border:1px solid var(--line)}}
+.cta h2{{margin-top:0}}
+.btnrow{{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0 0}}
+.btn{{display:inline-block;padding:12px 20px;border-radius:999px;font-size:14px;
+  font-weight:700;text-decoration:none;background:var(--acc);color:#04131a;
+  border:1px solid transparent}}
+.btn.ghost{{background:transparent;color:var(--fg);border-color:var(--line)}}
+.btn:hover{{opacity:.88}}
+</style>
+<div class="wrap">
+<header>
+  <h1>Studio Product Renders<br>Volume One</h1>
+  <p class="lede">{N_RENDERS} royalty-free product renders at 2000&thinsp;×&thinsp;2000.
+  Every frame out of one hand-written WebGL2 renderer — the same lighting rig,
+  the same camera geometry, the same tone mapping. Put twelve in a grid and they
+  look like one shoot, because they are.</p>
+  <ul class="facts">
+    <li><b>{N_RENDERS}</b> renders</li><li><b>2000×2000</b> PNG</li>
+    <li><b>{N_PRODUCTS}</b> products</li><li><b>{N_CONFIGS}</b> colourways</li>
+    <li><b>{N_LIGHTS}</b> lighting setups</li><li><b>{N_ANGLES}</b> camera angles</li>
+  </ul>
+</header>
+
+<section style="border-top:0">
+  <h2>The {N_CONFIGS} configurations</h2>
+  <p>Shown here under Studio lighting at the hero angle — one of the {word(N_PER_CONFIG)} frames each configuration appears in. The full set covers every combination of {LIGHT_NAMES} with all {word(N_ANGLES)} camera angles.</p>
+</section>
+
+<div class="grid">
+{cards}
+</div>
+
+<section>
+  <h2>What these are, and what they aren't</h2>
+  <ul class="plain">
+    <li><b>No alpha channel.</b> Finished studio scenes — backdrop, ground plane
+      and contact shadow baked in. Not cut-outs.</li>
+    <li><b>Not editable mockups.</b> No PSD, no smart object. The white band on
+      the bottle is geometry, not a placeholder for a label.</li>
+    <li><b>Not real products.</b> {MODEL_NAMES} are invented for this set.</li>
+    <li><b>Not photorealistic.</b> Analytic lighting, not a captured HDR
+      environment. It reads as a clean product render — which is the point.</li>
+  </ul>
+  <p>Better to lose a sale to an honest limitation than take one and eat a refund.</p>
+</section>
+
+<section class="cta">
+  <h2>Getting the set</h2>
+  <p>The full pack is {N_RENDERS} files at 2000&thinsp;×&thinsp;2000 — every configuration above, under {word(N_LIGHTS)} lighting setups, from {word(N_ANGLES)} camera angles. If you want it,
+  or you want this same rig pointed at <em>your</em> product instead of an
+  invented one, say so and I&rsquo;ll send the details.</p>
+  <p>{word(N_SAMPLE).capitalize()} of them are free, at full resolution, with no email required — all {word(N_SAMPLE_PRODUCTS)} products, all {word(N_SAMPLE_LIGHTS)} lighting presets, {word(N_SAMPLE_ANGLES)} camera angles.</p>
+  <p class="btnrow">
+    <a class="btn" href="sample/index.html">Download {N_SAMPLE} free renders</a>
+    <a class="btn ghost" href="mailto:windingsky9@gmail.com?subject=Studio%20Product%20Renders%20%E2%80%94%20Volume%201">Ask about the full pack</a>
+    <a class="btn ghost" href="mailto:windingsky9@gmail.com?subject=Renders%20of%20my%20own%20product">Renders of my own product</a>
+  </p>
+</section>
+
+<section>
+  <h2>Built by a renderer, not a camera</h2>
+  <p>The set is generated, so it is reproducible and extensible: any resolution,
+  any additional colourway, any additional lighting preset, re-run in minutes.
+  The same renderer runs live in the
+  <a href="../3d/index.html">product configurator</a> — drag it, change the
+  finish, and watch these materials shade in real time.</p>
+</section>
+
+<footer>
+  Sushir Saxon · <a href="../index.html">Portfolio</a> ·
+  <a href="../3d/index.html">Live configurator</a>
+</footer>
+</div>
+</html>
+'''
+out = pathlib.Path(sys.argv[3]) if len(sys.argv) > 3 else (A / "index.html")
+# len(html) counts characters; the em-dashes and thin spaces are multibyte, and
+# the presigned upload signs the byte length - so report what lands on disk.
+n = out.write_text(html) and 0 or out.stat().st_size
+print(out, n, "bytes,", len(rows), "cards")

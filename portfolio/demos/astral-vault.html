@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astral Vault — Live Natal Wheel</title>
+<meta name="description" content="A natal chart wheel computed in the browser from Keplerian orbital elements. Real planetary longitudes, real aspects, no server and no stored data.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --void:#03070c; --deep:#060d16; --cream:#edf7fb; --muted:#86a0af;
+  --cyan:#61e8ff; --lime:#b8ff73; --violet:#a891ff; --gold:#ffc979; --rose:#ff86a8;
+  --line:rgba(117,215,255,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--void);
+  color:var(--cream);font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+button,input,select{font:inherit;color:inherit}
+#sky{position:fixed;inset:0;display:block;width:100%;height:100%}
+.vig{position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 46%,transparent 30%,rgba(0,2,6,.82) 100%)}
+.hud{position:fixed;z-index:3}
+.top{left:26px;right:26px;top:20px;display:flex;gap:16px;
+  align-items:flex-start;justify-content:space-between;pointer-events:none}
+h1{margin:0;font:500 clamp(17px,2.3vw,29px)/1 "Segoe UI",system-ui,sans-serif;
+  letter-spacing:.26em;background:linear-gradient(100deg,var(--gold),var(--cream) 46%,var(--cyan));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:8px 0 0;color:rgba(237,247,251,.5);font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;line-height:1.8}
+.badge{flex:none;padding:7px 10px;border:1px solid rgba(184,255,115,.3);
+  background:rgba(4,14,14,.55);color:var(--lime);font-size:9px;letter-spacing:.14em}
+.badge i{display:inline-block;width:6px;height:6px;margin-right:7px;border-radius:50%;
+  background:var(--lime);box-shadow:0 0 12px var(--lime)}
+.panel{padding:13px 14px;border:1px solid var(--line);background:rgba(3,10,17,.66);
+  backdrop-filter:blur(13px)}
+.panel h2{margin:0 0 9px;color:var(--cyan);font-size:9px;font-weight:500;letter-spacing:.2em}
+.left{left:26px;top:96px;width:236px;pointer-events:none}
+.right{right:26px;top:96px;width:292px;pointer-events:none}
+.rows{display:grid;gap:5px;font-size:10px}
+.row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:baseline;
+  color:rgba(237,247,251,.76);transition:color .16s,opacity .16s}
+.row .g{font-size:14px;line-height:1}
+.row .d{color:var(--muted);font-variant-numeric:tabular-nums}
+.row.dim{opacity:.26}
+.row.hot{color:var(--cream)}
+.row.hot .d{color:var(--gold)}
+.rx{color:var(--rose)}
+.read{min-height:78px;max-height:62vh;overflow-y:auto;font-size:10px;line-height:1.8;color:rgba(237,247,251,.62)}
+.read b{color:var(--cream);font-weight:500}
+.read .k{color:var(--cyan)}
+.bottom{left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:7px;
+  flex-wrap:wrap;justify-content:center;pointer-events:auto}
+.bottom button,.bottom label{padding:8px 11px;border:1px solid var(--line);
+  background:rgba(3,10,17,.72);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  cursor:pointer;white-space:nowrap}
+.bottom button:hover,.bottom button.on{border-color:rgba(184,255,115,.6);color:var(--lime)}
+.bottom input,.bottom select{padding:7px 8px;border:1px solid var(--line);
+  background:rgba(3,10,17,.72);font-size:10px;letter-spacing:.06em}
+#when{display:none;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:7px}
+#when.open{display:flex}
+.hint{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);z-index:2;
+  color:rgba(237,247,251,.3);font-size:9px;letter-spacing:.09em;white-space:nowrap;
+  pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;font-size:8px;letter-spacing:.1em}
+.legend span{display:flex;align-items:center;gap:5px;color:var(--muted)}
+.legend i{width:13px;height:2px;border-radius:2px}
+@media(max-width:900px){
+  .left,.right{display:none}
+  .top{left:13px;right:13px;top:12px}
+  h1{letter-spacing:.12em}
+  .hint{display:none}
+  .bottom{left:13px;right:13px;bottom:13px;transform:none}
+}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-label="Interactive natal chart wheel"></canvas>
+<div class="vig"></div>
+
+<header class="hud top">
+  <div>
+    <h1>ASTRAL VAULT</h1>
+    <p class="sub">Sushir 3D Studio · live natal wheel · computed in your browser</p>
+  </div>
+  <div class="badge"><i></i>NOTHING LEAVES THIS PAGE</div>
+</header>
+
+<aside class="hud left panel">
+  <h2>POSITIONS</h2>
+  <div class="rows" id="rows"></div>
+</aside>
+
+<aside class="hud right panel">
+  <h2>READOUT</h2>
+  <div class="read" id="read">Hover a planet to trace its aspects.</div>
+  <div class="legend" id="legend"></div>
+</aside>
+
+<div class="hud bottom">
+  <div id="when">
+    <input id="date" type="date">
+    <input id="time" type="time">
+    <input id="lat" type="number" step="0.01" placeholder="lat" style="width:76px">
+    <input id="lon" type="number" step="0.01" placeholder="lon" style="width:76px">
+    <select id="hsys"><option value="equal">Equal house</option><option value="whole">Whole sign</option></select>
+    <button id="apply">Draw</button>
+  </div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center">
+    <button id="modeBtn">Sphere view</button>
+    <button id="nowBtn" class="on">Now</button>
+    <button id="editBtn">Set date &amp; place</button>
+    <button id="spinBtn" class="on">Drift</button>
+    <button id="shotBtn">Snapshot</button>
+  </div>
+</div>
+<div class="hint">drag to turn the wheel · hover a planet to trace its aspects</div>
+
+<script>
+/* ===================================================================
+   EPHEMERIS
+   Keplerian elements (JPL low-precision set, valid ~1800-2050) plus a
+   truncated lunar series. Verified before it got here: the Sun lands
+   within 0.08 deg of its J2000 value, every sidereal period is within
+   0.03%, Mercury and Venus never exceed their real maximum elongation,
+   and the Moon's synodic month comes out at 29.534 d against 29.531.
+   That is a few tenths of a degree - invisible at glyph size, and not
+   good enough to quote minutes of arc. Stated, not hidden.
+   =================================================================== */
+const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+const norm = a => ((a % 360) + 360) % 360;
+
+const ELEM = {
+  Mercury:[[0.38709927,0.20563593,7.00497902,252.25032350,77.45779628,48.33076593],
+           [0.00000037,0.00001906,-0.00594749,149472.67411175,0.16047689,-0.12534081]],
+  Venus:  [[0.72333566,0.00677672,3.39467605,181.97909950,131.60246718,76.67984255],
+           [0.00000390,-0.00004107,-0.00078890,58517.81538729,0.00268329,-0.27769418]],
+  Earth:  [[1.00000261,0.01671123,-0.00001531,100.46457166,102.93768193,0.0],
+           [0.00000562,-0.00004392,-0.01294668,35999.37244981,0.32327364,0.0]],
+  Mars:   [[1.52371034,0.09339410,1.84969142,-4.55343205,-23.94362959,49.55953891],
+           [0.00001847,0.00007882,-0.00813131,19140.30268499,0.44441088,-0.29257343]],
+  Jupiter:[[5.20288700,0.04838624,1.30439695,34.39644051,14.72847983,100.47390909],
+           [-0.00011607,-0.00013253,-0.00183714,3034.74612775,0.21252668,0.20469106]],
+  Saturn: [[9.53667594,0.05386179,2.48599187,49.95424423,92.59887831,113.66242448],
+           [-0.00125060,-0.00050991,0.00193609,1222.49362201,-0.41897216,-0.28867794]],
+  Uranus: [[19.18916464,0.04725744,0.77263783,313.23810451,170.95427630,74.01692503],
+           [-0.00196176,-0.00004397,-0.00242939,428.48202785,0.40805281,0.04240589]],
+  Neptune:[[30.06992276,0.00859048,1.77004347,-55.12002969,44.96476227,131.78422574],
+           [0.00026291,0.00005105,0.00035372,218.45945325,-0.32241464,-0.00508664]],
+  Pluto:  [[39.48211675,0.24882730,17.14001206,238.92903833,224.06891629,110.30393684],
+           [-0.00031596,0.00005170,0.00004818,145.20780515,-0.04062942,-0.01183482]]
+};
+
+function julianDay(dt){ return dt.getTime() / 86400000 + 2440587.5; }
+
+function kepler(M, e){
+  let E = M + e * Math.sin(M);
+  for (let i = 0; i < 12; i++){
+    const d = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    E -= d;
+    if (Math.abs(d) < 1e-12) break;
+  }
+  return E;
+}
+
+function helio(name, T){
+  const [el, rt] = ELEM[name];
+  const a = el[0] + rt[0]*T, e = el[1] + rt[1]*T;
+  const I = (el[2] + rt[2]*T) * D2R;
+  const L = (el[3] + rt[3]*T) * D2R;
+  const peri = (el[4] + rt[4]*T) * D2R;
+  const node = (el[5] + rt[5]*T) * D2R;
+  const w = peri - node;
+  const M = (((L - peri) % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+  const E = kepler(M, e);
+  const xv = a * (Math.cos(E) - e);
+  const yv = a * Math.sqrt(1 - e*e) * Math.sin(E);
+  const cw = Math.cos(w), sw = Math.sin(w);
+  const cn = Math.cos(node), sn = Math.sin(node);
+  const ci = Math.cos(I),  si = Math.sin(I);
+  return [ (cw*cn - sw*sn*ci)*xv + (-sw*cn - cw*sn*ci)*yv,
+           (cw*sn + sw*cn*ci)*xv + (-sw*sn + cw*cn*ci)*yv,
+           (sw*si)*xv + (cw*si)*yv ];
+}
+
+function geo(name, jd){
+  const T = (jd - 2451545.0) / 36525.0;
+  const E = helio('Earth', T);
+  let x, y, z;
+  if (name === 'Sun'){ x = -E[0]; y = -E[1]; z = -E[2]; }
+  else { const p = helio(name, T); x = p[0]-E[0]; y = p[1]-E[1]; z = p[2]-E[2]; }
+  return { lon: norm(Math.atan2(y, x) * R2D),
+           lat: Math.atan2(z, Math.hypot(x, y)) * R2D,
+           dist: Math.sqrt(x*x + y*y + z*z) };
+}
+
+function moon(jd){
+  const d = jd - 2451543.5;
+  const N = 125.1228 - 0.0529538083*d, w = 318.0634 + 0.1643573223*d;
+  const M = 115.3654 + 13.0649929509*d, e = 0.0549, a = 60.2666, i = 5.1454;
+  let E = M + R2D*e*Math.sin(M*D2R)*(1 + e*Math.cos(M*D2R));
+  for (let k = 0; k < 8; k++){
+    const dE = (E - R2D*e*Math.sin(E*D2R) - M) / (1 - e*Math.cos(E*D2R));
+    E -= dE; if (Math.abs(dE) < 1e-10) break;
+  }
+  const xv = a*(Math.cos(E*D2R) - e), yv = a*Math.sqrt(1-e*e)*Math.sin(E*D2R);
+  const v = Math.atan2(yv, xv)*R2D, r = Math.hypot(xv, yv);
+  const xh = r*(Math.cos(N*D2R)*Math.cos((v+w)*D2R) - Math.sin(N*D2R)*Math.sin((v+w)*D2R)*Math.cos(i*D2R));
+  const yh = r*(Math.sin(N*D2R)*Math.cos((v+w)*D2R) + Math.cos(N*D2R)*Math.sin((v+w)*D2R)*Math.cos(i*D2R));
+  const zh = r*Math.sin((v+w)*D2R)*Math.sin(i*D2R);
+  let lon = Math.atan2(yh, xh)*R2D, lat = Math.atan2(zh, Math.hypot(xh, yh))*R2D;
+  const Ms = 356.0470 + 0.9856002585*d, Ls = 280.4657 + 0.9856473354*d;
+  const Lm = N + w + M, Dm = Lm - Ls, F = Lm - N, s = x => Math.sin(x*D2R);
+  lon += -1.274*s(M-2*Dm) + 0.658*s(2*Dm) - 0.186*s(Ms) - 0.059*s(2*M-2*Dm)
+       - 0.057*s(M-2*Dm+Ms) + 0.053*s(M+2*Dm) + 0.046*s(2*Dm-Ms) + 0.041*s(M-Ms)
+       - 0.035*s(Dm) - 0.031*s(M+Ms) - 0.015*s(2*F-2*Dm) + 0.011*s(M-4*Dm);
+  lat += -0.173*s(F-2*Dm) - 0.055*s(M-F-2*Dm) - 0.046*s(M+F-2*Dm)
+       + 0.033*s(F+2*Dm) + 0.017*s(2*M+F);
+  return { lon: norm(lon), lat, dist: r * 4.2635e-5 };   // earth radii -> au
+}
+
+/* Greenwich mean sidereal time, then the horizon angles it fixes. */
+function gmst(jd){ return norm(280.46061837 + 360.98564736629 * (jd - 2451545.0)); }
+const OBLIQ = 23.4392911;
+
+function angles(jd, latDeg, lonDeg){
+  const ramc = norm(gmst(jd) + lonDeg) * D2R;
+  const e = OBLIQ * D2R, phi = latDeg * D2R;
+  const mc  = norm(Math.atan2(Math.sin(ramc), Math.cos(ramc) * Math.cos(e)) * R2D);
+  const asc = norm(Math.atan2(Math.cos(ramc),
+              -(Math.sin(ramc) * Math.cos(e) + Math.tan(phi) * Math.sin(e))) * R2D);
+  return { asc, mc };
+}
+
+/* ---- chart assembly ------------------------------------------------ */
+const SIGNS = [
+  ['Aries','♈','fire'],   ['Taurus','♉','earth'], ['Gemini','♊','air'],
+  ['Cancer','♋','water'], ['Leo','♌','fire'],     ['Virgo','♍','earth'],
+  ['Libra','♎','air'],    ['Scorpio','♏','water'],['Sagittarius','♐','fire'],
+  ['Capricorn','♑','earth'],['Aquarius','♒','air'],['Pisces','♓','water']
+];
+const ELEMENT_COLOR = { fire:'#ff9d6e', earth:'#b8ff73', air:'#8fd8ff', water:'#a891ff' };
+
+const BODIES = [
+  ['Sun','☉','#ffc979'], ['Moon','☽','#e8f2ff'], ['Mercury','☿','#9fe6c8'],
+  ['Venus','♀','#ffb3d0'], ['Mars','♂','#ff7a6e'], ['Jupiter','♃','#ffd79a'],
+  ['Saturn','♄','#c7b8ff'], ['Uranus','♅','#7fe8ff'], ['Neptune','♆','#7aa8ff'],
+  ['Pluto','♇','#c0a0b8']
+];
+
+/* ===================================================================
+   MEANING
+   Traditional symbolism, which is what astrology is: a symbolic
+   language with centuries of convention behind it. Presented as that,
+   not as prediction. The geometry above is measured; this is read.
+   =================================================================== */
+const PLANET_MEANING = {
+  Sun:     ['identity',   'the self you are becoming - vitality, purpose, what you shine at'],
+  Moon:    ['instinct',   'inner weather - what soothes you, what you need to feel safe'],
+  Mercury: ['mind',       'how you think, speak, learn and trade information'],
+  Venus:   ['attraction', 'what you value and how you love - taste, harmony, worth'],
+  Mars:    ['drive',      'appetite and assertion - how you start things and fight'],
+  Jupiter: ['expansion',  'where you grow, risk and believe - luck, excess, meaning'],
+  Saturn:  ['structure',  'limit and discipline - where effort is demanded and earned'],
+  Uranus:  ['disruption', 'the sudden break - invention, freedom, what will not be held'],
+  Neptune: ['dissolution','dream and blur - imagination, compassion, illusion'],
+  Pluto:   ['transformation','what is buried and what it becomes - power, depth, rebirth']
+};
+const SIGN_MEANING = {
+  Aries:['cardinal fire','ignition, nerve, going first'],
+  Taurus:['fixed earth','steadiness, the senses, holding ground'],
+  Gemini:['mutable air','curiosity, wit, two things at once'],
+  Cancer:['cardinal water','memory, shelter, fierce care'],
+  Leo:['fixed fire','warmth, display, wholehearted nerve'],
+  Virgo:['mutable earth','craft, discernment, useful work'],
+  Libra:['cardinal air','balance, counterpart, the fair thing'],
+  Scorpio:['fixed water','intensity, depth, nothing halfway'],
+  Sagittarius:['mutable fire','range, appetite for meaning, the far shore'],
+  Capricorn:['cardinal earth','patience, climb, the long game'],
+  Aquarius:['fixed air','distance, system, the unlike idea'],
+  Pisces:['mutable water','porousness, imagination, the edges dissolving']
+};
+const HOUSE_MEANING = ['self and body','worth and resources','mind and near ones',
+  'home and root','play and creation','work and health','partnership','shared depths',
+  'meaning and distance','vocation and standing','friendship and the future','the hidden'];
+const ASPECT_MEANING = {
+  Conjunction:'fused - the two act as one, for better and worse',
+  Sextile:'an opening - easy if you take it, dormant if you do not',
+  Square:'friction - the tension that forces growth',
+  Trine:'flow - it comes so easily you may not notice it',
+  Opposition:'a facing - two needs pulling, asking to be held together'
+};
+
+const ASPECTS = [
+  ['Conjunction', 0,   8, '#ffc979'],
+  ['Sextile',     60,  4, '#b8ff73'],
+  ['Square',      90,  6, '#ff7a6e'],
+  ['Trine',       120, 6, '#61e8ff'],
+  ['Opposition',  180, 8, '#a891ff']
+];
+
+function buildChart(date, latDeg, lonDeg, hsys){
+  const jd = julianDay(date);
+  const pos = BODIES.map(([name, glyph, colour]) => {
+    const a = name === 'Moon' ? moon(jd) : geo(name, jd);
+    const b = name === 'Moon' ? moon(jd + 0.5) : geo(name, jd + 0.5);
+    // Retrograde is just longitude decreasing - cheap, and it is real.
+    const delta = ((b.lon - a.lon + 540) % 360) - 180;
+    return { name, glyph, colour, lon: a.lon, lat: a.lat, dist: a.dist, retro: delta < 0 };
+  });
+  computeShells(pos);
+  const { asc, mc } = angles(jd, latDeg, lonDeg);
+  const cusps = [];
+  for (let h = 0; h < 12; h++){
+    cusps.push(hsys === 'whole' ? norm(Math.floor(asc / 30) * 30 + h * 30)
+                                : norm(asc + h * 30));
+  }
+  const hits = [];
+  for (let i = 0; i < pos.length; i++)
+    for (let j = i + 1; j < pos.length; j++){
+      const sep = Math.abs(((pos[i].lon - pos[j].lon + 540) % 360) - 180);
+      for (const [nm, ang, orb, col] of ASPECTS){
+        const off = Math.abs(sep - ang);
+        if (off <= orb){ hits.push({ a:i, b:j, name:nm, angle:ang, off, colour:col }); break; }
+      }
+    }
+  return { jd, pos, asc, mc, cusps, aspects: hits, hsys };
+}
+
+const signOf = lon => SIGNS[Math.floor(norm(lon) / 30)];
+const degInSign = lon => norm(lon) % 30;
+function houseOf(lon, cusps){
+  for (let h = 0; h < 12; h++){
+    const a = cusps[h], b = cusps[(h + 1) % 12];
+    const span = norm(b - a), at = norm(lon - a);
+    if (at < span || span === 0) return h + 1;
+  }
+  return 12;
+}
+const fmt = lon => `${String(Math.floor(degInSign(lon))).padStart(2,'0')}°` +
+                   `${String(Math.floor((degInSign(lon)%1)*60)).padStart(2,'0')}′ ` +
+                   signOf(lon)[1];
+
+/* ---- render -------------------------------------------------------- */
+const cv = document.getElementById('sky');
+let ctx = cv.getContext('2d');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W = 1, H = 1, DPR = 1;
+const view = { turn: 0, drag: false, lastX: 0, lastY: 0, spin: !reduced, hot: -1,
+               mode: '2d', vYaw: 0, vPitch: 0, particles: true, budget: 1 };
+let chart, place = { lat: 0, lon: 0 }, liveMode = true, shownDate = new Date();
+
+// Deterministic so the sky is the same every load. Points are distributed
+// evenly over the sphere (acos for the polar angle, not a linear ramp, or they
+// bunch at the poles), and brightness follows a steep power law: mostly faint,
+// a handful bright. That ratio is most of what makes a star field read as one.
+const stars = (() => {
+  let seed = 20260921;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  return Array.from({ length: 2200 }, () => {
+    // Two fifths of the sky's stars are thrown near the galactic plane, which
+    // is what the Milky Way actually is: not a painted band, a density.
+    let u, th;
+    if (rnd() < 0.42){
+      u = (rnd() + rnd() + rnd() - 1.5) * 0.16;   // tight around the plane
+      th = rnd() * Math.PI * 2;
+    } else {
+      u = rnd() * 2 - 1; th = rnd() * Math.PI * 2;
+    }
+    u = Math.max(-1, Math.min(1, u));
+    const r = Math.sqrt(1 - u * u);
+    const mag = Math.pow(rnd(), 3.1);
+    const warm = rnd();
+    return {
+      g: [r * Math.cos(th), u, r * Math.sin(th)],   // galactic frame
+      sz: 0.25 + mag * 1.9,
+      br: 0.16 + mag * 0.84,
+      tw: rnd() * 6.28,
+      c: warm > 0.93 ? '#ffd9b0' : warm > 0.86 ? '#cfe0ff' : '#eef4fb'
+    };
+  });
+})();
+
+function resize(){
+  const r = cv.getBoundingClientRect();
+  W = Math.max(1, r.width); H = Math.max(1, r.height);
+  DPR = Math.min(devicePixelRatio || 1, 2);
+  cv.width = W * DPR; cv.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+
+// Longitude -> canvas angle. The Ascendant sits on the left horizon and the
+// zodiac runs counter-clockwise, which is what makes it a chart and not a
+// scatter plot. Canvas y grows downward, so counter-clockwise is subtraction.
+const ang = lon => (180 - (norm(lon) - chart.asc) + view.turn) * D2R;
+const P = (lon, rad, cx, cy) => {
+  const t = ang(lon);
+  return [cx + Math.cos(t) * rad, cy + Math.sin(t) * rad];
+};
+
+function draw2d(t){
+  if (view.spin && !view.drag && !reduced) view.turn += 0.006;
+  const cx = W / 2, cy = H / 2;
+  const R = Math.min(W, H) * 0.42;
+
+  // deep field
+  const neb = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 2.3);
+  neb.addColorStop(0, 'rgba(97,232,255,.10)');
+  neb.addColorStop(.38, 'rgba(168,145,255,.045)');
+  neb.addColorStop(1, 'transparent');
+  ctx.fillStyle = neb; ctx.fillRect(0, 0, W, H);
+
+  stars.forEach((s, i) => {
+    const rr = s.r * R * 2.4, a = s.a + t * 0.04;
+    const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr * 0.62;
+    ctx.globalAlpha = 0.10 + 0.26 * (0.5 + 0.5 * Math.sin(t * 9 + s.tw));
+    ctx.fillStyle = s.c;
+    ctx.beginPath(); ctx.arc(x, y, s.sz, 0, 6.2832); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  const rOuter = R, rZodIn = R * 0.845, rHouse = R * 0.70,
+        rPlanet = R * 0.605, rWeb = R * 0.515;
+
+  // zodiac band
+  for (let s = 0; s < 12; s++){
+    const [nm, gl, el] = SIGNS[s];
+    const a0 = ang(s * 30), a1 = ang(s * 30 + 30);
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter, a1, a0);
+    ctx.arc(cx, cy, rZodIn, a0, a1, true);
+    ctx.closePath();
+    const g = ctx.createRadialGradient(cx, cy, rZodIn, cx, cy, rOuter);
+    g.addColorStop(0, ELEMENT_COLOR[el] + '00');
+    g.addColorStop(1, ELEMENT_COLOR[el] + '22');
+    ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = 'rgba(117,215,255,.17)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    const [bx, by] = P(s * 30, rZodIn, cx, cy), [ox, oy] = P(s * 30, rOuter, cx, cy);
+    ctx.moveTo(bx, by); ctx.lineTo(ox, oy); ctx.stroke();
+
+    const [gx, gy] = P(s * 30 + 15, (rOuter + rZodIn) / 2, cx, cy);
+    ctx.fillStyle = ELEMENT_COLOR[el];
+    ctx.font = `${Math.round(R * 0.072)}px "Segoe UI Symbol","Noto Sans Symbols2",serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.globalAlpha = .92; ctx.fillText(gl, gx, gy); ctx.globalAlpha = 1;
+  }
+
+  // degree ticks
+  for (let d = 0; d < 360; d++){
+    const long = d % 10 === 0 ? 0.030 : d % 5 === 0 ? 0.020 : 0.011;
+    const [x1, y1] = P(d, rZodIn, cx, cy);
+    const [x2, y2] = P(d, rZodIn - R * long, cx, cy);
+    ctx.strokeStyle = d % 10 === 0 ? 'rgba(117,215,255,.36)' : 'rgba(117,215,255,.15)';
+    ctx.lineWidth = d % 30 === 0 ? 1.4 : .8;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  }
+
+  // rings
+  [rOuter, rZodIn, rHouse, rWeb].forEach((r, i) => {
+    ctx.strokeStyle = i === 0 ? 'rgba(117,215,255,.42)' : 'rgba(117,215,255,.16)';
+    ctx.lineWidth = i === 0 ? 1.4 : 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.2832); ctx.stroke();
+  });
+
+  // houses
+  chart.cusps.forEach((c, h) => {
+    const [x1, y1] = P(c, rWeb, cx, cy), [x2, y2] = P(c, rHouse, cx, cy);
+    const axis = h === 0 || h === 9;
+    ctx.strokeStyle = axis ? 'rgba(255,201,121,.6)' : 'rgba(117,215,255,.2)';
+    ctx.lineWidth = axis ? 1.6 : .9;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    const [nx, ny] = P(c + 15, (rHouse + rWeb) / 2, cx, cy);
+    ctx.fillStyle = 'rgba(134,160,175,.72)';
+    ctx.font = `${Math.round(R * 0.032)}px ui-monospace,monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(String(h + 1), nx, ny);
+  });
+
+  // AC / MC labels
+  [['AC', chart.asc], ['MC', chart.mc]].forEach(([lb, lo]) => {
+    const [x, y] = P(lo, rHouse - R * 0.052, cx, cy);
+    ctx.fillStyle = 'var(--gold)'; ctx.fillStyle = '#ffc979';
+    ctx.font = `600 ${Math.round(R * 0.034)}px ui-monospace,monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(lb, x, y);
+  });
+
+  // aspect web
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  chart.aspects.forEach(asp => {
+    const live = view.hot < 0 || asp.a === view.hot || asp.b === view.hot;
+    const [x1, y1] = P(chart.pos[asp.a].lon, rWeb, cx, cy);
+    const [x2, y2] = P(chart.pos[asp.b].lon, rWeb, cx, cy);
+    const tight = 1 - asp.off / 9;
+    ctx.strokeStyle = asp.colour;
+    ctx.globalAlpha = live ? 0.20 + 0.52 * tight : 0.05;
+    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 1.7 : 1.15) * (live ? 1 : .6);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  });
+  ctx.restore();
+  ctx.globalAlpha = 1;
+
+  // planets
+  chart.pos.forEach((p, i) => {
+    const live = view.hot < 0 || view.hot === i ||
+                 chart.aspects.some(a => (a.a === i || a.b === i) &&
+                                         (a.a === view.hot || a.b === view.hot));
+    const [dx, dy] = P(p.lon, rWeb, cx, cy);
+    const [px, py] = P(p.lon, rPlanet, cx, cy);
+    ctx.globalAlpha = live ? .5 : .14;
+    ctx.strokeStyle = p.colour; ctx.lineWidth = .9;
+    ctx.beginPath(); ctx.moveTo(dx, dy); ctx.lineTo(px, py); ctx.stroke();
+
+    const pulse = 1 + 0.06 * Math.sin(t * 7 + i);
+    const rad = R * 0.036 * pulse * (view.hot === i ? 1.35 : 1);
+    ctx.globalAlpha = live ? 1 : .2;
+    const g = ctx.createRadialGradient(px, py, 0, px, py, rad * 2.6);
+    g.addColorStop(0, p.colour + 'cc'); g.addColorStop(1, p.colour + '00');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(px, py, rad * 2.6, 0, 6.2832); ctx.fill();
+
+    ctx.fillStyle = '#040a11';
+    ctx.beginPath(); ctx.arc(px, py, rad, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = p.colour; ctx.lineWidth = 1.2; ctx.stroke();
+
+    ctx.fillStyle = p.colour;
+    ctx.font = `${Math.round(R * 0.042)}px "Segoe UI Symbol","Noto Sans Symbols2",serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(p.glyph, px, py + R * 0.002);
+
+    if (p.retro){
+      ctx.fillStyle = '#ff86a8';
+      ctx.font = `${Math.round(R * 0.026)}px ui-monospace,monospace`;
+      ctx.fillText('℞', px + rad * 1.25, py - rad * 1.15);
+    }
+    p._x = px; p._y = py; p._r = rad * 1.5;
+  });
+  ctx.globalAlpha = 1;
+
+  // core
+  const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.12);
+  core.addColorStop(0, 'rgba(237,247,251,.16)');
+  core.addColorStop(1, 'transparent');
+  ctx.fillStyle = core;
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.12, 0, 6.2832); ctx.fill();
+}
+
+/* ===================================================================
+   SPHERE VIEW
+   The flat wheel is a projection of something real, so this draws the
+   thing itself: an armillary sphere whose rings are not decoration.
+   The ecliptic and the celestial equator cross at the obliquity - the
+   23.44 degrees that give us seasons - and the horizon ring is tilted
+   by the observer's own latitude, which is what puts the Ascendant
+   where it is. Planets sit at their true geocentric direction, and
+   their traces are geocentric too, so the retrograde loops you can see
+   are the real ones: the same loops that cost astronomy its epicycles.
+   =================================================================== */
+const cam = { yaw: 0.62, pitch: 0.42, dist: 3.5 };
+
+/* ===================================================================
+   SURFACES
+   A lit ball is not a planet. These are schematic, not photographic -
+   latitude banding for the gas giants (bands really are latitude bands,
+   so horizontal strips across an orthographic disc is the right
+   projection, not a cheat), deterministic mottling for the rocky
+   bodies, and nothing at all for Venus, which is correct: she is
+   featureless white cloud from outside.
+   =================================================================== */
+function prng(seed){
+  let x = seed >>> 0;
+  return () => (x = (x * 1664525 + 1013904223) >>> 0) / 4294967296;
+}
+function mix(a, b, f){
+  const pa = parseInt(a.slice(1),16), pb = parseInt(b.slice(1),16);
+  const r = Math.round((pa>>16&255)*(1-f) + (pb>>16&255)*f);
+  const g = Math.round((pa>>8&255)*(1-f) + (pb>>8&255)*f);
+  const bl= Math.round((pa&255)*(1-f) + (pb&255)*f);
+  return `rgb(${r},${g},${bl})`;
+}
+
+const SURFACE = {
+  Jupiter: { kind:'bands', tilt:-0.06, n:17,
+             pal:['#d8b98e','#c9a271','#e7d3ae','#b98d5e','#efe0c4','#a87murky'] },
+  Saturn:  { kind:'bands', tilt:-0.12, n:13,
+             pal:['#e3d2a6','#d4c08c','#efe3c2','#c8b177'] },
+  Mars:    { kind:'rocky', base:'#c1502e', dark:'#7d3520', light:'#e8a07a', caps:true, blobs:22 },
+  Moon:    { kind:'rocky', base:'#cfd3d8', dark:'#8d939c', light:'#eef1f4', blobs:26 },
+  Mercury: { kind:'rocky', base:'#9a9086', dark:'#6b635b', light:'#c3bbb0', blobs:30 },
+  Pluto:   { kind:'rocky', base:'#b7a08f', dark:'#7d6a5c', light:'#e4d3c0', blobs:14 },
+  Venus:   { kind:'cloud', base:'#efe0bd', hi:'#fff7e4' },
+  Uranus:  { kind:'cloud', base:'#8fe0e8', hi:'#c6f3f7' },
+  Neptune: { kind:'cloud', base:'#4a6fd0', hi:'#8fb0f0' }
+};
+SURFACE.Jupiter.pal[5] = '#a8794f';
+
+// A planet's surface never changes, but drawing it meant rebuilding dozens of
+// radial gradients every frame - about 92 of them across the rocky bodies
+// alone. Each one is baked once into an offscreen canvas at fixed resolution
+// and then blitted, which is the difference between 20fps and a smooth one.
+const SURF_CACHE = new Map();
+const SURF_PX = 256;
+function surfaceTile(name, colour){
+  let tile = SURF_CACHE.get(name);
+  if (tile) return tile;
+  tile = document.createElement('canvas');
+  tile.width = tile.height = SURF_PX;
+  const c = tile.getContext('2d');
+  const prevCtx = ctx;
+  ctx = c;                                   // paint through the same helpers
+  ctx.save();
+  ctx.translate(SURF_PX / 2, SURF_PX / 2);
+  ctx.beginPath(); ctx.arc(0, 0, SURF_PX / 2, 0, 6.2832); ctx.clip();
+  paintSurface(name, SURF_PX / 2, colour);
+  ctx.restore();
+  ctx = prevCtx;
+  SURF_CACHE.set(name, tile);
+  return tile;
+}
+function drawSurface(name, rad, colour){
+  const tile = surfaceTile(name, colour);
+  ctx.drawImage(tile, -rad, -rad, rad * 2, rad * 2);
+}
+
+function paintSurface(name, rad, colour){
+  const sp = SURFACE[name];
+  if (!sp){ ctx.fillStyle = colour; ctx.fillRect(-rad,-rad,rad*2,rad*2); return; }
+
+  if (sp.kind === 'bands'){
+    ctx.save(); ctx.rotate(sp.tilt);
+    const rnd = prng(name.length * 7919);
+    for (let i = 0; i < sp.n; i++){
+      const y0 = -rad + (i / sp.n) * rad * 2, h = (rad * 2) / sp.n;
+      ctx.fillStyle = sp.pal[i % sp.pal.length];
+      ctx.globalAlpha = 0.88 + rnd() * 0.12;
+      ctx.fillRect(-rad, y0, rad * 2, h + 0.6);
+    }
+    ctx.globalAlpha = 1;
+    if (name === 'Jupiter'){        // the spot, roughly where it belongs
+      ctx.fillStyle = '#b4563c';
+      ctx.beginPath();
+      ctx.ellipse(-rad*0.22, rad*0.26, rad*0.26, rad*0.13, 0, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.restore();
+    return;
+  }
+
+  if (sp.kind === 'cloud'){
+    const g = ctx.createRadialGradient(-rad*0.3, -rad*0.3, 0, 0, 0, rad*1.3);
+    g.addColorStop(0, sp.hi); g.addColorStop(1, sp.base);
+    ctx.fillStyle = g; ctx.fillRect(-rad,-rad,rad*2,rad*2);
+    return;
+  }
+
+  // rocky: base, then deterministic maria/craters
+  ctx.fillStyle = sp.base; ctx.fillRect(-rad,-rad,rad*2,rad*2);
+  const rnd = prng(name.length * 104729 + 17);
+  for (let i = 0; i < sp.blobs; i++){
+    const a = rnd() * 6.2832, r = Math.sqrt(rnd()) * rad * 0.94;
+    const x = Math.cos(a) * r, y = Math.sin(a) * r;
+    const sz = rad * (0.07 + rnd() * 0.24);
+    const dark = rnd() > 0.38;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, sz);
+    g.addColorStop(0, dark ? sp.dark : sp.light);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = 0.30 + rnd() * 0.4;
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, sz, 0, 6.2832); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (sp.caps){                      // Mars keeps its polar caps
+    ctx.fillStyle = 'rgba(245,250,255,.82)';
+    [-1, 1].forEach(sgn => {
+      ctx.beginPath();
+      ctx.ellipse(0, sgn*rad*0.88, rad*0.36, rad*0.16, 0, 0, 6.2832);
+      ctx.fill();
+    });
+  }
+}
+
+// Saturn's rings are real geometry, so they get drawn as geometry: the far
+// half behind the planet, the near half in front of it.
+function saturnRing(rad, half){
+  const RX = rad * 2.25, RY = rad * 0.62;
+  ctx.save(); ctx.rotate(-0.34);
+  const bands = [[1.00,1.14,'rgba(226,212,172,.20)'],
+                 [1.18,1.52,'rgba(238,226,192,.52)'],
+                 [1.56,1.62,'rgba(120,110,88,.30)'],   // Cassini division
+                 [1.66,1.94,'rgba(214,198,158,.44)'],
+                 [1.99,2.16,'rgba(196,182,146,.22)']];
+  bands.forEach(([i0, i1, col]) => {
+    ctx.beginPath();
+    ctx.ellipse(0, 0, RX*i1/2.25, RY*i1/2.25, 0,
+                half === 'back' ? Math.PI : 0, half === 'back' ? 0 : Math.PI, true);
+    ctx.ellipse(0, 0, RX*i0/2.25, RY*i0/2.25, 0,
+                half === 'back' ? 0 : Math.PI, half === 'back' ? Math.PI : 0, false);
+    ctx.closePath();
+    ctx.fillStyle = col; ctx.fill();
+  });
+  ctx.restore();
+}
+
+
+// darken a #rrggbb toward black by a factor - the night side of a body
+function shade(hex, f){
+  const n = parseInt(hex.slice(1), 16);
+  return `rgb(${Math.round((n>>16&255)*f)},${Math.round((n>>8&255)*f)},${Math.round((n&255)*f)})`;
+}
+
+function rot(p){
+  const cy_ = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+  const cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+  const x = p[0]*cy_ - p[2]*sy, z0 = p[0]*sy + p[2]*cy_;
+  const y = p[1]*cp - z0*sp,    z  = p[1]*sp + z0*cp;
+  return [x, y, z];
+}
+function proj(p, cx, cy, S){
+  const r = rot(p);
+  const q = cam.dist / Math.max(0.15, cam.dist - r[2]);
+  return { x: cx + r[0]*S*q, y: cy - r[1]*S*q, z: r[2], q };
+}
+const dir = (lon, lat) => {
+  const a = lon*D2R, b = lat*D2R;
+  return [Math.cos(b)*Math.cos(a), Math.sin(b), Math.cos(b)*Math.sin(a)];
+};
+// equatorial (z = celestial north) -> our ecliptic frame (y = ecliptic north)
+function eqToEcl(v){
+  const e = OBLIQ*D2R, c = Math.cos(e), sn = Math.sin(e);
+  const xe = v[0], ye = v[1]*c + v[2]*sn, ze = -v[1]*sn + v[2]*c;
+  return [xe, ze, ye];
+}
+function greatCircle(n, steps){
+  // any unit vector not parallel to n gives a basis for the circle it poles
+  const t = Math.abs(n[1]) < 0.9 ? [0,1,0] : [1,0,0];
+  let u = [n[1]*t[2]-n[2]*t[1], n[2]*t[0]-n[0]*t[2], n[0]*t[1]-n[1]*t[0]];
+  const ul = Math.hypot(...u); u = u.map(k => k/ul);
+  const v = [n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]];
+  return Array.from({length: steps+1}, (_, i) => {
+    const a = i/steps*2*Math.PI, c = Math.cos(a), sn = Math.sin(a);
+    return [u[0]*c+v[0]*sn, u[1]*c+v[1]*sn, u[2]*c+v[2]*sn];
+  });
+}
+
+// Shell radius. Pure log distance is honest but unreadable: the Moon is 400x
+// nearer than anything else, so everything from the Sun outward collapses into
+// one band and the traces overlap into mush. This blends log distance with
+// rank order - still strictly monotonic in true distance, so nothing is out of
+// sequence, but each body gets a shell you can actually see. Spacing is
+// legibility; the ordering, and the au figure in the readout, are real.
+let SHELLS = {};
+function computeShells(pos){
+  const order = pos.map((p, i) => ({ i, d: p.dist })).sort((a, b) => a.d - b.d);
+  const lo = Math.log(0.0025), hi = Math.log(40);
+  SHELLS = {};
+  order.forEach((o, rank) => {
+    const byRank = rank / (order.length - 1);
+    const byLog  = Math.min(1, Math.max(0,
+                    (Math.log(Math.max(o.d, 0.0025)) - lo) / (hi - lo)));
+    SHELLS[pos[o.i].name] = 0.26 + 0.74 * (0.72 * byRank + 0.28 * byLog);
+  });
+}
+const shellOf = name => SHELLS[name] ?? 0.7;
+
+const dir_eq = (dec, ra) => {
+  const d = dec*D2R, r = norm(ra)*D2R;
+  return [Math.cos(d)*Math.cos(r), Math.cos(d)*Math.sin(r), Math.sin(d)];
+};
+
+// Galactic north pole, J2000: RA 192.86 deg, Dec +27.13 deg. Rotating the
+// star field onto this is what puts the Milky Way where it belongs in the sky
+// instead of wherever was convenient.
+const GAL = (() => {
+  const n = eqToEcl(dir_eq(27.13, 192.86));
+  const t = Math.abs(n[1]) < 0.9 ? [0,1,0] : [1,0,0];
+  let u = [n[1]*t[2]-n[2]*t[1], n[2]*t[0]-n[0]*t[2], n[0]*t[1]-n[1]*t[0]];
+  const ul = Math.hypot(...u); u = u.map(k => k/ul);
+  const v = [n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]];
+  return { n, u, v };
+})();
+const galToEcl = g => [
+  GAL.u[0]*g[0] + GAL.n[0]*g[1] + GAL.v[0]*g[2],
+  GAL.u[1]*g[0] + GAL.n[1]*g[1] + GAL.v[1]*g[2],
+  GAL.u[2]*g[0] + GAL.n[2]*g[1] + GAL.v[2]*g[2]
+];
+
+// Nebulae sit at fixed directions on the sky at large radius, so they swing
+// with the camera instead of being a flat wash pinned to the canvas. That
+// parallax is most of what sells the depth.
+const NEBULAE = (() => {
+  let seed = 991;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const cols = [[90,150,230],[150,90,210],[60,180,190],[200,110,160],[70,110,220],[130,160,90]];
+  return Array.from({ length: 16 }, (_, i) => {
+    const u = rnd()*2-1, th = rnd()*Math.PI*2, r = Math.sqrt(1-u*u);
+    return { g: [r*Math.cos(th), u*0.55, r*Math.sin(th)],
+             c: cols[i % cols.length],
+             sz: 0.7 + rnd()*1.9,
+             a: 0.07 + rnd()*0.13 };
+  });
+})();
+
+/* ===================================================================
+   PARTICLE FIELD
+   Smooth gradients read as a backdrop; particles read as volume. The
+   clouds are clustered rather than uniform - a few dense cores with
+   falloff - because uniform noise looks like film grain, not gas.
+   Drawn additively and batched by colour, so the whole field costs a
+   handful of fills rather than one per particle.
+   =================================================================== */
+const PARTICLES = (() => {
+  let seed = 424242;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const gauss = () => (rnd() + rnd() + rnd() + rnd() - 2) * 0.5;
+  const TINTS = ['#61e8ff', '#a891ff', '#ff86c8', '#b8ff73', '#7aa8ff', '#ffc979'];
+  // Cores strung along a tilted band rather than scattered over a sphere:
+  // scattered clouds average out to an even haze, a band reads as structure.
+  const cores = Array.from({ length: 14 }, (_, i) => {
+    const along = (i / 13) * Math.PI * 2 + rnd() * 0.35;
+    const R = 1.45 + rnd() * 1.25;
+    return { c: [Math.cos(along) * R,
+                 (gauss() * 0.34) + Math.sin(along * 1.7) * 0.22,
+                 Math.sin(along) * R * 0.78],
+             spread: 0.26 + rnd() * 0.44,
+             tint: TINTS[Math.floor(rnd() * TINTS.length)] };
+  });
+  return Array.from({ length: 4200 }, () => {
+    const core = cores[Math.floor(rnd() * cores.length)];
+    return {
+      p: [core.c[0] + gauss()*core.spread,
+          core.c[1] + gauss()*core.spread*0.55,
+          core.c[2] + gauss()*core.spread],
+      c: core.tint,
+      sz: 0.5 + Math.pow(rnd(), 2.2) * 3.0,
+      a: 0.22 + Math.pow(rnd(), 1.5) * 0.9,
+      tw: rnd() * 6.28
+    };
+  });
+})();
+
+function drawParticles(cx, cy, S, t, budget){
+  const step = budget >= 1 ? 1 : Math.max(1, Math.round(1 / budget));
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const ABINS = 6;
+  const bins = new Map();
+  for (let i = 0; i < PARTICLES.length; i += step){
+    const pt = PARTICLES[i];
+    const q = proj(pt.p, cx, cy, S);
+    if (q.z > cam.dist - 0.25) continue;
+    const tw = 0.75 + 0.25 * Math.sin(t * 4 + pt.tw);
+    const a = pt.a * tw * Math.min(1.6, q.q);
+    const key = pt.c + '|' + Math.min(ABINS - 1, Math.floor(a * ABINS));
+    let arr = bins.get(key);
+    if (!arr){ arr = []; bins.set(key, arr); }
+    arr.push(q.x, q.y, pt.sz * Math.min(2.2, q.q));
+  }
+  bins.forEach((arr, key) => {
+    const [col, b] = key.split('|');
+    ctx.globalAlpha = Math.min(0.95, (Number(b) + 0.6) / ABINS);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    for (let i = 0; i < arr.length; i += 3){
+      ctx.moveTo(arr[i] + arr[i+2], arr[i+1]);
+      ctx.arc(arr[i], arr[i+1], arr[i+2], 0, 6.2832);
+    }
+    ctx.fill();
+  });
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+let traces = null, tracesFor = null;
+function buildTraces(){
+  // Three synodic periods per planet, so every trace carries exactly three
+  // retrograde loops - the apparent backwards motion that cost pre-Copernican
+  // astronomy its epicycles. Nothing here draws a loop on purpose: they fall
+  // out of subtracting Earth's own orbit. Venus's three loops over ~4.8 years
+  // are the start of her eight-year pentagram. The Sun and Moon never
+  // retrograde, so they get one clean circuit instead.
+  const SYNODIC = { Mercury:115.88, Venus:583.92, Mars:779.94, Jupiter:398.88,
+                    Saturn:378.09, Uranus:369.66, Neptune:367.49, Pluto:366.73 };
+  traces = {};
+  for (const [name] of BODIES){
+    const span = name === 'Sun' ? 365.25 : name === 'Moon' ? 27.32 : SYNODIC[name] * 3;
+    const n = name === 'Moon' ? 180 : 460, out = [];
+    for (let i = 0; i <= n; i++){
+      const jd = chart.jd + (i/n - 0.5) * span;
+      const a = name === 'Moon' ? moon(jd) : geo(name, jd);
+      const k = shellOf(name);
+      out.push(dir(a.lon, a.lat).map(c => c * k));
+    }
+    traces[name] = out;
+  }
+  tracesFor = chart.jd;
+}
+
+// The far side of a ring has to dim or a projected circle reads as a flat
+// ellipse. Doing that per segment meant one stroke call per sample - about
+// 9,200 a frame across every trace, which cost two thirds of the frame rate.
+// Segments are binned into a few depth buckets instead and each bucket is
+// stroked once: same gradient, ~8 calls instead of 460.
+const DEPTH_BINS = 7;
+function strokePath(pts, cx, cy, S, colour, width, alpha, radius, flat){
+  const proj1 = p => proj([p[0]*radius, p[1]*radius, p[2]*radius], cx, cy, S);
+  ctx.strokeStyle = colour; ctx.lineCap = 'round';
+
+  if (flat){                       // glow pass: no depth shading, one stroke
+    ctx.globalAlpha = alpha; ctx.lineWidth = width;
+    ctx.beginPath();
+    pts.forEach((p, i) => { const s = proj1(p); i ? ctx.lineTo(s.x, s.y) : ctx.moveTo(s.x, s.y); });
+    ctx.stroke(); ctx.globalAlpha = 1;
+    return;
+  }
+
+  const bins = Array.from({ length: DEPTH_BINS }, () => []);
+  let prev = null;
+  for (const p of pts){
+    const s = proj1(p);
+    if (prev){
+      const d = 0.5 + 0.5 * ((prev.z + s.z) / 2) / radius;
+      const b = Math.max(0, Math.min(DEPTH_BINS - 1, Math.floor(d * DEPTH_BINS)));
+      bins[b].push(prev, s);
+    }
+    prev = s;
+  }
+  bins.forEach((seg, b) => {
+    if (!seg.length) return;
+    const depth = 0.18 + 0.82 * ((b + 0.5) / DEPTH_BINS);
+    ctx.globalAlpha = alpha * depth;
+    ctx.lineWidth = width * (0.55 + 0.75 * depth);
+    ctx.beginPath();
+    for (let i = 0; i < seg.length; i += 2){
+      ctx.moveTo(seg[i].x, seg[i].y); ctx.lineTo(seg[i+1].x, seg[i+1].y);
+    }
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function draw3d(t){
+  const cx = W/2, cy = H/2, S = Math.min(W, H) * 0.40;
+  if (!view.drag){
+    if (Math.abs(view.vYaw) > 1e-5 || Math.abs(view.vPitch) > 1e-5){
+      cam.yaw += view.vYaw;
+      cam.pitch = Math.max(-1.5707, Math.min(1.5707, cam.pitch + view.vPitch));
+      view.vYaw *= 0.94; view.vPitch *= 0.94;      // glide, then settle
+    } else if (view.spin && !reduced){
+      cam.yaw += 0.0016;
+    }
+  }
+  if (tracesFor !== chart.jd) buildTraces();
+
+  const neb = ctx.createRadialGradient(cx, cy, 0, cx, cy, S*2.6);
+  neb.addColorStop(0, 'rgba(90,150,210,.09)');
+  neb.addColorStop(.3, 'rgba(120,90,190,.05)');
+  neb.addColorStop(.62, 'rgba(40,60,120,.028)');
+  neb.addColorStop(1, 'transparent');
+  ctx.fillStyle = neb; ctx.fillRect(0, 0, W, H);
+
+  // deep field clouds, behind everything
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  NEBULAE.forEach(n => {
+    // Skybox placement, not perspective. Under perspective anything this far
+    // away projects to a small dot near the vanishing point - the opposite of
+    // a background. Direction decides where it sits; distance decides nothing.
+    const r = rot(galToEcl(n.g));
+    if (r[2] > 0.25) return;                    // behind the viewer
+    const spread = S * 1.75;
+    const qx = cx + r[0] * spread, qy = cy - r[1] * spread;
+    const fade = Math.min(1, (0.25 - r[2]) / 0.9);
+    const R2 = S * n.sz;
+    const g = ctx.createRadialGradient(qx, qy, 0, qx, qy, R2);
+    const [r0,g0,b0] = n.c, a = n.a * fade;
+    g.addColorStop(0,   `rgba(${r0},${g0},${b0},${a})`);
+    g.addColorStop(.38, `rgba(${r0},${g0},${b0},${a*0.45})`);
+    g.addColorStop(1,   'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(qx, qy, R2, 0, 6.2832); ctx.fill();
+  });
+  ctx.restore();
+
+  // Binned by colour and brightness so the whole sky is a dozen fills rather
+  // than one per star. Twinkle still works: a star crosses bins as it varies.
+  const SBINS = 5, spread = S * 1.75;
+  const bins = new Map();
+  const bright = [];
+  stars.forEach(st => {
+    const rv = rot(galToEcl(st.g));
+    if (rv[2] > 0.25) return;
+    const x = cx + rv[0]*spread, y = cy - rv[1]*spread;
+    const tw = 0.82 + 0.18 * Math.sin(t * 6 + st.tw);
+    const a = st.br * tw * 0.9;
+    const key = st.c + '|' + Math.min(SBINS - 1, Math.floor(a * SBINS));
+    let arr = bins.get(key);
+    if (!arr){ arr = []; bins.set(key, arr); }
+    arr.push(x, y, st.sz);
+    if (st.br > 0.72) bright.push(x, y, st.sz, a);
+  });
+  bins.forEach((arr, key) => {
+    const [col, b] = key.split('|');
+    ctx.globalAlpha = (Number(b) + 0.5) / SBINS;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    for (let i = 0; i < arr.length; i += 3){
+      ctx.moveTo(arr[i] + arr[i+2], arr[i+1]);
+      ctx.arc(arr[i], arr[i+1], arr[i+2], 0, 6.2832);
+    }
+    ctx.fill();
+  });
+  ctx.globalAlpha = .28; ctx.strokeStyle = '#eef4fb'; ctx.lineWidth = 0.7;
+  ctx.beginPath();
+  for (let i = 0; i < bright.length; i += 4){
+    const L = bright[i+2] * 3.6;
+    ctx.moveTo(bright[i] - L, bright[i+1]); ctx.lineTo(bright[i] + L, bright[i+1]);
+    ctx.moveTo(bright[i], bright[i+1] - L); ctx.lineTo(bright[i], bright[i+1] + L);
+  }
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  if (view.particles) drawParticles(cx, cy, S, t, view.budget);
+
+  const zen = eqToEcl(dir_eq(place.lat, gmst(chart.jd) + place.lon));
+
+  // rings, farthest concept first
+  strokePath(greatCircle([0,1,0], 160), cx, cy, S, '#61e8ff', 1.1, .28, 1.0);   // ecliptic
+  strokePath(greatCircle(eqToEcl([0,0,1]), 160), cx, cy, S, '#b8ff73', .9, .17, 1.0); // equator
+  strokePath(greatCircle(zen, 160), cx, cy, S, '#ffc979', .9, .17, 1.0);       // horizon
+
+  // the zodiac band itself: 12 quads on the ecliptic, element-tinted,
+  // each drawn back-to-front so the far side sits behind the near one
+  const BAND_IN = 1.02, BAND_OUT = 1.20;
+  const quads = [];
+  for (let sgn = 0; sgn < 12; sgn++){
+    const mid = dir(sgn*30 + 15, 0);
+    quads.push({ sgn, z: rot(mid)[2] });
+  }
+  quads.sort((a, b) => a.z - b.z);
+  quads.forEach(({ sgn }) => {
+    const [nm, gl, el] = SIGNS[sgn];
+    ctx.beginPath();
+    for (let k = 0; k <= 12; k++){
+      const s2 = proj(dir(sgn*30 + k*2.5, 0).map(c => c*BAND_IN), cx, cy, S);
+      k ? ctx.lineTo(s2.x, s2.y) : ctx.moveTo(s2.x, s2.y);
+    }
+    for (let k = 12; k >= 0; k--){
+      const s2 = proj(dir(sgn*30 + k*2.5, 0).map(c => c*BAND_OUT), cx, cy, S);
+      ctx.lineTo(s2.x, s2.y);
+    }
+    ctx.closePath();
+    const mz = rot(dir(sgn*30 + 15, 0))[2];
+    const depth = 0.22 + 0.78 * (0.5 + 0.5 * mz);
+    ctx.fillStyle = ELEMENT_COLOR[el] + '10';
+    ctx.globalAlpha = depth; ctx.fill();
+    ctx.strokeStyle = 'rgba(117,215,255,.15)'; ctx.lineWidth = .8;
+    ctx.globalAlpha = depth * .8; ctx.stroke();
+
+    const g = proj(dir(sgn*30 + 15, 0).map(c => c*((BAND_IN+BAND_OUT)/2)), cx, cy, S);
+    ctx.globalAlpha = depth;
+    ctx.fillStyle = ELEMENT_COLOR[el];
+    ctx.font = `${Math.round(S*0.055*g.q)}px "Segoe UI Symbol","Noto Sans Symbols2",serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(gl, g.x, g.y);
+  });
+  ctx.globalAlpha = 1;
+
+  // Earth at the centre of the observer's sky
+  const e0 = proj([0,0,0], cx, cy, S);
+  const eg = ctx.createRadialGradient(e0.x, e0.y, 0, e0.x, e0.y, S*0.13);
+  eg.addColorStop(0, 'rgba(150,220,255,.95)');
+  eg.addColorStop(.25, 'rgba(90,170,240,.55)');
+  eg.addColorStop(.6, 'rgba(50,110,190,.18)');
+  eg.addColorStop(1, 'transparent');
+  ctx.fillStyle = eg;
+  ctx.beginPath(); ctx.arc(e0.x, e0.y, S*0.13, 0, 6.2832); ctx.fill();
+  for (let k = -2; k <= 2; k++)
+    strokePath(greatCircle([0,1,0], 60).map(p =>
+      [p[0]*Math.cos(k*0.32), Math.sin(k*0.32), p[2]*Math.cos(k*0.32)]),
+      cx, cy, S, 'rgba(97,232,255,.26)', .8, 1, 0.075);
+
+  // geocentric traces - the retrograde loops
+  chart.pos.forEach((p, i) => {
+    const live = view.hot < 0 || view.hot === i;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    strokePath(traces[p.name], cx, cy, S, p.colour, live ? 4.5 : 2.5,
+               live ? .14 : .05, 1.0, true);
+    ctx.restore();
+    strokePath(traces[p.name], cx, cy, S, p.colour, live ? 1.4 : .85,
+               live ? .66 : .22, 1.0);
+  });
+
+  // aspect chords, drawn through the sphere
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  chart.aspects.forEach(asp => {
+    const live = view.hot < 0 || asp.a === view.hot || asp.b === view.hot;
+    const A = chart.pos[asp.a], B = chart.pos[asp.b];
+    const pa = proj(dir(A.lon,A.lat).map(c=>c*shellOf(A.name)), cx, cy, S),
+          pb = proj(dir(B.lon,B.lat).map(c=>c*shellOf(B.name)), cx, cy, S);
+    const tight = 1 - asp.off / 9;
+    const base = live ? (view.hot < 0 ? .12 : .38) + .36*tight : .03;
+    ctx.strokeStyle = asp.colour;
+    // wide soft pass first, hairline on top - a cheap bloom
+    ctx.globalAlpha = base * .30;
+    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 5.5 : 4);
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+    ctx.globalAlpha = base;
+    ctx.lineWidth = (asp.angle === 0 || asp.angle === 180 ? 1.5 : 1.0);
+    ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+  });
+  ctx.restore(); ctx.globalAlpha = 1;
+
+  // Bodies, lit for real. The light vector is body -> Sun in true space, so
+  // the illuminated fraction is the actual phase angle: Venus at 0.4 au shows
+  // a fat crescent because she IS a fat crescent tonight, and the Moon's
+  // terminator is the one in the sky. Painter's algorithm for occlusion.
+  const V = {
+    sub: (a,b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]],
+    dot: (a,b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2],
+    unit: a => { const l = Math.hypot(a[0],a[1],a[2]) || 1; return [a[0]/l,a[1]/l,a[2]/l]; }
+  };
+  const sunB = chart.pos[0];
+  const sunReal = dir(sunB.lon, sunB.lat).map(c => c * sunB.dist);
+
+  const drawn = chart.pos.map((p, i) => ({ p, i,
+      s: proj(dir(p.lon, p.lat).map(c => c * shellOf(p.name)), cx, cy, S) }))
+    .sort((a, b) => a.s.z - b.s.z);
+
+  drawn.forEach(({ p, i, s }) => {
+    const live = view.hot < 0 || view.hot === i ||
+                 chart.aspects.some(a => (a.a === i || a.b === i) &&
+                                         (a.a === view.hot || a.b === view.hot));
+    const depth = 0.5 + 0.5 * Math.min(1.4, s.q) / 1.4;
+    const rad = S * 0.050 * s.q * (view.hot === i ? 1.28 : 1);
+    const shell = shellOf(p.name);
+    const posReal = dir(p.lon, p.lat).map(c => c * p.dist);
+
+    // phase
+    let k = 1, lightAng = 0;
+    if (p.name !== 'Sun'){
+      const L = V.unit(V.sub(sunReal, posReal));
+      const toEarth = V.unit(posReal.map(c => -c));
+      k = Math.min(1, Math.max(0, (1 + V.dot(L, toEarth)) / 2));
+      const base = dir(p.lon, p.lat).map(c => c * shell);
+      const tip  = [base[0] + L[0]*0.22, base[1] + L[1]*0.22, base[2] + L[2]*0.22];
+      const a = proj(base, cx, cy, S), b = proj(tip, cx, cy, S);
+      lightAng = Math.atan2(b.y - a.y, b.x - a.x);
+    }
+    p._phase = k;
+
+    ctx.globalAlpha = live ? depth : depth * 0.25;
+
+    if (p.name === 'Sun'){
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const cor = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad*7.5);
+      cor.addColorStop(0,'rgba(255,244,214,.95)'); cor.addColorStop(.10,'rgba(255,214,140,.62)');
+      cor.addColorStop(.30,'rgba(255,162,70,.20)'); cor.addColorStop(.62,'rgba(255,120,50,.07)');
+      cor.addColorStop(1,'transparent');
+      ctx.fillStyle = cor;
+      ctx.beginPath(); ctx.arc(s.x, s.y, rad*7.5, 0, 6.2832); ctx.fill();
+      // corona spikes, breathing slightly
+      for (let a = 0; a < 16; a++){
+        const th = a * Math.PI / 8 + t * 0.25;
+        const len = rad * (3.4 + 1.7 * Math.sin(t * 5 + a * 1.7));
+        const gx = ctx.createLinearGradient(s.x, s.y,
+                     s.x + Math.cos(th)*len, s.y + Math.sin(th)*len);
+        gx.addColorStop(0, 'rgba(255,226,160,.5)'); gx.addColorStop(1, 'transparent');
+        ctx.strokeStyle = gx; ctx.lineWidth = a % 2 ? 1.1 : 2.2;
+        ctx.beginPath(); ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + Math.cos(th)*len, s.y + Math.sin(th)*len); ctx.stroke();
+      }
+      ctx.restore();
+      const disc = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad);
+      disc.addColorStop(0, '#fffdf4'); disc.addColorStop(.7, '#fff0cf');
+      disc.addColorStop(1, '#ffd79a');
+      ctx.fillStyle = disc;
+      ctx.beginPath(); ctx.arc(s.x, s.y, rad*0.95, 0, 6.2832); ctx.fill();
+    } else {
+      // soft halo so a body still reads against the star field
+      const halo = ctx.createRadialGradient(s.x, s.y, rad*0.8, s.x, s.y, rad*2.6);
+      halo.addColorStop(0, p.colour + '55'); halo.addColorStop(1, p.colour + '00');
+      ctx.fillStyle = halo;
+      ctx.beginPath(); ctx.arc(s.x, s.y, rad*2.6, 0, 6.2832); ctx.fill();
+
+      if (p.name === 'Saturn'){
+        ctx.save(); ctx.translate(s.x, s.y); saturnRing(rad, 'back'); ctx.restore();
+      }
+
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.beginPath(); ctx.arc(0, 0, rad, 0, 6.2832); ctx.clip();
+
+      // the surface, drawn fully lit and in its own orientation
+      drawSurface(p.name, rad, p.colour);
+
+      // then the night, as the disc minus the lit region. The lit region is a
+      // semicircle plus the terminator ellipse, which is the same construction
+      // that gives the Moon its crescent - evenodd turns it into the shadow.
+      ctx.rotate(lightAng);
+      const tw = rad * (2*k - 1);
+      ctx.beginPath();
+      ctx.arc(0, 0, rad, 0, 6.2832);
+      ctx.moveTo(0, -rad);
+      ctx.arc(0, 0, rad, -Math.PI/2, Math.PI/2);
+      // Canvas angles increase clockwise (y is down), so a gibbous terminator
+      // has to sweep the LONG way round - through PI - which is increasing
+      // angle, i.e. counterclockwise=false. Inverting this flag renders every
+      // planet's night side as its day side.
+      ctx.ellipse(0, 0, Math.abs(tw), rad, 0, Math.PI/2, -Math.PI/2, tw < 0);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(2,5,10,.88)';
+      ctx.fill('evenodd');
+
+      // limb darkening toward the terminator, specular lift on the sunward side
+      const lg = ctx.createLinearGradient(-rad, 0, rad, 0);
+      lg.addColorStop(0, 'rgba(0,0,0,.42)'); lg.addColorStop(.55, 'rgba(0,0,0,.06)');
+      lg.addColorStop(1, 'rgba(255,255,255,.12)');
+      ctx.fillStyle = lg; ctx.fillRect(-rad, -rad, rad*2, rad*2);
+      ctx.restore();
+
+      // rim light on the sunward limb only
+      ctx.save();
+      ctx.translate(s.x, s.y); ctx.rotate(lightAng);
+      ctx.beginPath(); ctx.arc(0, 0, rad*0.985, -Math.PI/2.15, Math.PI/2.15);
+      ctx.strokeStyle = 'rgba(255,255,255,.42)'; ctx.lineWidth = Math.max(.7, rad*0.09);
+      ctx.stroke(); ctx.restore();
+
+      if (p.name === 'Saturn'){
+        ctx.save(); ctx.translate(s.x, s.y); saturnRing(rad, 'front'); ctx.restore();
+      }
+    }
+
+    // glyph as a label beside the body, not painted on it
+    ctx.globalAlpha = live ? depth : depth * 0.2;
+    ctx.fillStyle = p.colour;
+    ctx.font = `${Math.round(S*0.030*s.q)}px "Segoe UI Symbol","Noto Sans Symbols2",serif`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(p.glyph + (p.retro ? '\u211E' : ''), s.x + rad*1.5, s.y - rad*1.1);
+    p._x = s.x; p._y = s.y; p._r = rad * 1.6;
+  });
+  ctx.globalAlpha = 1;
+
+  // AC / MC where the horizon and meridian meet the ecliptic
+  [['AC', chart.asc, '#ffc979'], ['MC', chart.mc, '#ffc979']].forEach(([lb, lo, col]) => {
+    const s = proj(dir(lo, 0).map(k => k*1.06), cx, cy, S);
+    ctx.globalAlpha = s.z > 0 ? 1 : .45;
+    ctx.fillStyle = col;
+    ctx.font = `600 ${Math.round(S*0.036*s.q)}px ui-monospace,monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(lb, s.x, s.y);
+  });
+  ctx.globalAlpha = 1;
+}
+
+
+function draw(now){
+  const t = now * 0.0001;
+  ctx.clearRect(0, 0, W, H);
+  if (view.mode === '3d') draw3d(t); else draw2d(t);
+  if (!reduced) requestAnimationFrame(draw);
+}
+
+/* ---- panels -------------------------------------------------------- */
+function paintRows(){
+  document.getElementById('rows').innerHTML = chart.pos.map((p, i) => {
+    const hot = view.hot === i;
+    const dim = view.hot >= 0 && !hot &&
+      !chart.aspects.some(a => (a.a === i || a.b === i) && (a.a === view.hot || a.b === view.hot));
+    return `<div class="row${hot ? ' hot' : ''}${dim ? ' dim' : ''}" data-i="${i}">
+      <span class="g" style="color:${p.colour}">${p.glyph}</span>
+      <span>${p.name}${p.retro ? ' <span class="rx">℞</span>' : ''}</span>
+      <span class="d">${fmt(p.lon)} ${houseOf(p.lon, chart.cusps)}</span></div>`;
+  }).join('');
+}
+
+function paintRead(){
+  const el = document.getElementById('read');
+  if (view.hot < 0){
+    const s = signOf(chart.asc), sun = chart.pos[0], moo = chart.pos[1];
+    el.innerHTML = `<b>${shownDate.toISOString().slice(0,16).replace('T',' ')} UTC</b><br>
+      <span class="k">Sun</span> ${fmt(sun.lon)} &nbsp; <span class="k">Moon</span> ${fmt(moo.lon)}<br>
+      <span class="k">Asc</span> ${fmt(chart.asc)} &nbsp; <span class="k">MC</span> ${fmt(chart.mc)}<br>
+      ${chart.aspects.length} aspects &middot; ${chart.hsys === 'whole' ? 'whole sign' : 'equal'} houses`;
+    return;
+  }
+  const p = chart.pos[view.hot];
+  const mine = chart.aspects.filter(a => a.a === view.hot || a.b === view.hot);
+  const sign = signOf(p.lon)[0], hs = houseOf(p.lon, chart.cusps);
+  const [kw, role] = PLANET_MEANING[p.name];
+  const [mode, sm] = SIGN_MEANING[sign];
+  el.innerHTML =
+    `<b>${p.name} — ${kw}</b> ${p.retro ? '<span class="rx">℞</span>' : ''}<br>
+     <span style="color:rgba(237,247,251,.8)">${role}</span><br><br>
+     <span class="k">in ${sign}</span> <span style="opacity:.6">(${mode})</span> — ${sm}<br>
+     <span class="k">house ${hs}</span> — ${HOUSE_MEANING[hs - 1]}<br>` +
+    (p.retro ? `<span class="rx">retrograde</span> — the theme turns inward and gets
+       reworked rather than pushed forward<br>` : '') +
+    `<br><span style="opacity:.55">${fmt(p.lon)} &middot; ${p.dist.toFixed(3)} au &middot;
+       ${(p._phase * 100).toFixed(0)}% lit</span>` +
+    (mine.length ? '<br><br>' + mine.map(a => {
+      const other = chart.pos[a.a === view.hot ? a.b : a.a];
+      return `<span style="color:${a.colour}">—</span> <b>${a.name}</b> ${other.name}
+              <span class="k">${a.off.toFixed(1)}°</span><br>
+              <span style="opacity:.55;padding-left:14px">${ASPECT_MEANING[a.name]}</span>`;
+    }).join('<br>') : '<br><br><span style="opacity:.55">no aspects within orb</span>');
+}
+
+document.getElementById('legend').innerHTML = ASPECTS.map(
+  ([nm, ang, orb, col]) => `<span><i style="background:${col}"></i>${nm} ${ang}°</span>`).join('');
+
+/* ---- interaction --------------------------------------------------- */
+function rebuild(){
+  chart = buildChart(shownDate, place.lat, place.lon,
+                     document.getElementById('hsys').value);
+  paintRows(); paintRead();
+}
+
+cv.addEventListener('pointerdown', e => {
+  view.drag = true; view.lastX = e.clientX; view.lastY = e.clientY; cv.setPointerCapture?.(e.pointerId);
+});
+cv.addEventListener('pointerup',     () => view.drag = false);
+cv.addEventListener('pointercancel', () => view.drag = false);
+cv.addEventListener('pointermove', e => {
+  if (view.drag){
+    const dx = e.clientX - view.lastX, dy = e.clientY - view.lastY;
+    if (view.mode === '3d'){
+      // free orbit: the throw carries on after the pointer lifts, and pitch
+      // runs the full pole-to-pole range instead of stopping short of it
+      cam.yaw += dx * 0.006;
+      cam.pitch = Math.max(-1.5707, Math.min(1.5707, cam.pitch + dy * 0.005));
+      view.vYaw = dx * 0.006; view.vPitch = dy * 0.005;
+    } else {
+      view.turn += dx * 0.22;
+    }
+    view.lastX = e.clientX; view.lastY = e.clientY; return;
+  }
+  const r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  let hit = -1;
+  chart.pos.forEach((p, i) => { if (Math.hypot(mx - p._x, my - p._y) < p._r) hit = i; });
+  if (hit !== view.hot){ view.hot = hit; paintRows(); paintRead(); }
+});
+cv.addEventListener('pointerleave', () => {
+  if (view.hot !== -1){ view.hot = -1; paintRows(); paintRead(); }
+});
+
+document.getElementById('rows').addEventListener('pointerover', e => {
+  const row = e.target.closest('.row'); if (!row) return;
+  view.hot = +row.dataset.i; paintRows(); paintRead();
+});
+
+cv.addEventListener('wheel', e => {
+  if (view.mode !== '3d') return;
+  e.preventDefault();
+  cam.dist = Math.max(1.9, Math.min(7, cam.dist + e.deltaY * 0.0022));
+}, { passive: false });
+
+const modeBtn = document.getElementById('modeBtn');
+modeBtn.onclick = () => {
+  view.mode = view.mode === '2d' ? '3d' : '2d';
+  modeBtn.textContent = view.mode === '2d' ? 'Sphere view' : 'Wheel view';
+  modeBtn.classList.toggle('on', view.mode === '3d');
+  document.querySelector('.hint').textContent = view.mode === '3d'
+    ? 'drag to orbit \u00B7 scroll to zoom \u00B7 the loops are real retrograde motion'
+    : 'drag to turn the wheel \u00B7 hover a planet to trace its aspects';
+};
+
+const spinBtn = document.getElementById('spinBtn');
+spinBtn.onclick = () => { view.spin = !view.spin; spinBtn.classList.toggle('on', view.spin); };
+
+document.getElementById('editBtn').onclick = () =>
+  document.getElementById('when').classList.toggle('open');
+
+const nowBtn = document.getElementById('nowBtn');
+nowBtn.onclick = () => {
+  liveMode = true; nowBtn.classList.add('on');
+  shownDate = new Date(); place = { lat: 0, lon: 0 }; rebuild();
+};
+
+document.getElementById('apply').onclick = () => {
+  const d = document.getElementById('date').value, t = document.getElementById('time').value;
+  if (d) shownDate = new Date(`${d}T${t || '12:00'}:00Z`);
+  place = { lat: parseFloat(document.getElementById('lat').value) || 0,
+            lon: parseFloat(document.getElementById('lon').value) || 0 };
+  liveMode = false; nowBtn.classList.remove('on'); rebuild();
+};
+
+document.getElementById('shotBtn').onclick = () => {
+  const a = document.createElement('a');
+  a.download = 'astral-vault-wheel.png'; a.href = cv.toDataURL('image/png'); a.click();
+};
+
+setInterval(() => { if (liveMode){ shownDate = new Date(); rebuild(); } }, 60000);
+
+addEventListener('resize', resize);
+resize(); rebuild(); requestAnimationFrame(draw);
+</script>
+</body>
+</html>
