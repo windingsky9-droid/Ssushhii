@@ -118,7 +118,8 @@ zip -r ../../3d-render-pack-vol1.zip renders ../../products/3d-render-pack/READM
 ```
 
 About 16 minutes on software rendering, and considerably less on a machine
-with a real GPU. The result is roughly 360 MB.
+with a real GPU. The archive comes to 357 MB across 483 files — measured, not
+estimated; the build above was run end to end before this was written.
 
 Want it bigger? `python render_farm.py 0 1400` gives 2800 × 2800 and a
 "4K-ready" line in the listing.
