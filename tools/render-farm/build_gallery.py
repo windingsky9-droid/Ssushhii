@@ -69,6 +69,7 @@ html = f'''<!doctype html>
 <title>Studio Product Renders — Volume 1</title>
 <meta name="description" content="{N_RENDERS} royalty-free 3D product renders at 2000x2000. {word(N_PRODUCTS).capitalize()} products, {word(N_COLOURS)} colourways each, {word(N_LIGHTS)} lighting setups, {word(N_ANGLES)} camera angles — one consistent studio rig across every frame.">
 <link rel="canonical" href="https://sushir-saxon.upfling.site/renders/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sushir 3D Studio">
 <meta property="og:title" content="Studio Product Renders — Volume 1">
