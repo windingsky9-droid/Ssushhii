@@ -1,0 +1,39 @@
+Copyright (c) 2026 Sushir Saxon. All rights reserved.
+
+This repository is source-available, not open source.
+
+WHAT YOU MAY DO
+
+You may read this source, run it locally, and learn from it. You may quote
+short excerpts with attribution, for example in a review or an article.
+
+WHAT YOU MAY NOT DO
+
+You may not redistribute this work, in whole or in substantial part, or use it
+in a product or service you offer to others, without written permission.
+
+THE PRODUCT DIRECTORIES ARE SEPARATE
+
+Everything under products/ is commercial work sold under its own terms. Each
+carries its own LICENSE.txt, and that file governs it:
+
+  products/3d-configurator-template/LICENSE.txt
+  products/3d-render-pack/LICENSE.txt
+
+A purchase of one of those grants the rights described there and nothing in
+this file narrows them. Absence of a purchase does not grant them.
+
+THIRD-PARTY MATERIAL
+
+Dependencies listed in requirements.txt remain under their own licences.
+
+NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Enquiries: windingsky9@gmail.com
