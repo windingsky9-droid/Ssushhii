@@ -12,9 +12,14 @@ and they are the difference between a launch and a ban:
 3. **Answer replies for the first two hours.** A post with six answered
    comments outranks a better post with none, on every platform listed here.
 
-Live demo: <https://sushir-saxon.upfling.site/3d/index.html>
-Cart demo: <https://sushir-saxon.upfling.site/3d/store/index.html>
-Renders:   <https://sushir-saxon.upfling.site/renders/>
+Live demo:   <https://sushir-saxon.upfling.site/3d/index.html>
+Cart demo:   <https://sushir-saxon.upfling.site/3d/store/index.html>
+Renders:     <https://sushir-saxon.upfling.site/renders/index.html>
+Free sample: <https://sushir-saxon.upfling.site/renders/sample/index.html>
+
+Ten full-resolution renders are free, with no email gate. For the render pack
+that is the better hook than the gallery — "ten free 2000×2000 renders" gets
+clicked where "look at my gallery" does not, and it costs nothing to give.
 
 ---
 
@@ -130,6 +135,36 @@ easy to get wrong and expensive:
 
 The demo page says in as many words that it trusts the price only because it
 is a demo.
+```
+
+---
+
+## r/graphic_design, r/blender, r/DesignPorn — the render pack
+
+Different product, different room. Lead with the free ten.
+
+**Title**
+
+```
+480 studio product renders from a renderer I wrote myself — 10 of them free, full resolution
+```
+
+**Body**
+
+```
+Free ten: https://sushir-saxon.upfling.site/renders/sample/index.html
+All thirty configurations: https://sushir-saxon.upfling.site/renders/index.html
+
+2000x2000 PNG, commercial use, no attribution, no email gate.
+
+Five products in six colourways each, under four lighting setups, from four
+camera angles. Every frame came out of the same hand-written WebGL2 renderer,
+so the whole set matches — same lighting rig, same camera geometry, same tone
+mapping. That is the part stock photography cannot do: twelve photos from
+three photographers never look like one shoot.
+
+Worth saying plainly: no alpha channel, these are finished studio scenes with
+the backdrop and contact shadow baked in. Not cut-outs, not editable mockups.
 ```
 
 ---
