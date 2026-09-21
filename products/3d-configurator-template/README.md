@@ -66,6 +66,10 @@ candle: {
 }
 ```
 
+**A full worked walkthrough is in [`ADDING-A-PRODUCT.md`](ADDING-A-PRODUCT.md)** —
+it builds the bookshelf speaker from nothing, including the three mistakes that
+make geometry vanish rather than look wrong.
+
 `groundY` is where that product's floor sits, and `aoX` squashes the contact
 shadow along X — 0.58 for something wide like headphones, 1.0 for something
 upright like a bottle. A product may also define `hidden(partName, options)`
@@ -290,9 +294,12 @@ front of paying customers:
   calmer than it would in a renderer that ships an environment map. Small metal
   parts — trim, hardware, caps — are unaffected. This is the trade for shipping
   no texture files at all.
-- **The sample products are headphones, a cosmetic bottle and a table lamp.**
-  Reshaping one into your product is real work — an hour or two if it is a turned or moulded
-  shape, longer if it is not.
+- **The five sample products are invented.** Headphones, a cosmetic bottle, a
+  table lamp, a side table and a bookshelf speaker. Reshaping one into your
+  product is real work — an hour or two if it is a turned or moulded shape,
+  longer if it is not. [`ADDING-A-PRODUCT.md`](ADDING-A-PRODUCT.md) walks the
+  whole job end to end, including the three failure modes that make geometry
+  vanish outright.
 - **Labels are geometry, not artwork.** The bottle's label is a coloured band
   standing proud of the body. Printing an actual logo or text on it needs a
   texture, which this file does not ship.
