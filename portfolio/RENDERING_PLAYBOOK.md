@@ -1,8 +1,8 @@
 # Rendering playbook: from flat to cinematic
 
-This is the checklist behind the V13 Celestial Observatory
+This is the checklist behind the V14 Celestial Observatory
 (`demos/celestial-observatory-cinematic.html`). Each item names what it
-fixes, where it lives in the V13 source, and how to apply it in other
+fixes, where it lives in the V14 source, and how to apply it in other
 tools. Open the demo and use **Compare** (or press `C`) to split the frame
 into a flat baseline and the full stack. Each switch in the Render Stack
 panel turns off one technique so you can see what it adds.
@@ -202,6 +202,28 @@ remap works as a displacement map in Nuke or After Effects.
   panel.
 - It respects `prefers-reduced-motion`.
 
+## 16. Read the sky as a chart
+
+- **Longitude from geometry.** Each body's ecliptic longitude is
+  `atan2(z, x)` in degrees, wrapped to 0–360°. The sign is
+  `floor(L / 30)`, so the numbers always agree with the twelve glyph
+  tiles placed at `i · 30° + 15°` in the 3D scene.
+- **Sign placements.** The target card shows the sign glyph, the degree
+  and minute inside the sign, and a one-word quality for that sign
+  (Scorpio: intense, Capricorn: patient). Glyphs are forced to text
+  presentation with `U+FE0E` so they render as clean line art, not as
+  colored emoji.
+- **Ingresses.** When a body crosses a 30° boundary, the mission log
+  writes a line such as "ARES enters ♌ Leo: radiant drive", combining the
+  body's trait with the sign's quality.
+- **Chart wheel** (`Z`, or `?wheel`). The orrery card flips into a wheel:
+  a sign band, degree ticks, a line for the camera's view direction,
+  aspect chords colored by quality, and fixed-star diamonds. Labels that
+  would collide move out to extra lanes. Click a body on the wheel to fly
+  to it.
+- **Keep it honest.** The reading is a playful layer on live geometry, not
+  a forecast. The scene is synthetic and uses no birth data.
+
 ## Rendering stills from the demo
 
 URL parameters make the scene scriptable for headless capture:
@@ -209,6 +231,7 @@ URL parameters make the scene scriptable for headless capture:
 | Parameter | Effect |
 |---|---|
 | `ui=off` | hides the HUD for clean plates |
+| `wheel` | opens the orrery card as the chart wheel |
 | `shot=hero\|horizon\|ringed\|comet\|top\|erebus\|pulsar` | starts on a camera shot |
 | `tour=3` | starts the director tour at shot 3, with the letterbox and caption |
 | `quality=eco\|balanced\|ultra` | sets the render scale |
@@ -216,6 +239,6 @@ URL parameters make the scene scriptable for headless capture:
 | `dpr=1` | pins the pixel ratio |
 | `t=40` | advances the simulation 40 seconds before the first frame |
 
-The V13 stills were captured with Playwright and Chromium:
+The V14 stills were captured with Playwright and Chromium:
 `page.goto('…/celestial-observatory-cinematic.html?ui=off&shot=ringed')`,
 wait for `window.__ready`, then `page.screenshot()`.

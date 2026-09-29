@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Celestial Observatory V13</title>
+<title>Celestial Observatory V14</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Symbols&family=Syncopate:wght@400;700&display=swap">
@@ -177,6 +177,15 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
 .caption p{margin:0;color:rgba(237,247,251,.74);font-size:10.5px;line-height:1.65}
 .cap-bar{height:2px;margin-top:11px;background:rgba(117,215,255,.14)}
 .cap-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan))}
+/* V14: chart wheel, sign placement */
+.tabs{display:flex;gap:3px}
+.tabs button{padding:2px 6px;border:1px solid var(--line);background:none;color:var(--muted);font-size:8px;letter-spacing:.16em;cursor:pointer}
+.tabs button:hover{color:var(--cream)}
+.tabs button[aria-pressed="true"]{border-color:rgba(255,201,121,.6);color:var(--gold)}
+.tabs button:focus-visible{outline:1px solid var(--lime);outline-offset:2px}
+.sign{margin:-6px 0 10px;font-size:10px;letter-spacing:.08em;color:var(--gold);font-variant-numeric:tabular-nums}
+.sign .gl{font-family:"Noto Sans Symbols","Segoe UI Symbol",var(--f-hud);font-size:12px;margin-right:5px}
+.sign small{color:rgba(237,247,251,.6);font-size:9.5px;letter-spacing:.02em}
 @media (max-height:980px){.radar canvas{width:150px;height:150px}}
 @media (max-width:1320px){.log{display:none}.stack{max-height:calc(100% - 200px)}}
 @media (max-height:1000px){.target .guide{display:none}.aspects li:nth-child(n+4){display:none}}
@@ -209,13 +218,13 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
   <div class="split-line" id="splitLine"></div>
   <button class="split-handle" id="splitHandle" type="button" aria-label="Drag to move the comparison divider">⇆</button>
   <span class="split-label l" id="splitL">BASELINE · FLAT</span>
-  <span class="split-label r" id="splitR">V13 · CINEMATIC STACK</span>
+  <span class="split-label r" id="splitR">V14 · CINEMATIC STACK</span>
 </div>
 
 <header class="hud top">
   <div class="brand">
     <h1>CELESTIAL OBSERVATORY</h1>
-    <p>Sushir 3D Studio · V13 deep field · real-time WebGL2 · synthetic public scene</p>
+    <p>Sushir 3D Studio · V14 chart reading · real-time WebGL2 · synthetic public scene</p>
   </div>
   <div class="status">
     <span class="badge"><i></i>LIVE RENDER</span>
@@ -228,6 +237,7 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
   <div class="card-head"><span>TARGET</span><small id="tgKind">STAR</small></div>
   <h2 id="tgName">SOL</h2>
   <p class="cls" id="tgClass">G2V main-sequence star</p>
+  <p class="sign" id="tgSign"></p>
   <div class="traits" id="tgTraits" aria-label="Traits"></div>
   <p class="guide" id="tgGuide"></p>
   <canvas id="tgViz" width="226" height="64" aria-hidden="true"></canvas>
@@ -239,7 +249,7 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
 </section>
 
 <section class="card radar" aria-label="Orrery map">
-  <div class="card-head"><span>ORRERY</span><small>CLICK A WORLD TO FLY</small></div>
+  <div class="card-head"><span id="radarTitle">ORRERY</span><span class="tabs" role="group" aria-label="Map or chart wheel"><button type="button" id="rv-map" aria-pressed="true">MAP</button><button type="button" id="rv-wheel" aria-pressed="false" title="Chart wheel (Z)">WHEEL</button></span></div>
   <canvas id="radar" width="224" height="224" aria-label="Top-down map of the system. Click a world to fly the camera to it."></canvas>
   <p class="lensline"><span id="lensMM">38 mm</span> · f/2.8 · <b id="evOut">+0.0 EV</b> · ISO 800<br>SUN 5772 K · STARS 3000–12000 K · OBLIQUITY 23.44°</p>
 </section>
@@ -326,7 +336,7 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
       <span class="perfline"><span id="perfMs">— ms</span><span id="perfRes">—</span></span>
     </span></div>
 
-  <p class="tip">Press <kbd>Compare</kbd> or <kbd>C</kbd> to split the frame into a flat baseline and this stack. Shots: <kbd>1</kbd>–<kbd>7</kbd>. <kbd>T</kbd> runs the director tour, <kbd>M</kbd> toggles sound, <kbd>F</kbd> toggles free roam. Click any world, the black hole or the pulsar to fly there. The reading layer is a playful interpretation of live geometry.</p>
+  <p class="tip">Press <kbd>Compare</kbd> or <kbd>C</kbd> to split the frame into a flat baseline and this stack. Shots: <kbd>1</kbd>–<kbd>7</kbd>. <kbd>T</kbd> runs the director tour, <kbd>M</kbd> toggles sound, <kbd>F</kbd> toggles free roam, <kbd>Z</kbd> switches the map to the chart wheel. Click any world, the black hole or the pulsar to fly there. The reading layer is a playful interpretation of live geometry.</p>
   </div>
 </aside>
 
@@ -364,7 +374,7 @@ body.cinema .card,body.cinema .stack,body.cinema .log,body.cinema .tags,body.cin
   <p id="capNote">—</p>
   <div class="cap-bar"><i id="capProg"></i></div>
 </section>
-<div class="loading" id="loading">BUILDING GALAXY · BENDING LIGHT · COMPILING SHADERS</div>
+<div class="loading" id="loading">BUILDING GALAXY · BENDING LIGHT · CASTING THE CHART</div>
 
 <script type="module">
 import * as THREE from 'three';
@@ -1279,6 +1289,12 @@ const VOICE = {
 };
 const MOOD = { ease: 1, gift: 1, thread: 0.3, fuse: 0.4, adjust: -0.4, tense: -1, polar: -0.7 };
 const reading = (x) => { const v = VOICE[x.asp.q](TRAITS[x.a][0], TRAITS[x.b][0]); return v.charAt(0).toUpperCase() + v.slice(1) + '.'; };
+// V14: the zodiac as a second reading layer. Longitude runs around the sun from the start of the ♈ tile, 30° per sign.
+const SIGNS = [['♈', 'Aries', 'bold'], ['♉', 'Taurus', 'steady'], ['♊', 'Gemini', 'curious'], ['♋', 'Cancer', 'protective'], ['♌', 'Leo', 'radiant'], ['♍', 'Virgo', 'precise'],
+  ['♎', 'Libra', 'graceful'], ['♏', 'Scorpio', 'intense'], ['♐', 'Sagittarius', 'restless'], ['♑', 'Capricorn', 'patient'], ['♒', 'Aquarius', 'inventive'], ['♓', 'Pisces', 'boundless']];
+const TEXT = '\uFE0E'; // ask for the text glyph, never the emoji
+const lonOf = (v) => ((Math.atan2(v.z, v.x) * 180 / Math.PI) % 360 + 360) % 360;
+const signAt = (v) => { const L = lonOf(v), i = Math.floor(L / 30) % 12; return { i, deg: L - i * 30, L, s: SIGNS[i] }; };
 const PAIRS = []; for (let i = 0; i < PLANETS.length; i++) for (let j = i + 1; j < PLANETS.length; j++) PAIRS.push([i, j]);
 const aspGeo = new LineSegmentsGeometry(); aspGeo.setPositions(new Float32Array(PAIRS.length * 6)); aspGeo.setColors(new Float32Array(PAIRS.length * 6));
 const aspMat = new LineMaterial({ color: 0xffffff, linewidth: 3.6 * Math.min(window.devicePixelRatio || 1, 2), vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -1537,7 +1553,7 @@ $('sheetBtn').addEventListener('click', () => { const open = $('stack').classLis
 $('stackHead').addEventListener('click', () => { const c = $('stack').classList.toggle('collapsed'); $('stackHead').setAttribute('aria-expanded', String(!c)); });
 $('shotBtn').addEventListener('click', () => {
   composer.render();
-  const a = document.createElement('a'); a.download = 'celestial-observatory-v13.png'; a.href = canvas.toDataURL('image/png'); a.click();
+  const a = document.createElement('a'); a.download = 'celestial-observatory-v14.png'; a.href = canvas.toDataURL('image/png'); a.click();
 });
 addEventListener('keydown', (e) => {
   if (e.target instanceof HTMLInputElement) return;
@@ -1747,13 +1763,21 @@ function cometInfo(){
   const r = cometBody.world.length();
   return { name: COMET.name, kind: 'COMET', cls: 'Long-period comet on a 0.76-eccentricity orbit', guide: GUIDE.COMET, traits: TRAITS.COMET, rows: [['SUN DIST', (r / 19).toFixed(2) + ' AU'], ['ECCENTRICITY', COMET.e.toFixed(2)], ['PERIOD', fmt(365 * Math.pow(COMET.a / 19, 1.5)) + ' d'], ['TAIL', (tailMat.uniforms.uLen.value * 1.3 / 19).toFixed(2) + ' AU']] };
 }
-let vizMode = 'sun';
+let vizMode = 'sun', tgBody = null, tgKey = 'SOL';
+function renderSign(){
+  const el = $('tgSign');
+  if (!tgBody) { el.innerHTML = '<small>The center of the chart: every longitude is measured from here.</small>'; return; }
+  const z = signAt(tgBody.world), min = Math.floor((z.deg % 1) * 60);
+  el.innerHTML = `<span class="gl">${z.s[0]}${TEXT}</span>${z.s[1].toUpperCase()} ${Math.floor(z.deg)}°${String(min).padStart(2, '0')}′ <small>· ${z.s[2]} ${TRAITS[tgKey][0]}</small>`;
+}
 function setTarget(info){
   $('tgName').textContent = info.name; $('tgKind').textContent = info.kind; $('tgClass').textContent = info.cls; $('tgGuide').textContent = info.guide || '';
   $('tgTraits').innerHTML = (info.traits || []).map((t) => `<span>${t.toUpperCase()}</span>`).join('');
   vizMode = info.viz || (follow ? 'phase' : 'sun');
   $('tgData').innerHTML = info.rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
-  drawViz();
+  tgKey = info.kind === 'PULSAR' ? 'PULSAR' : info.kind === 'COMET' ? 'COMET' : info.name;
+  tgBody = info.kind === 'STAR' ? null : info.kind === 'BLACK HOLE' ? bhBody : info.kind === 'PULSAR' ? psrBody : info.kind === 'COMET' ? cometBody : planets.find((p) => p.name === info.name) || null;
+  renderSign(); drawViz();
 }
 // ---------- mission log ----------
 const logItems = [];
@@ -1900,7 +1924,66 @@ function updateLock(){
 // ---------- orrery map ----------
 const radar = $('radar'), rctx = radar.getContext('2d');
 let rdpr = 1;
+// V14 chart wheel: the same sky read as a zodiac. Worlds sit at their longitude around the sun, aspects are chords.
+let radarMode = params.has('wheel') ? 'wheel' : 'map';
+const wheelHits = [];
+function drawWheel(){
+  const W = radar.width, H = radar.height, cx = W / 2, cy = H / 2, k = W / 224;
+  const R0 = W / 2 - 2 * k, R1 = R0 - 22 * k, RP = R1 - 15 * k, RH = RP - 30 * k, P = (a, r) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+  rctx.clearRect(0, 0, W, H); rctx.lineWidth = rdpr; rctx.textAlign = 'center'; rctx.textBaseline = 'middle';
+  for (let i = 0; i < 12; i++) { // sign band
+    const a0 = i * Math.PI / 6, a1 = a0 + Math.PI / 6;
+    rctx.beginPath(); rctx.arc(cx, cy, R0, a0, a1); rctx.arc(cx, cy, R1, a1, a0, true); rctx.closePath();
+    rctx.fillStyle = i % 2 ? 'rgba(168,145,255,0.13)' : 'rgba(168,145,255,0.05)'; rctx.fill();
+    rctx.strokeStyle = 'rgba(214,200,255,0.28)'; rctx.beginPath(); rctx.moveTo(...P(a0, R1)); rctx.lineTo(...P(a0, R0)); rctx.stroke();
+    rctx.fillStyle = '#ebe4ff'; rctx.font = `${Math.round(12 * k)}px "Noto Sans Symbols","Segoe UI Symbol",sans-serif`;
+    const [gx, gy] = P(a0 + Math.PI / 12, (R0 + R1) / 2); rctx.fillText(SIGNS[i][0] + TEXT, gx, gy + 0.5 * k);
+  }
+  rctx.strokeStyle = 'rgba(214,200,255,0.4)';
+  for (const r of [R0, R1]) { rctx.beginPath(); rctx.arc(cx, cy, r, 0, Math.PI * 2); rctx.stroke(); }
+  rctx.strokeStyle = 'rgba(214,200,255,0.32)'; rctx.beginPath(); // degree ticks every 5°
+  for (let d = 0; d < 360; d += 5) { const a = d * Math.PI / 180, l = (d % 30 === 0 ? 6 : d % 10 === 0 ? 3.2 : 1.8) * k; rctx.moveTo(...P(a, R1 - l)); rctx.lineTo(...P(a, R1)); }
+  rctx.stroke();
+  rctx.strokeStyle = 'rgba(117,215,255,0.16)'; rctx.beginPath(); rctx.arc(cx, cy, RH, 0, Math.PI * 2); rctx.stroke();
+  const fwd = tmpB.subVectors(controls.target, camera.position), va = Math.atan2(fwd.z, fwd.x); // where the camera looks
+  rctx.strokeStyle = 'rgba(184,255,115,0.45)'; rctx.setLineDash([2 * rdpr, 3 * rdpr]); rctx.beginPath(); rctx.moveTo(cx, cy); rctx.lineTo(...P(va, R1)); rctx.stroke(); rctx.setLineDash([]);
+  const lonR = (name) => lonOf(planets.find((p) => p.name === name).world) * Math.PI / 180;
+  if (state.aspects) for (const x of activeAspects) {
+    rctx.strokeStyle = x.asp.c; rctx.globalAlpha = x.asp.minor ? 0.35 : 0.75; rctx.lineWidth = rdpr * (x.asp.minor ? 1 : 1.5);
+    rctx.beginPath(); rctx.moveTo(...P(lonR(x.a), RH)); rctx.lineTo(...P(lonR(x.b), RH)); rctx.stroke();
+  }
+  rctx.globalAlpha = 1; rctx.lineWidth = rdpr;
+  for (const b of [bhBody, psrBody]) { // fixed stars on the inner edge of the band
+    const [x, y] = P(lonOf(b.world) * Math.PI / 180, R1 - 4 * k), s = 3 * k;
+    rctx.fillStyle = '#cebeff'; rctx.beginPath(); rctx.moveTo(x, y - s); rctx.lineTo(x + s, y); rctx.lineTo(x, y + s); rctx.lineTo(x - s, y); rctx.closePath(); rctx.fill();
+  }
+  const items = [...planets.map((p) => ({ b: p, L: lonOf(p.world), c: p.trail, t: p.name.slice(0, 2) })), { b: cometBody, L: lonOf(cometBody.world), c: '#dfeaff', t: '☄' }].sort((a, b) => a.L - b.L);
+  let prev = -99, lane = 0;
+  for (const it of items) { lane = it.L - prev < 11 ? lane + 1 : 0; prev = it.L; it.r = RP - lane * 10 * k; }
+  wheelHits.length = 0; rctx.font = `500 ${Math.round(7.5 * k)}px "IBM Plex Mono",monospace`;
+  for (const it of items) {
+    const a = it.L * Math.PI / 180, [x, y] = P(a, it.r);
+    rctx.strokeStyle = it.c; rctx.globalAlpha = 0.45; rctx.beginPath(); rctx.moveTo(...P(a, R1)); rctx.lineTo(...P(a, it.r + 4 * k)); rctx.stroke(); rctx.globalAlpha = 1;
+    rctx.fillStyle = it.c; rctx.beginPath(); rctx.arc(x, y, (it.b.comet ? 2.2 : 3.2) * k, 0, Math.PI * 2); rctx.fill();
+    if (follow === it.b) { rctx.strokeStyle = '#b8ff73'; rctx.beginPath(); rctx.arc(x, y, 6 * k, 0, Math.PI * 2); rctx.stroke(); }
+    const [lx, ly] = P(a, it.r - 9 * k); rctx.fillStyle = 'rgba(237,247,251,0.85)'; rctx.fillText(it.t, lx, ly);
+    wheelHits.push({ x: x / rdpr, y: y / rdpr, b: it.b });
+  }
+  const g = rctx.createRadialGradient(cx, cy, 0, cx, cy, 8 * k); g.addColorStop(0, '#fff6e0'); g.addColorStop(0.35, 'rgba(255,190,110,0.8)'); g.addColorStop(1, 'rgba(255,160,80,0)');
+  rctx.fillStyle = g; rctx.beginPath(); rctx.arc(cx, cy, 8 * k, 0, Math.PI * 2); rctx.fill();
+}
+function setRadarMode(m){
+  radarMode = m;
+  $('rv-map').setAttribute('aria-pressed', String(m === 'map')); $('rv-wheel').setAttribute('aria-pressed', String(m === 'wheel'));
+  $('radarTitle').textContent = m === 'wheel' ? 'CHART WHEEL' : 'ORRERY';
+  radar.setAttribute('aria-label', m === 'wheel' ? 'Zodiac chart wheel: each world sits at its longitude around the sun, and aspects are drawn as chords. Click a world to fly to it.' : 'Top-down map of the system. Click a world to fly the camera to it.');
+  drawRadar();
+}
+$('rv-map').addEventListener('click', () => setRadarMode('map'));
+$('rv-wheel').addEventListener('click', () => setRadarMode('wheel'));
+addEventListener('keydown', (e) => { if (!(e.target instanceof HTMLInputElement) && (e.key === 'z' || e.key === 'Z')) setRadarMode(radarMode === 'wheel' ? 'map' : 'wheel'); });
 function drawRadar(){
+  if (radarMode === 'wheel') { drawWheel(); return; }
   const W = radar.width, H = radar.height; if (!W) return;
   const s = W / 2 / 94, cx = W / 2, cy = H / 2, px = (v) => cx + v.x * s, py = (v) => cy + v.z * s;
   rctx.clearRect(0, 0, W, H); rctx.lineWidth = rdpr;
@@ -1932,6 +2015,14 @@ function drawRadar(){
   rctx.beginPath(); rctx.moveTo(cxp, cyp); rctx.arc(cxp, cyp, 26 * rdpr, ang - 0.5, ang + 0.5); rctx.closePath(); rctx.fill(); rctx.stroke();
 }
 radar.addEventListener('click', (e) => {
+  if (radarMode === 'wheel') {
+    const r = radar.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let best = null, bd = 12;
+    for (const h of wheelHits) { const d = Math.hypot(h.x - x, h.y - y); if (d < bd) { bd = d; best = h.b; } }
+    if (best) best.comet ? goShot('comet') : goShot('planet', false, best);
+    else if (Math.hypot(x - r.width / 2, y - r.height / 2) < 12) goShot('hero');
+    return;
+  }
   const r = radar.getBoundingClientRect(), s = r.width / 2 / 94;
   const wx = (e.clientX - r.left - r.width / 2) / s, wz = (e.clientY - r.top - r.height / 2) / s;
   let best = null, bd = 14 / s;
@@ -1986,6 +2077,9 @@ function updateBodies(step){
     const yr = Math.floor((p.angle - p.phase) / (Math.PI * 2));
     if (p.year === undefined) p.year = yr;
     else if (yr > p.year) { p.year = yr; logEvent(`${p.name} completes year ${yr}`, p.trail); }
+    const si = signAt(p.world).i; // ingress: a world crossing into the next sign
+    if (p.sign === undefined) p.sign = si;
+    else if (si !== p.sign) { p.sign = si; logEvent(`${p.name} enters ${SIGNS[si][0]}${TEXT} ${SIGNS[si][1]}: ${SIGNS[si][2]} ${TRAITS[p.name][0]}`, p.trail); }
   }
   cometBody.prev.copy(cometBody.world);
   const nuBefore = COMET.nu;
@@ -2046,7 +2140,7 @@ function frame(){
     tmpB.subVectors(camera.position, controls.target); const cd = tmpB.length();
     $('cam').textContent = `AZ ${((Math.atan2(tmpB.x, tmpB.z) * 180 / Math.PI + 360) % 360).toFixed(0).padStart(3, '0')}° · EL ${(Math.asin(tmpB.y / cd) * 180 / Math.PI).toFixed(0)}° · ${cd.toFixed(0)} u`;
     $('lensMM').textContent = focalMM(camera.fov).toFixed(0) + ' mm';
-    uiTime = 0; drawRadar(); drawViz(); drawPerf(); $('day').textContent = 'DAY ' + String(Math.floor(day)).padStart(4, '0'); }
+    uiTime = 0; drawRadar(); drawViz(); drawPerf(); renderSign(); $('day').textContent = 'DAY ' + String(Math.floor(day)).padStart(4, '0'); }
   else if (vizMode === 'psr') drawViz();
   const nowMs = performance.now(); fpsFrames++; fpsTime += (nowMs - (frame.last || nowMs)) / 1000;
   if (frame.last) frameMs[frameMsI++ % frameMs.length] = nowMs - frame.last;
@@ -2068,7 +2162,7 @@ function frame(){
 applyScene(state); applyPost(state); syncUI(); resize();
 if (params.has('t')) { const n = Number(params.get('t')); for (let i = 0; i < 60; i++) { time.value += n / 60; updateBodies(n / 60); } }
 updateBodies(0); updateBodies(0);
-renderAspects(); drawRadar(); drawViz();
+renderAspects(); setRadarMode(radarMode); drawViz();
 logEvent('Observatory online: 6 worlds, 5 moons, a comet, a black hole, a pulsar, 20,000 stars', '#61e8ff');
 if (quality !== 'balanced' && !params.has('dpr')) setQuality(quality);
 if (params.has('shot')) goShot(params.get('shot'), true); else goShot('hero', true);

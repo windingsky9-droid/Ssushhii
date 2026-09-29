@@ -1,30 +1,81 @@
-# Sushir 3D Studio showcase
+# Sushir 3D Studio portfolio
 
-This is a buyer-facing portfolio package assembled from the existing 3D work in Downloads.
+A buyer-facing portfolio: one landing page, two live WebGL demos, rendered
+stills and the playbook behind them. Everything here is static HTML, so it
+runs from any file server or static host.
 
-## Open it
+## Preview it locally
 
-Open `index.html` in a browser. The hero image is a curated V11 showpiece, and the work card launches the self-contained V8 observatory demo.
+From the repository root:
 
-For a reliable local preview from PowerShell:
-
-```powershell
-py -m http.server 4173 --directory .
+```bash
+python scripts/serve_portfolio.py --open
 ```
 
-Then visit `http://127.0.0.1:4173`.
+That serves this folder at `http://127.0.0.1:4173` (local machine only).
+On Windows, use `py` instead of `python`. To check that no page links to a
+missing file:
 
-## What is included
+```bash
+python scripts/check_portfolio.py
+```
 
-- `index.html` — polished portfolio/lead-generation page.
-- `media/astral-vault-v11-showpiece.png` — selected cinematic still.
-- `demos/celestial-observatory-cinematic.html` — V13 real-time WebGL2 observatory (three.js r170 from jsDelivr): physically lit procedural planets, filmic tone mapping, HDR bloom, image-based light, blackbody stars, a Keplerian comet with ion and dust tails, five moons, an outer icy belt and deep-sky objects. V13 adds a black hole with screen-space gravitational lensing, a pulsar with a live radio trace, solar flares, meteors, a ten-aspect web with a traits reading, a narrated director tour, synthesized ambient sound and render-scale presets with a frame-time graph. Fly-to, telephoto and free-roam cameras, and a compare split against a flat baseline.
-- `demos/celestial-observatory-public.html` — the earlier V8 2D-canvas preview with drag, zoom, focus, and snapshot controls.
-- `media/celestial-observatory-v13-*.jpg` — stills rendered from the V13 scene: the hero shot, the black hole in a director shot, and the pulsar.
-- `RENDERING_PLAYBOOK.md` — the realism techniques used in V13 and how to apply them to other renders.
+## What's in the folder
 
-The private/name-specific source files remain in Downloads and were not copied into the public showcase. The interactive demo is a fresh synthetic public scene; it does not include personal birth data, exact locations, or private names. The portfolio uses scoped service language and does not promise investment returns.
+| Path | What it is |
+|---|---|
+| `index.html` | Landing page: hero, selected work, services, process, about and contact. |
+| `site-config.js` | Owner settings. Add your own donation or payment links here and the "Support the studio" section turns on. |
+| `demos/celestial-observatory-cinematic.html` | V14 real-time WebGL2 observatory (three.js r170 from jsDelivr). |
+| `demos/celestial-observatory-public.html` | The earlier lightweight 2D-canvas preview, for slow devices. |
+| `media/celestial-observatory-v14-hero.jpg` | Hero still: the ringed world with its sign tiles. |
+| `media/celestial-observatory-v14-erebus.jpg` | Work card still: the lensing black hole as a clean plate. |
+| `media/celestial-observatory-v14-wheel.jpg` | The full HUD: target sign, aspect reading, chart wheel and ingress log. |
+| `media/archive/` | Earlier stills (V11 showpiece, V13 hero, black hole and pulsar), kept for reference. |
+| `RENDERING_PLAYBOOK.md` | The sixteen techniques behind the observatory and how to reuse them. |
 
-## First-revenue use
+## The observatory
 
-Use the three service offers as the first commercial funnel: a tightly scoped API integration, a small dashboard, or a custom 3D/AI build. Confirm scope and licensing before accepting a project. The email and GitHub issue links are prepared but do not submit anything automatically.
+V14 keeps everything from V13: physically lit procedural planets, filmic
+tone mapping, HDR bloom, image-based light, blackbody stars, a Keplerian
+comet, five moons, deep-sky objects, a lensing black hole, a pulsar,
+flares, meteors, a ten-aspect web with a traits reading, a narrated
+director tour, synthesized sound and a compare split against a flat
+baseline.
+
+V14 reads the sky as a chart. Every body shows its zodiac sign and degree,
+ingresses are logged as they happen, and the orrery card flips into a
+chart wheel (`Z`) with aspect chords and fixed stars.
+
+Deep links open it in a specific mode:
+
+| Link | Opens |
+|---|---|
+| `?tour` | the director tour |
+| `?wheel&shot=ringed` | the chart wheel on the ringed world |
+| `?shot=erebus` | the black hole |
+| `?shot=pulsar` | the pulsar |
+| `?compare` | the flat-versus-full split |
+
+The full parameter list is at the end of `RENDERING_PLAYBOOK.md`.
+
+## Taking payments and donations
+
+Money goes straight to accounts you own. Nothing in this folder holds or
+routes funds, and no secret keys belong in these files, because every file
+is public once hosted.
+
+1. Create a page that pays out to you: Ko-fi, Buy Me a Coffee, GitHub
+   Sponsors, a Stripe Payment Link or a Fiverr gig.
+2. Paste its `https://` link into `supportLinks` in `site-config.js`.
+3. Reload the page. The support section and its nav link appear.
+
+For client work, the service cards and the contact form route briefs to
+email and to the GitHub issue template, so you confirm scope before any
+payment.
+
+## Privacy
+
+The demos are synthetic public scenes. They contain no birth data, exact
+locations or private names. Research and market visuals are illustrative
+and make no investment promises.
