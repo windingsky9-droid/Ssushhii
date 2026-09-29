@@ -74,6 +74,9 @@ For client work, the service cards and the contact form route briefs to
 email and to the GitHub issue template, so you confirm scope before any
 payment.
 
+`docs/LAUNCH_KIT_3D.md` has ready-to-post copy for getting the observatory
+seen, a Fiverr gig for 3D work, and a store listing for a wallpaper pack.
+
 ## Privacy
 
 The demos are synthetic public scenes. They contain no birth data, exact
