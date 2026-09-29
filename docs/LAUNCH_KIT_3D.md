@@ -1,10 +1,10 @@
 # 3D launch kit: get the observatory seen, then get paid
 
 This kit turns the Celestial Observatory into attention and income. It has
-four parts: where to post and what to say, a Fiverr gig for 3D work, a
-store listing for the wallpaper pack, and a posting rhythm that doesn't
-get flagged as spam. You post from your own accounts; nothing here posts
-automatically.
+five parts: where to post and what to say, a Fiverr gig for 3D work, store
+listings for two digital packs, how the money reaches you, and a posting
+rhythm that doesn't get flagged as spam. You post from your own accounts;
+nothing here posts automatically.
 
 ## Before you post
 
@@ -163,26 +163,88 @@ effect, UI panels, performance presets for phones, and a handoff README.
 **Gallery:** the V14 hero, the black hole plate, the chart wheel HUD, and
 the screen recording.
 
-## The wallpaper pack
+## The two packs
 
-A pack of 4K-class stills rendered straight from the demo: eight desktop
-wallpapers at 2560×1440 and four phone wallpapers at 1179×2556. Sell it on
-Gumroad, itch.io or Ko-fi Shop. All three pay out to your own account.
+Both sell as instant downloads on Gumroad, itch.io or Ko-fi Shop, and all
+three pay out to your own account. Price them to clear the fixed fees:
+Gumroad keeps 10% + $0.50 of a direct sale and card processing takes
+2.9% + $0.30, so a $3 product leaves about $1.80, while $5 leaves about
+$3.55 and $12 leaves about $9.65. Sales that come through Gumroad's own
+Discover marketplace pay a flat 30% instead.
 
-**Title:** Celestial Observatory Wallpaper Pack (12 renders)
+### Celestial Observatory Wallpaper Pack
 
-**Price:** $3, or pay-what-you-want with a $2 minimum. A low price
-converts people who found you through a post.
+A pack of stills rendered straight from the demo: eight desktop wallpapers
+at 2560×1440 and four phone wallpapers at 1179×2556.
+
+**Title:** Celestial Observatory Wallpaper Pack
+
+**Price:** $5, or pay-what-you-want with a $5 minimum.
 
 **Description:**
-> Twelve renders from a real-time WebGL observatory: a lensing black hole,
-> a pulsar, a ringed giant in its own shadow, a comet and more. Eight
-> desktop wallpapers (2560×1440) and four phone wallpapers (1179×2556).
-> For personal use on your own devices.
+> Twelve renders from a real-time WebGL observatory: a black hole bending
+> its own accretion disk into an Einstein ring, a pulsar sweeping its beams
+> through a nebula, a ringed giant in its own shadow, a comet and more.
+> Eight desktop wallpapers (2560×1440) and four phone wallpapers
+> (1179×2556). For personal use on your own devices.
 
 **License line:** Personal use only. No resale or redistribution.
 
-**Cover image:** the black hole plate.
+**Cover image:** the black hole plate, 1280×720, with a 600×600 thumbnail.
+
+### Zodiac Constellations: 12 Star Map Prints
+
+All twelve zodiac constellations drawn from real star positions, down to
+magnitude 8, with each figure, its official border, a sky grid and the
+Milky Way where it crosses the field. Printable wall art is one of the most
+searched digital downloads, and a zodiac sign makes an easy gift.
+
+**What is in the ZIP (60 files, 23 MB):**
+- Midnight and Cream colorways for every sign
+- Print 4×5 at 2400×3000 (8×10 in at 300 dpi, 16×20 in)
+- A-sizes at 2480×3508 (A4 at 300 dpi, A3)
+- Twelve phone wallpapers at 1179×2556, with the top left clear for the
+  lock-screen clock
+
+**Price:** $12 for the full set. A single-sign listing at $4 can come
+later if buyers ask for one sign only.
+
+**Description:**
+> All twelve zodiac constellations, drawn from real star positions down to
+> the faint stars you would see with binoculars. Each print shows the
+> constellation figure, its official border, a sky grid and the Milky Way
+> where it crosses the field. Print and frame them for your home or give
+> one as a gift.
+
+**Tags:** zodiac, astrology, constellation, star map, printable wall art,
+digital print, celestial decor.
+
+**Credit line (keep it in the README inside the ZIP):** star data from
+d3-celestial, © 2015 Olaf Frohn, BSD 3-Clause license.
+
+**Posts that fit this pack:** the Midnight Scorpio next to the Cream
+Scorpio ("which one would you hang?"), a phone mockup of your own sign,
+and a short clip scrolling through all twelve.
+
+## How the money reaches you
+
+1. In Gumroad, open **Settings → Payments**. Choose Individual unless you
+   have business registration papers, and use your full legal name and a
+   street address.
+2. Pick **bank** or **PayPal**. Gumroad does not let you switch from bank to
+   PayPal later. Bank payouts go through Stripe's identity checks (date of
+   birth, a government ID number such as an SSN, sometimes a photo ID).
+   PayPal payouts only need your name, address, phone and PayPal email, and
+   take 2% per payout.
+3. Set the schedule (weekly, monthly or quarterly). Sales wait in your
+   Gumroad balance and pay out once the balance reaches $100.
+4. From your bank or PayPal, move the money to Cash App, Apple Pay or a
+   card the usual way.
+5. Sellers aged 13 to 17 can sell, but in the US a parent or guardian has
+   to be added to the payout settings before Gumroad pays out.
+
+The money always sits in your own account. No one else, Claude included,
+holds it for you.
 
 ## A rhythm that doesn't get flagged
 

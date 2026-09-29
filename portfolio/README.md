@@ -28,7 +28,7 @@ python scripts/check_portfolio.py
 | `site-config.js` | Owner settings. Add your own donation or payment links here and the "Support the studio" section turns on. |
 | `demos/celestial-observatory-cinematic.html` | V14 real-time WebGL2 observatory (three.js r170 from jsDelivr). |
 | `demos/celestial-observatory-public.html` | The earlier lightweight 2D-canvas preview, for slow devices. |
-| `demos/sky-wheel.html` | Sky Wheel: the real planets for any moment from 1800 to 2050, as a chart wheel with an ephemeris, aspects and upcoming events. |
+| `demos/sky-wheel.html` | Sky Wheel: the real planets for any moment from 1800 to 2050, as a chart wheel set against the real stars, with an ephemeris, aspects, dignities, element balance and upcoming events. |
 | `media/celestial-observatory-v14-hero.jpg` | Hero still: the ringed world with its sign tiles. |
 | `media/celestial-observatory-v14-erebus.jpg` | Work card still: the lensing black hole as a clean plate. |
 | `media/sky-wheel-card.jpg` | Work card still: the Sky Wheel for an evening in Los Angeles. |
@@ -73,12 +73,22 @@ The full parameter list is at the end of `RENDERING_PLAYBOOK.md`.
   lunations
 - a slider and Play button that move time, so you can watch a retrograde
 - a 1080×1350 chart card to save and share
+- the real sky behind the wheel: 3,232 stars to magnitude 5.6, the
+  constellation figures and the Milky Way, placed against the signs by
+  ecliptic longitude and latitude, with the bright stars near the zodiac
+  named
+- essential dignities (at home, exalted, in detriment, in fall) and a tag
+  when a planet sits within 1.5° of a bright fixed star
+- a balance panel that weighs the chart's elements and modes and sums
+  them up in one sentence
 
 Positions come from JPL's Keplerian elements for the planets and a truncated
 lunar theory for the Moon. They were checked against the PyEphem library at
 240 dates: the largest error is 0.21° (Saturn), and the Moon stays within
 0.08°. The Ascendant was checked by confirming that PyEphem puts the computed
 point on the eastern horizon (within 0.006°). Everything runs in the browser.
+Star, constellation and Milky Way data come from d3-celestial, © 2015 Olaf
+Frohn, used under the BSD 3-Clause license.
 When the page is hosted, Copy link shares a moment through `?d=`, `tz=` and
 `place=` parameters.
 
