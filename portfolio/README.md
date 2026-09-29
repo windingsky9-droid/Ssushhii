@@ -18,10 +18,10 @@ Then visit `http://127.0.0.1:4173`.
 
 - `index.html` — polished portfolio/lead-generation page.
 - `media/astral-vault-v11-showpiece.png` — selected cinematic still.
-- `demos/celestial-observatory-cinematic.html` — V12 real-time WebGL2 observatory (three.js r170 from jsDelivr): physically lit procedural planets, filmic tone mapping, HDR bloom, image-based light, blackbody stars, a Keplerian comet with ion and dust tails, five moons, an outer icy belt, deep-sky objects, a live aspect web, a mission log, fly-to and free-roam cameras, and a compare split against a flat baseline.
+- `demos/celestial-observatory-cinematic.html` — V13 real-time WebGL2 observatory (three.js r170 from jsDelivr): physically lit procedural planets, filmic tone mapping, HDR bloom, image-based light, blackbody stars, a Keplerian comet with ion and dust tails, five moons, an outer icy belt and deep-sky objects. V13 adds a black hole with screen-space gravitational lensing, a pulsar with a live radio trace, solar flares, meteors, a ten-aspect web with a traits reading, a narrated director tour, synthesized ambient sound and render-scale presets with a frame-time graph. Fly-to, telephoto and free-roam cameras, and a compare split against a flat baseline.
 - `demos/celestial-observatory-public.html` — the earlier V8 2D-canvas preview with drag, zoom, focus, and snapshot controls.
-- `media/celestial-observatory-v12-*.jpg` — stills rendered from the V12 scene.
-- `RENDERING_PLAYBOOK.md` — the realism techniques used in V12 and how to apply them to other renders.
+- `media/celestial-observatory-v13-*.jpg` — stills rendered from the V13 scene: the hero shot, the black hole in a director shot, and the pulsar.
+- `RENDERING_PLAYBOOK.md` — the realism techniques used in V13 and how to apply them to other renders.
 
 The private/name-specific source files remain in Downloads and were not copied into the public showcase. The interactive demo is a fresh synthetic public scene; it does not include personal birth data, exact locations, or private names. The portfolio uses scoped service language and does not promise investment returns.
 

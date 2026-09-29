@@ -1,8 +1,8 @@
 # Rendering playbook: from flat to cinematic
 
-This is the checklist behind the V12 Celestial Observatory
+This is the checklist behind the V13 Celestial Observatory
 (`demos/celestial-observatory-cinematic.html`). Each item names what it
-fixes, where it lives in the V12 source, and how to apply it in other
+fixes, where it lives in the V13 source, and how to apply it in other
 tools. Open the demo and use **Compare** (or press `C`) to split the frame
 into a flat baseline and the full stack. Each switch in the Render Stack
 panel turns off one technique so you can see what it adds.
@@ -12,7 +12,7 @@ panel turns off one technique so you can see what it adds.
 **What it fixes:** Flat, unlit shapes read as stickers. Real objects have a
 day side, a night side and a terminator between them.
 
-- V12 lights every planet with a single `PointLight` at the sun. Its
+- V13 lights every planet with a single `PointLight` at the sun. Its
   color comes from a 5772 K blackbody, the sun's real surface
   temperature (`blackbody()` in the source).
 - Planet surfaces are procedural and injected into `MeshStandardMaterial`
@@ -142,12 +142,64 @@ HDRIs are CC0.
 - Free roam (`F`, or the button) flies the camera with W A S D, Q/E for
   down and up, drag to look, and Shift to boost.
 
-## 12. Ship it light
+## 12. Bend light with a screen-space lens
 
-- The stills are JPEG at quality 90: 270–420 KB each, instead of a 4.2 MB
+**What it fixes:** A black hole drawn as a black disc reads as a sticker.
+What sells it is the light around it.
+
+- EREBUS's accretion disk is ordinary geometry: a ring mesh, near edge-on,
+  with Keplerian shear (the inner gas laps the outer) and relativistic
+  Doppler beaming, so the side moving toward the camera is brighter and
+  bluer.
+- The last post pass treats EREBUS as a point lens. Each pixel at angle θ
+  from the hole samples the image at θ − θE²/θ. That one formula creates
+  the Einstein ring, lifts the far side of the disk over the shadow and
+  folds a second image under it.
+- The Einstein radius is set in world units and projected every frame, so
+  a telephoto lens magnifies it correctly. The near side of the disk is
+  composited back over the shadow.
+
+**Elsewhere:** in Blender, a real black hole needs a ray-marched shader
+(for example, bending rays in an OSL script). For a poster, the same θE²/θ
+remap works as a displacement map in Nuke or After Effects.
+
+## 13. Periodic signals and stellar activity
+
+- The pulsar's beams sweep a cone around its spin axis. The axis is tilted
+  so one beam always crosses the camera. The flash is measured from the
+  angle between the beam and the line of sight, never faked on a timer. The
+  target card plots it as a live radio trace.
+- Magnetic loops arch off the sun as thick lines with flowing pulses. Every
+  half minute or so, one flares: the loop brightens, the corona swells, and
+  the mission log records the flare class.
+- Meteors are short gradient lines anchored where the camera was when they
+  appeared, so they stay put while you orbit.
+
+## 14. Direct the camera, and let the image explain itself
+
+- **Director mode** (`T`) runs an eight-shot tour with letterbox bars and
+  a caption that names the technique on screen. Each move eases over
+  3.6 s, and focal length tweens with position, so a move into a
+  telephoto shot reads as a real lens change.
+- **Traits reading.** Every world carries three traits. The aspect web now
+  tracks ten aspects, from the conjunction through the quincunx. Each one
+  turns into a sentence by quality: fusing, easy, tense, polar,
+  adjusting, gifted or a quiet thread. A mood meter weights them by how
+  exact they are. This is a playful interpretation layer on top of live
+  geometry.
+- **Sound** (`M`) is synthesized with the Web Audio API: a drone, a sub,
+  a noise "solar wind", a click for each pulsar pulse, a chime when a
+  major aspect forms, and a low swell for flares. It stays off until you
+  turn it on.
+
+## 15. Ship it light
+
+- The stills are JPEG at quality 90: 230–420 KB each, instead of a 4.2 MB
   PNG.
 - The demo lowers its pixel ratio automatically when frame rate drops
-  below 28 fps.
+  below 28 fps. Render-scale presets (Eco 1×, Balanced up to 2×, Ultra up to
+  2.5× supersampling) and a live frame-time graph sit in the Performance
+  panel.
 - It respects `prefers-reduced-motion`.
 
 ## Rendering stills from the demo
@@ -157,11 +209,13 @@ URL parameters make the scene scriptable for headless capture:
 | Parameter | Effect |
 |---|---|
 | `ui=off` | hides the HUD for clean plates |
-| `shot=hero\|horizon\|ringed\|comet\|top` | starts on a camera shot |
+| `shot=hero\|horizon\|ringed\|comet\|top\|erebus\|pulsar` | starts on a camera shot |
+| `tour=3` | starts the director tour at shot 3, with the letterbox and caption |
+| `quality=eco\|balanced\|ultra` | sets the render scale |
 | `compare=0.5` | opens the split view with the divider at that fraction |
 | `dpr=1` | pins the pixel ratio |
 | `t=40` | advances the simulation 40 seconds before the first frame |
 
-The V12 stills were captured with Playwright and Chromium:
+The V13 stills were captured with Playwright and Chromium:
 `page.goto('…/celestial-observatory-cinematic.html?ui=off&shot=ringed')`,
 wait for `window.__ready`, then `page.screenshot()`.
