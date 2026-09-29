@@ -1551,9 +1551,22 @@ document.querySelectorAll('[data-speed]').forEach((b) => b.addEventListener('cli
 }));
 $('sheetBtn').addEventListener('click', () => { const open = $('stack').classList.toggle('open'); $('sheetBtn').setAttribute('aria-expanded', String(open)); });
 $('stackHead').addEventListener('click', () => { const c = $('stack').classList.toggle('collapsed'); $('stackHead').setAttribute('aria-expanded', String(!c)); });
+// Inside the claude.ai artifact viewer a page can't trigger downloads itself; the
+// viewer's downloads capability shows a save prompt instead. Elsewhere, a plain link works.
+let viewerDownloads = null;
+if (window.claude && typeof window.claude.use === 'function') window.claude.use('downloads').then((d) => { viewerDownloads = d; }, () => {});
 $('shotBtn').addEventListener('click', () => {
   composer.render();
-  const a = document.createElement('a'); a.download = 'celestial-observatory-v14.png'; a.href = canvas.toDataURL('image/png'); a.click();
+  const filename = 'celestial-observatory-v14.png';
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    if (viewerDownloads) {
+      viewerDownloads.save({ filename, data: blob }).then(() => logEvent('Snapshot saved: ' + filename, '#b8ff73'), (e) => { if (e && e.code !== 'declined') logEvent('Snapshot could not be saved here', '#ffc979'); });
+      return;
+    }
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.download = filename; a.href = url; a.click(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }, 'image/png');
 });
 addEventListener('keydown', (e) => {
   if (e.target instanceof HTMLInputElement) return;
