@@ -235,3 +235,28 @@ A new demo is **one self-contained HTML file** in `portfolio/demos/`. To add one
    - no horizontal overflow at 390px;
    - no console errors;
    - the WebGL fallback still renders when three.js is blocked.
+
+### Studio Figma library
+
+The studio tokens also live in Figma: [Sushir 3D Studio — Design System](https://www.figma.com/design/gD9czMXM2tz6yVWAAu9tCp), page **Foundations**. Every variable carries its CSS custom property as WEB code syntax, so `get_variable_defs` and Dev Mode return `var(--sun)` and not a hex value.
+
+| Figma variable (collection `Studio`, mode `Dark`) | CSS token |
+|---|---|
+| `surface/ground`, `surface/deck`, `surface/deck-2` | `--ground`, `--deck`, `--deck-2` |
+| `text/ink`, `text/haze` | `--ink`, `--haze` |
+| `line/rule` | `--rule` |
+| `accent/sun`, `accent/orbit`, `accent/glyph`, `accent/flare`, `accent/frost` | `--sun`, `--orbit`, `--glyph`, `--flare`, `--frost` |
+| `accent/sun-soft`, `accent/orbit-soft` | `--sun-soft`, `--orbit-soft` |
+| `radius/card` | `--radius` |
+
+The text styles are `Display/Hero`, `Display/Section`, `Display/Card`, `Body/Default`, `Body/Button`, `Label/Eyebrow`, `Label/HUD`, `Readout/Value` and `Readout/Chip`. They match the type scale in section 1. Figma cannot set the width axis of Bricolage Grotesque, so apply the `font-stretch` from section 1 when you translate a Display style.
+
+The file also has three components:
+
+| Figma component | Maps to |
+|---|---|
+| `Button` (`Style=Primary`, `Style=Ghost`) | `.btn-sun`, `.btn-ghost` |
+| `Chip` | `.toolkit li` |
+| `Posture badge` (`Constructive`, `Mixed`, `Defensive`) | `.posture` in `demos/factor-terrain.html` |
+
+When a token changes, update the page `:root` blocks first, then the matching Figma variable.
