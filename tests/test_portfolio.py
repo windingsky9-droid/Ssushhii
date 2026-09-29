@@ -53,3 +53,8 @@ def test_workflow_demo_uses_synthetic_contacts_only():
     emails = set(re.findall(r"[\w.+-]+@[\w-]+(?:\.[A-Za-z]{2,})+", html))
     assert emails, "expected sample customer addresses in the synthetic run"
     assert all(email.endswith("@example.com") for email in emails)
+
+
+def test_demos_label_their_data_as_synthetic():
+    for page in sorted((PORTFOLIO / "demos").glob("*.html")):
+        assert "synthetic" in page.read_text(encoding="utf-8").lower(), page.name

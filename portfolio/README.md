@@ -19,7 +19,7 @@ Then visit `http://127.0.0.1:4173`.
 - `index.html` — portfolio and lead-generation page with a live three.js orrery hero, live azimuth/elevation readouts, and a UTC clock.
 - `media/astral-vault-v11-showpiece.png` — selected cinematic still (original, 3601 × 1639).
 - `media/astral-vault-v11-showpiece.webp` — 1800 px web copy of the still (about 120 KB) used by the page; the PNG stays as the fallback.
-- `demos/celestial-observatory-public.html` — self-contained synthetic public observatory preview with drag, zoom, focus, and snapshot controls.
+- `demos/celestial-observatory-public.html` — real-time three.js observatory: seven synthetic bodies on Kepler orbits (periods from Kepler's third law, speeds from vis-viva), lit by a procedural core. Includes a body catalog, live distance/speed/true-anomaly telemetry, time rates from pause to 100 days per second, a five-shot cinematic tour, and PNG snapshots. Every body and value is synthetic.
 - `demos/workflow-constellation.html` — the n8n 3D workflow study (originally `n8n-docs/docs/assets/3d-visualizations/workflow-3d.html`) rebuilt as an eight-node order-intake graph: orbit and pinch-zoom, node details, a conditional IF branch, animated data packets, and a replayable synthetic run log. Sample customers use `example.com` addresses and nothing leaves the page.
 
 Both 3D pages load three.js r128 from cdnjs and fonts from Google Fonts; `tests/test_portfolio.py` checks that every local link resolves and that no other external host is referenced.

@@ -57,6 +57,7 @@
     h1{margin:0;font:800 clamp(28px,4.2vw,50px)/.92 var(--display);font-stretch:80%;letter-spacing:-.02em;text-wrap:balance}
     .title p{margin:10px 0 0;color:var(--haze);font-size:14px;max-width:30rem}
     .status{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--rule);border-radius:999px;background:var(--deck);backdrop-filter:blur(10px);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .status em{font-style:normal}
     .status i{width:7px;height:7px;border-radius:50%;background:var(--haze)}
     .status[data-state="running"] i{background:var(--sun);box-shadow:0 0 10px var(--sun);animation:blink 1s ease-in-out infinite}
     .status[data-state="done"] i{background:var(--orbit);box-shadow:0 0 10px var(--orbit)}
@@ -102,6 +103,9 @@
     }
     @media (max-width:899px){
       .title p{display:none}
+      h1{font-size:26px}
+      .back{margin-bottom:6px}
+      .status .sim{display:none}
       .details{top:auto;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);width:auto;z-index:2}
       .details:not(.open){display:none}
       .details .close{display:block;position:absolute;top:10px;right:10px;padding:6px 10px;border:1px solid var(--rule);border-radius:8px;background:transparent;font-size:12px}
@@ -282,7 +286,7 @@
       if(nextVertical!==vertical){vertical=nextVertical;relayout()}
       // Keep the graph clear of the console: shift left of the details panel on wide
       // screens, and up between the title bar and the bottom sheet on narrow ones.
-      const desktop=w>=900,topPad=desktop?0:124,botPad=desktop?0:215;
+      const desktop=w>=900,topPad=desktop?0:140,botPad=desktop?0:215;
       const sx=desktop?Math.min(340,w*.26):0,sy=botPad-topPad;
       camera.aspect=w/h;
       if(sx||sy)camera.setViewOffset(w+sx,h+sy,sx,sy,w,h);else camera.clearViewOffset();
@@ -332,7 +336,7 @@
     // Synthetic run
     let runNo=0,orderNo=1041,running=false,runT0=0;
     const log=$('#log'),statusEl=$('#status');
-    function setStatus(state,text){statusEl.dataset.state=state;statusEl.querySelector('span').textContent=text}
+    function setStatus(state,text,note){statusEl.dataset.state=state;const s=statusEl.querySelector('span');s.textContent=text;if(note){const em=document.createElement('em');em.className='sim';em.textContent=note;s.appendChild(em)}}
     function setState(n,s,text){n.state=s;n.tag.dataset.state=s;n.tag.querySelector('.st').textContent=text;if(n.id===selected)$('#d-run').textContent=n.last||text}
     function money(v){return '$'+v.toFixed(2)}
     function plan(run){
@@ -394,7 +398,7 @@
             }
             send(e,()=>{if(--waiting[e.b.id]===0)exec(e.b)});
           });
-          if(--remaining===0){running=false;$('#run').disabled=false;$('#run').textContent='Run again';setStatus('done',`Done · ${p.total} ms simulated`)}
+          if(--remaining===0){running=false;$('#run').disabled=false;$('#run').textContent='Run again';setStatus('done',`Done · ${p.total} ms`,' simulated')}
         },reduced?0:380);
       };
       exec(byId.webhook);
