@@ -100,6 +100,41 @@ Upload the V14 stills from `portfolio/media/` and the screen recording. Use
 the title "Celestial Observatory" and link the live demo in the
 description. These sites are where studios look for freelancers.
 
+### The Sky Wheel: the easiest thing to share
+
+`YOUR-LINK/demos/sky-wheel.html` shows where the real planets were at any
+moment from 1800 to 2050. People look up their own birthday, save the chart
+card, and post it, which carries your link with it. Lead with that.
+
+**r/astrology, r/AskAstrologers** (read the self-promotion rules; some ask
+for a flair or a specific day):
+> I built a free chart wheel that runs entirely in your browser. Pick a date,
+> time and city and it shows signs, degrees, retrogrades, whole-sign houses,
+> aspects with days until exact, the Moon's phase and the next 45 days of
+> ingresses and stations. Nothing is sent anywhere. I checked the positions
+> against the PyEphem library: within a quarter of a degree from 1800 to 2050.
+> Feedback welcome: YOUR-LINK/demos/sky-wheel.html
+
+**r/dataisbeautiful or r/InternetIsBeautiful** (strict rules; post as a tool,
+no hype):
+> A chart wheel of the real sky for any date since 1800, with a slider to
+> watch planets go retrograde.
+
+**TikTok, Reels, Shorts** (screen-record, 15 seconds):
+1. Type a birthday and pick a city.
+2. Tap Play at 1 week/s and let Mercury loop backwards.
+3. End on Save chart card.
+
+Caption: "the sky the day you were born, in 10 seconds (free, no signup)".
+
+**X or Threads:**
+> What the sky looked like the moment you were born: signs, houses, aspects,
+> Moon phase. Free, in your browser, nothing uploaded.
+> YOUR-LINK/demos/sky-wheel.html
+
+A Fiverr gig can grow from this, "I will build a custom astrology or
+astronomy web app". The Sky Wheel is the proof piece.
+
 ## Fiverr gig 4: interactive 3D scenes
 
 This complements the three gigs in `FIVERR_SELLER_KIT.md`.
