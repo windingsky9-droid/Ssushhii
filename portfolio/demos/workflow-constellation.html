@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="An order-intake automation rendered as a navigable 3D graph with a replayable synthetic run.">
+  <title>Workflow Constellation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    /* Layout: full-bleed 3D graph; console panels pinned to the corners like an observatory control deck */
+    :root{
+      --ground:#04070c;
+      --deck:rgba(8,14,22,.82);
+      --rule:rgba(214,232,255,.14);
+      --ink:#eef3f7;
+      --haze:#8e9bab;
+      --sun:#f6c177;
+      --orbit:#4fe0c8;
+      --glyph:#a898f0;
+      --flare:#ff7a66;
+      --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+      --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+      --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      --edge:calc(env(safe-area-inset-left,0px) + 20px);
+      color-scheme:dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{overflow:hidden;background:var(--ground);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+    [hidden]{display:none!important}
+    button{font:inherit;color:inherit;cursor:pointer}
+    a{color:inherit}
+    :focus-visible{outline:2px solid var(--orbit);outline-offset:3px}
+
+    .scene{position:fixed;inset:0;touch-action:none;cursor:grab}
+    .scene.dragging{cursor:grabbing}
+    .scene canvas{display:block;width:100%;height:100%}
+    .labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+
+    .tag{position:absolute;left:0;top:0;display:grid;gap:1px;padding:6px 9px 7px;border:1px solid var(--rule);border-radius:8px;background:var(--deck);backdrop-filter:blur(8px);text-align:left;pointer-events:auto;white-space:nowrap;transition:border-color .25s,opacity .25s;will-change:transform}
+    .tag .k{font:500 9.5px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+    .tag strong{font:600 13px/1.25 var(--body)}
+    .tag .st{font:400 10.5px/1.3 var(--mono);color:var(--haze);font-variant-numeric:tabular-nums}
+    .tag[data-state="running"]{border-color:var(--c)}
+    .tag[data-state="done"] .st{color:var(--c)}
+    .tag[data-state="skipped"]{opacity:.45}
+    .tag[aria-pressed="true"]{border-color:var(--ink)}
+    .branch{position:absolute;left:0;top:0;padding:1px 6px;border-radius:4px;background:var(--ground);border:1px solid var(--rule);font:500 10px/1.4 var(--mono);color:var(--glyph);letter-spacing:.08em}
+
+    .bar{position:fixed;top:calc(env(safe-area-inset-top,0px) + 18px);left:var(--edge);right:calc(env(safe-area-inset-right,0px) + 20px);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;pointer-events:none}
+    .bar > *{pointer-events:auto}
+    .title{max-width:34rem;min-width:0}
+    .back{display:inline-block;margin-bottom:10px;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--haze);text-decoration:none}
+    .back:hover{color:var(--sun)}
+    h1{margin:0;font:800 clamp(28px,4.2vw,50px)/.92 var(--display);font-stretch:80%;letter-spacing:-.02em;text-wrap:balance}
+    .title p{margin:10px 0 0;color:var(--haze);font-size:14px;max-width:30rem}
+    .status{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--rule);border-radius:999px;background:var(--deck);backdrop-filter:blur(10px);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .status i{width:7px;height:7px;border-radius:50%;background:var(--haze)}
+    .status[data-state="running"] i{background:var(--sun);box-shadow:0 0 10px var(--sun);animation:blink 1s ease-in-out infinite}
+    .status[data-state="done"] i{background:var(--orbit);box-shadow:0 0 10px var(--orbit)}
+    @keyframes blink{50%{opacity:.35}}
+
+    .panel{position:fixed;border:1px solid var(--rule);border-radius:14px;background:var(--deck);backdrop-filter:blur(14px)}
+    .panel h2{margin:0;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--haze)}
+    .details{top:calc(env(safe-area-inset-top,0px) + 76px);right:calc(env(safe-area-inset-right,0px) + 20px);width:300px;padding:16px 18px 18px}
+    .details .kind{display:inline-block;margin-top:14px;padding:3px 8px;border-radius:999px;border:1px solid var(--c);color:var(--c);font:500 10px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+    .details h3{margin:8px 0 6px;font:700 26px/1 var(--display);font-stretch:85%}
+    .details p{margin:0;color:var(--haze);font-size:13.5px}
+    .details dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule);font:400 12px/1.4 var(--mono)}
+    .details dt{color:var(--haze)}
+    .details dd{margin:0;min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+    .details .close{display:none}
+
+    .runlog{left:var(--edge);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);width:min(430px,calc(100% - 40px));padding:14px 0 6px}
+    .runlog header{display:flex;justify-content:space-between;gap:12px;padding:0 16px 10px;border-bottom:1px solid var(--rule)}
+    .runlog header span{font:400 11px/1 var(--mono);color:var(--haze);font-variant-numeric:tabular-nums;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .runlog ol{list-style:none;margin:0;padding:4px 0;max-height:216px;overflow:auto}
+    .runlog li{display:grid;grid-template-columns:62px 104px 1fr auto;gap:10px;align-items:baseline;padding:5px 16px;font:400 11.5px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+    .runlog li time{color:var(--haze)}
+    .runlog li b{font-weight:500;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .runlog li span{min-width:0;color:var(--ink);overflow-wrap:anywhere}
+    .runlog li em{font-style:normal;color:var(--haze)}
+    .runlog li.skip span{color:var(--haze)}
+    .runlog .empty{display:block;color:var(--haze)}
+
+    .controls{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);display:flex;gap:8px}
+    .controls button{padding:11px 16px;border:1px solid var(--rule);border-radius:10px;background:var(--deck);backdrop-filter:blur(10px);font-weight:500;font-size:13px;white-space:nowrap}
+    .controls button:hover{border-color:var(--haze)}
+    .controls .primary{background:var(--sun);border-color:var(--sun);color:var(--ground);font-weight:600}
+    .controls .primary:disabled{opacity:.55;cursor:progress}
+    .hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);transform:translateX(-50%);margin:0;font:400 11px/1 var(--mono);color:var(--haze);white-space:nowrap;pointer-events:none}
+
+    .fallback{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
+    .fallback p{max-width:28rem;color:var(--haze)}
+
+    @media (max-width:1100px){
+      .runlog{width:min(380px,calc(100% - 40px))}
+      .runlog li{grid-template-columns:56px 92px 1fr}
+      .runlog li em{display:none}
+    }
+    @media (max-width:899px){
+      .title p{display:none}
+      .details{top:auto;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);width:auto;z-index:2}
+      .details:not(.open){display:none}
+      .details .close{display:block;position:absolute;top:10px;right:10px;padding:6px 10px;border:1px solid var(--rule);border-radius:8px;background:transparent;font-size:12px}
+      .runlog{left:12px;right:12px;width:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);padding-top:10px}
+      .runlog ol{max-height:92px}
+      .controls{left:12px;right:12px;transform:none;bottom:calc(env(safe-area-inset-bottom,0px) + 16px)}
+      .controls button{flex:1;padding:11px 8px}
+      .hint{display:none}
+      .tag{padding:4px 7px 5px}
+      .tag .k{display:none}
+      .tag strong{font-size:12px}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene" aria-hidden="true"></div>
+  <div class="labels" id="labels"></div>
+
+  <header class="bar">
+    <div class="title">
+      <a class="back" href="../index.html">← Sushir 3D Studio</a>
+      <h1>Workflow Constellation</h1>
+      <p>An order-intake automation from the n8n workflow study, rebuilt as a 3D graph you can orbit and run. Every value is synthetic and nothing leaves the page.</p>
+    </div>
+    <div class="status" id="status" role="status" data-state="idle"><i></i><span>Idle</span></div>
+  </header>
+
+  <aside class="panel details" id="details" aria-live="polite">
+    <h2>Selected node</h2>
+    <button type="button" class="close" id="close-details">Close</button>
+    <span class="kind" id="d-kind">Trigger</span>
+    <h3 id="d-name">Webhook</h3>
+    <p id="d-does">Fires when the storefront posts a new order.</p>
+    <dl>
+      <dt>Outputs</dt><dd id="d-out">order_id, items[], customer_id</dd>
+      <dt>Last run</dt><dd id="d-run">Not run yet</dd>
+    </dl>
+  </aside>
+
+  <section class="panel runlog" aria-labelledby="log-title">
+    <header><h2 id="log-title">Run log</h2><span id="run-meta">No runs yet</span></header>
+    <ol id="log"><li class="empty">Press Run workflow to execute the graph.</li></ol>
+  </section>
+
+  <p class="hint">Drag to orbit · scroll or pinch to zoom · select a node for details</p>
+  <nav class="controls" aria-label="Scene controls">
+    <button type="button" class="primary" id="run">Run workflow</button>
+    <button type="button" id="motion" aria-pressed="false">Pause motion</button>
+    <button type="button" id="reset">Reset view</button>
+  </nav>
+
+  <div class="fallback" id="fallback" hidden><p id="fallback-text"></p></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+  (function(){
+    const $=s=>document.querySelector(s);
+    const css=getComputedStyle(document.documentElement);
+    const tok=n=>css.getPropertyValue(n).trim();
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const KIND={
+      trigger:{label:'Trigger',color:tok('--sun')},
+      action:{label:'Action',color:tok('--orbit')},
+      logic:{label:'Logic',color:tok('--glyph')},
+      output:{label:'Output',color:tok('--flare')}
+    };
+    const NODES=[
+      {id:'webhook',name:'Webhook',kind:'trigger',pos:[-21,0,0],does:'Fires when the storefront posts a new order to /orders/new.',out:'order_id, items[], customer_id'},
+      {id:'fetch',name:'HTTP Request',kind:'action',pos:[-11,5.5,-2],does:'Fetches the customer record from the CRM API.',out:'customer.name, customer.email, customer.tier'},
+      {id:'code',name:'Code',kind:'action',pos:[-11,-5.5,2],does:'Normalizes line items and computes the order total.',out:'items[], total_usd'},
+      {id:'merge',name:'Merge',kind:'logic',pos:[-1,0,0],does:'Joins the order and the customer on customer_id.',out:'order + customer'},
+      {id:'email',name:'Send Email',kind:'output',pos:[9,6,-1.5],does:'Sends the order confirmation to the customer.',out:'message_id'},
+      {id:'route',name:'IF',kind:'logic',pos:[9,-5.5,1.5],does:'Sends orders above $500 down the sales-alert branch.',out:'true → Slack, false → stop'},
+      {id:'slack',name:'Slack',kind:'output',pos:[19,-5.5,0],does:'Posts high-value orders to #sales-alerts.',out:'ts'},
+      {id:'log',name:'Log Result',kind:'output',pos:[20,4,0],does:'Appends one row per run to the operations sheet.',out:'row_id'}
+    ];
+    const EDGES=[['webhook','fetch'],['webhook','code'],['fetch','merge'],['code','merge'],['merge','email'],['merge','route'],['route','slack','true'],['email','log'],['slack','log']];
+    const COST={webhook:[3,6],fetch:[160,320],code:[8,18],merge:[2,4],email:[220,380],route:[1,2],slack:[140,260],log:[80,150]};
+    const PEOPLE=[['Ana Rivera','ana.rivera@example.com','gold'],['Jon Okafor','jon.okafor@example.com','standard'],['Mei Tanaka','mei.tanaka@example.com','gold'],['Luis Ortega','luis.ortega@example.com','standard']];
+    const byId=Object.fromEntries(NODES.map(n=>[n.id,n]));
+
+    function fail(msg){$('#fallback-text').textContent=msg;$('#fallback').hidden=false;$('#run').disabled=true}
+    if(!window.THREE){fail('The 3D engine did not load. Check the connection and reload the page.');return}
+    let renderer;
+    try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'})}catch(e){fail('This browser has WebGL turned off, so the 3D scene cannot start.');return}
+
+    const host=$('#scene'), labels=$('#labels');
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    renderer.setClearColor(new THREE.Color(tok('--ground')),1);
+    host.appendChild(renderer.domElement);
+
+    const scene=new THREE.Scene();
+    scene.fog=new THREE.FogExp2(new THREE.Color(tok('--ground')),0.0065);
+    const camera=new THREE.PerspectiveCamera(45,1,0.1,600);
+
+    function glowTexture(){
+      const c=document.createElement('canvas');c.width=c.height=128;
+      const g=c.getContext('2d'),r=g.createRadialGradient(64,64,0,64,64,64);
+      r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.22,'rgba(255,255,255,.5)');r.addColorStop(1,'rgba(255,255,255,0)');
+      g.fillStyle=r;g.fillRect(0,0,128,128);
+      return new THREE.CanvasTexture(c);
+    }
+    const GLOW=glowTexture();
+    const glowSprite=(color,opacity,scale)=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color,transparent:true,opacity,blending:THREE.AdditiveBlending,depthWrite:false}));s.scale.setScalar(scale);return s};
+
+    // Starfield and floor
+    (function(){
+      const n=1400,pos=new Float32Array(n*3),col=new Float32Array(n*3);
+      const tints=[new THREE.Color(tok('--ink')),new THREE.Color(tok('--orbit')),new THREE.Color(tok('--sun')),new THREE.Color(tok('--glyph'))];
+      for(let i=0;i<n;i++){
+        const r=110+Math.random()*160,t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1);
+        pos.set([r*Math.sin(p)*Math.cos(t),r*Math.cos(p),r*Math.sin(p)*Math.sin(t)],i*3);
+        const c=tints[i%9===0?1:i%13===0?2:i%17===0?3:0];col.set([c.r,c.g,c.b],i*3);
+      }
+      const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+      scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:1.1,vertexColors:true,transparent:true,opacity:.8,depthWrite:false,fog:false})));
+    })();
+    const grid=new THREE.GridHelper(140,70,new THREE.Color(tok('--orbit')),new THREE.Color(tok('--haze')));
+    grid.material.transparent=true;grid.material.opacity=.07;grid.material.depthWrite=false;scene.add(grid);
+
+    // Nodes
+    const BOX=new THREE.BoxGeometry(2.6,2.6,2.6), EDGE_BOX=new THREE.EdgesGeometry(BOX), CORE=new THREE.IcosahedronGeometry(.62,1);
+    const LOOK={idle:{core:.55,halo:.16,cage:.42,scale:1},running:{core:1,halo:.95,cage:1,scale:1.22},done:{core:.95,halo:.38,cage:.85,scale:1},skipped:{core:.1,halo:.02,cage:.14,scale:.92}};
+    const picks=[];
+    NODES.forEach((n,i)=>{
+      const color=new THREE.Color(KIND[n.kind].color);
+      n.color=color;n.hex=KIND[n.kind].color;n.state='idle';n.idx=i;
+      n.group=new THREE.Group();
+      n.shell=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color,transparent:true,opacity:.06,depthWrite:false}));
+      n.cage=new THREE.LineSegments(EDGE_BOX,new THREE.LineBasicMaterial({color,transparent:true,opacity:.42}));
+      n.core=new THREE.Mesh(CORE,new THREE.MeshBasicMaterial({color,transparent:true,opacity:.55}));
+      n.halo=glowSprite(color,.16,6.5);
+      n.group.add(n.halo,n.shell,n.cage,n.core);n.shell.userData.id=n.id;picks.push(n.shell);
+      n.cur={...LOOK.idle};n.base=new THREE.Vector3();
+      scene.add(n.group);
+      const tag=document.createElement('button');
+      tag.type='button';tag.className='tag';tag.dataset.id=n.id;tag.dataset.state='idle';tag.setAttribute('aria-pressed','false');
+      tag.style.setProperty('--c',n.hex);
+      tag.innerHTML='<span class="k"></span><strong></strong><span class="st">ready</span>';
+      tag.querySelector('.k').textContent=KIND[n.kind].label;tag.querySelector('strong').textContent=n.name;
+      tag.addEventListener('click',()=>select(n.id,true));
+      labels.appendChild(tag);n.tag=tag;
+    });
+
+    // Edges
+    const edges=EDGES.map(([a,b,cond])=>{
+      const e={a:byId[a],b:byId[b],cond,flash:0,base:new THREE.Color(tok('--haze'))};
+      e.mat=new THREE.MeshBasicMaterial({color:e.base.clone(),transparent:true,opacity:.34,depthWrite:false});
+      e.mesh=new THREE.Mesh(new THREE.BufferGeometry(),e.mat);scene.add(e.mesh);
+      e.dots=[0,1].map(()=>{const s=glowSprite(e.a.color,.45,.9);scene.add(s);return s});
+      if(cond){e.tag=document.createElement('span');e.tag.className='branch';e.tag.textContent=cond;labels.appendChild(e.tag)}
+      return e;
+    });
+
+    let vertical=null,fit=40;
+    function place(n){const [x,y,z]=n.pos;return vertical?new THREE.Vector3(y*.95,-x,z):new THREE.Vector3(x,y,z)}
+    function relayout(){
+      NODES.forEach(n=>{n.base.copy(place(n));n.group.position.copy(n.base)});
+      const dir=vertical?new THREE.Vector3(0,-1,0):new THREE.Vector3(1,0,0);
+      edges.forEach(e=>{
+        const s=e.a.base.clone().addScaledVector(dir,1.7),t=e.b.base.clone().addScaledVector(dir,-1.7);
+        const d=Math.abs(t.clone().sub(s).dot(dir))*.5;
+        e.curve=new THREE.CubicBezierCurve3(s,s.clone().addScaledVector(dir,d),t.clone().addScaledVector(dir,-d),t);
+        e.mesh.geometry.dispose();e.mesh.geometry=new THREE.TubeGeometry(e.curve,72,.07,6,false);
+      });
+      grid.position.y=vertical?-27:-14;
+    }
+
+    // Camera rig
+    const view={theta:0,phi:.2,radius:40,zoom:1};
+    let drift=0,motion=!reduced;
+    function resize(){
+      const w=host.clientWidth||innerWidth,h=host.clientHeight||innerHeight;
+      renderer.setSize(w,h,false);
+      const nextVertical=w/h<.8;
+      if(nextVertical!==vertical){vertical=nextVertical;relayout()}
+      // Keep the graph clear of the console: shift left of the details panel on wide
+      // screens, and up between the title bar and the bottom sheet on narrow ones.
+      const desktop=w>=900,topPad=desktop?0:124,botPad=desktop?0:215;
+      const sx=desktop?Math.min(340,w*.26):0,sy=botPad-topPad;
+      camera.aspect=w/h;
+      if(sx||sy)camera.setViewOffset(w+sx,h+sy,sx,sy,w,h);else camera.clearViewOffset();
+      camera.updateProjectionMatrix();
+      const effW=w-sx,effH=h-topPad-botPad,vt=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+      const halfW=vertical?9.5:25,halfH=vertical?23:10;
+      fit=Math.max(halfW/(vt*effW/h),halfH/(vt*effH/h))+8;
+    }
+    function resetView(){view.theta=vertical?0:-.12;view.phi=.2;view.zoom=1;drift=0}
+
+    // Pointer: orbit, zoom, pick
+    const ptrs=new Map();let pinch=0,downAt=null;
+    const el=renderer.domElement;
+    el.addEventListener('pointerdown',e=>{ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});el.setPointerCapture(e.pointerId);host.classList.add('dragging');downAt={x:e.clientX,y:e.clientY};if(ptrs.size===2)pinch=pdist()});
+    el.addEventListener('pointermove',e=>{
+      const p=ptrs.get(e.pointerId);if(!p)return;
+      if(ptrs.size===1){view.theta-=(e.clientX-p.x)*.005;view.phi=Math.max(-1.1,Math.min(1.25,view.phi+(e.clientY-p.y)*.004))}
+      p.x=e.clientX;p.y=e.clientY;
+      if(ptrs.size===2){const d=pdist();if(pinch)view.zoom=clampZoom(view.zoom*pinch/d);pinch=d}
+    });
+    const up=e=>{
+      if(downAt&&ptrs.size===1&&Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)<6)pick(e);
+      ptrs.delete(e.pointerId);if(!ptrs.size){host.classList.remove('dragging');downAt=null}pinch=0;
+    };
+    el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+    el.addEventListener('wheel',e=>{e.preventDefault();view.zoom=clampZoom(view.zoom*(1+e.deltaY*.001))},{passive:false});
+    function pdist(){const [a,b]=[...ptrs.values()];return Math.hypot(a.x-b.x,a.y-b.y)||1}
+    function clampZoom(z){return Math.max(.45,Math.min(2.2,z))}
+    const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
+    function pick(e){
+      const r=el.getBoundingClientRect();ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+      ray.setFromCamera(ndc,camera);const hit=ray.intersectObjects(picks)[0];if(hit)select(hit.object.userData.id,true);
+    }
+
+    // Selection panel
+    let selected='webhook';
+    function select(id,open){
+      selected=id;const n=byId[id];
+      NODES.forEach(m=>m.tag.setAttribute('aria-pressed',String(m.id===id)));
+      const kind=$('#d-kind');kind.textContent=KIND[n.kind].label;$('#details').style.setProperty('--c',n.hex);
+      $('#d-name').textContent=n.name;$('#d-does').textContent=n.does;$('#d-out').textContent=n.out;
+      $('#d-run').textContent=n.last||'Not run yet';
+      if(open)$('#details').classList.add('open');
+    }
+    $('#close-details').addEventListener('click',()=>$('#details').classList.remove('open'));
+
+    // Synthetic run
+    let runNo=0,orderNo=1041,running=false,runT0=0;
+    const log=$('#log'),statusEl=$('#status');
+    function setStatus(state,text){statusEl.dataset.state=state;statusEl.querySelector('span').textContent=text}
+    function setState(n,s,text){n.state=s;n.tag.dataset.state=s;n.tag.querySelector('.st').textContent=text;if(n.id===selected)$('#d-run').textContent=n.last||text}
+    function money(v){return '$'+v.toFixed(2)}
+    function plan(run){
+      const active=new Set(),start={},end={};
+      NODES.forEach(n=>{
+        const preds=EDGES.filter(e=>e[1]===n.id);let live=!preds.length,t=0;
+        preds.forEach(e=>{if(active.has(e[0])&&(e[2]!=='true'||run.total>500)){live=true;t=Math.max(t,end[e[0]])}});
+        if(!live)return;
+        const [a,b]=COST[n.id],d=Math.round(a+Math.random()*(b-a));
+        active.add(n.id);start[n.id]=t;end[n.id]=t+d;
+      });
+      return {active,start,end,total:Math.max(...Object.values(end))};
+    }
+    function message(id,run){
+      switch(id){
+        case 'webhook':return `Received order ${run.order} · ${run.items} items`;
+        case 'fetch':return `200 OK · ${run.person[0]} (${run.person[2]})`;
+        case 'code':return `${run.items} line items · total ${money(run.total)}`;
+        case 'merge':return 'Joined order + customer on customer_id';
+        case 'email':return `Confirmation queued to ${run.person[1]}`;
+        case 'route':return run.total>500?`${money(run.total)} > $500 · true branch`:`${money(run.total)} ≤ $500 · false branch`;
+        case 'slack':return `Posted ${run.order} to #sales-alerts`;
+        case 'log':return `Appended row ${run.row} to ops-runs`;
+      }
+    }
+    function logLine(n,text,ms,start,skip){
+      const li=document.createElement('li');li.style.setProperty('--c',n.hex);if(skip)li.className='skip';
+      li.innerHTML='<time></time><b></b><span></span><em></em>';
+      li.querySelector('time').textContent=skip?'—':'+'+(start/1000).toFixed(3)+'s';
+      li.querySelector('b').textContent=n.name;li.querySelector('span').textContent=text;li.querySelector('em').textContent=skip?'':ms+' ms';
+      log.appendChild(li);log.scrollTop=log.scrollHeight;
+    }
+    const packets=[];
+    function send(e,done){
+      e.flash=1;
+      if(reduced){done();return}
+      const s=glowSprite(e.a.color,1,2.2);scene.add(s);
+      packets.push({e,s,t0:performance.now(),dur:620,done});
+    }
+    function runWorkflow(){
+      if(running)return;running=true;$('#run').disabled=true;runNo++;orderNo++;
+      const total=runNo===1?742.1:Math.round((90+Math.random()*880)*100)/100;
+      const run={order:'A-'+orderNo,items:2+Math.floor(Math.random()*5),total,person:PEOPLE[(runNo-1)%PEOPLE.length],row:180+runNo};
+      const p=plan(run);
+      log.innerHTML='';$('#run-meta').textContent=`Run ${runNo} · order ${run.order} · ${money(total)}`;
+      NODES.forEach(n=>{n.last=null;setState(n,'idle','waiting')});
+      setStatus('running','Running');runT0=performance.now();
+      const waiting={};NODES.forEach(n=>{waiting[n.id]=EDGES.filter(e=>e[1]===n.id&&p.active.has(e[0])&&(e[2]!=='true'||total>500)).length});
+      let remaining=p.active.size;
+      const exec=n=>{
+        const ms=p.end[n.id]-p.start[n.id];
+        setState(n,'running','running');logLine(n,message(n.id,run),ms,p.start[n.id]);
+        setTimeout(()=>{
+          n.last=`${ms} ms · ${message(n.id,run)}`;setState(n,'done',ms+' ms');
+          edges.filter(e=>e.a===n).forEach(e=>{
+            if(e.cond==='true'&&total<=500){
+              if(!p.active.has(e.b.id)){e.b.last='Skipped · IF returned false';setState(e.b,'skipped','skipped');logLine(e.b,'Skipped · IF returned false',0,0,true)}
+              return;
+            }
+            send(e,()=>{if(--waiting[e.b.id]===0)exec(e.b)});
+          });
+          if(--remaining===0){running=false;$('#run').disabled=false;$('#run').textContent='Run again';setStatus('done',`Done · ${p.total} ms simulated`)}
+        },reduced?0:380);
+      };
+      exec(byId.webhook);
+    }
+    $('#run').addEventListener('click',runWorkflow);
+    $('#reset').addEventListener('click',resetView);
+    const motionBtn=$('#motion');
+    function syncMotion(){motionBtn.setAttribute('aria-pressed',String(!motion));motionBtn.textContent=motion?'Pause motion':'Resume motion'}
+    motionBtn.addEventListener('click',()=>{motion=!motion;syncMotion()});syncMotion();
+
+    // Frame loop
+    const v=new THREE.Vector3(),v2=new THREE.Vector3();
+    function project(p,elm,dy){
+      v.copy(p);v.y+=dy;v.project(camera);
+      const w=el.clientWidth,h=el.clientHeight;
+      if(v.z>1){elm.style.visibility='hidden';return}
+      elm.style.visibility='visible';
+      elm.style.transform=`translate(${((v.x*.5+.5)*w).toFixed(1)}px,${((-v.y*.5+.5)*h).toFixed(1)}px) translate(-50%,-100%)`;
+    }
+    let last=performance.now(),clock=0;
+    function frame(now){
+      const dt=Math.min(64,now-last);last=now;
+      if(motion)clock+=dt;
+      const theta=view.theta+(motion?Math.sin(clock*.00011)*.3:0),phi=view.phi+(motion?Math.sin(clock*.00007)*.05:0),r=fit*view.zoom;
+      camera.position.set(r*Math.sin(theta)*Math.cos(phi),r*Math.sin(phi),r*Math.cos(theta)*Math.cos(phi));
+      camera.lookAt(0,0,0);
+
+      NODES.forEach(n=>{
+        const target=LOOK[n.state],k=1-Math.pow(.001,dt/1000);
+        for(const key in target)n.cur[key]+=(target[key]-n.cur[key])*k;
+        n.core.material.opacity=n.cur.core;n.halo.material.opacity=n.cur.halo;n.cage.material.opacity=n.cur.cage;
+        const pulse=n.state==='running'?1+Math.sin(now*.018)*.06:1;
+        n.group.scale.setScalar(n.cur.scale*pulse);
+        n.group.position.set(n.base.x,n.base.y+(motion?Math.sin(clock*.0012+n.idx)*.18:0),n.base.z);
+        if(motion){n.core.rotation.y+=dt*.0009;n.core.rotation.x+=dt*.0004}
+        n.cage.rotation.y=n.shell.rotation.y=motion?Math.sin(clock*.0004+n.idx)*.18:0;
+        project(n.group.position,n.tag,2.3);
+      });
+
+      edges.forEach((e,i)=>{
+        e.flash=Math.max(0,e.flash-dt/900);
+        e.mat.color.copy(e.base).lerp(e.a.color,Math.min(1,e.flash*1.4));
+        e.mat.opacity=(e.b.state==='skipped'?.12:.34)+e.flash*.6;
+        e.dots.forEach((d,k)=>{
+          const u=((motion?clock:0)*.00016+k*.5+i*.13)%1;
+          d.position.copy(e.curve.getPointAt(u));d.material.opacity=e.b.state==='skipped'?.08:.4;
+        });
+        if(e.tag){v2.copy(e.curve.getPointAt(vertical?.3:.55));if(vertical)v2.x+=1.9;project(v2,e.tag,vertical?0:.9)}
+      });
+
+      for(let i=packets.length-1;i>=0;i--){
+        const pk=packets[i],u=Math.min(1,(now-pk.t0)/pk.dur),ease=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+        pk.s.position.copy(pk.e.curve.getPointAt(ease));pk.e.flash=Math.max(pk.e.flash,.9);
+        if(u>=1){scene.remove(pk.s);pk.s.material.dispose();packets.splice(i,1);pk.done()}
+      }
+      if(running)setStatus('running',`Running · ${((now-runT0)/1000).toFixed(1)}s`);
+      renderer.render(scene,camera);
+      requestAnimationFrame(frame);
+    }
+
+    addEventListener('resize',resize);
+    resize();resetView();select('webhook',false);
+    requestAnimationFrame(frame);
+    setTimeout(runWorkflow,reduced?0:700);
+  })();
+  </script>
+</body>
+</html>

@@ -67,4 +67,4 @@ Keep `FACTORWEAVE_API_KEY`, `STRIPE_PRO_URL`, and `STRIPE_CREATOR_URL` in the ho
 
 ## Visual portfolio
 
-The privacy-safe Sushir 3D Studio showcase is included under [`portfolio/`](portfolio/). Open `portfolio/index.html` locally or serve the folder from any static host. It includes a cinematic still, a synthetic public observatory demo, service positioning, and buyer-facing contact links. Private/name-specific source files are intentionally not included.
+The privacy-safe Sushir 3D Studio showcase is included under [`portfolio/`](portfolio/). Open `portfolio/index.html` locally or serve the folder from any static host. It includes a live WebGL orrery hero, a cinematic still, a synthetic public observatory demo, a 3D workflow graph rebuilt from the n8n visualization, service positioning, and buyer-facing contact links. Private/name-specific source files are intentionally not included.
