@@ -89,8 +89,10 @@ HDRIs are CC0.
 **What it fixes:** 1 px GL lines alias, shimmer and vanish at high DPI.
 
 - Orbits use `Line2` screen-space thick lines. A small `onBeforeCompile`
-  patch turns each orbit into a light trail that is brightest just behind
-  its planet.
+  patch shades each line as a glowing tube (a bright core plus a soft
+  falloff, using the line's cross-section UV). It adds a light trail
+  that is brightest just behind the planet, and energy pulses that flow
+  along the orbit. Aspect lines carry pulses from one world to the other.
 - `depthFunc = LessDepth` stops the round caps from double-blending at
   segment joints. Without it, lines look dashed.
 
@@ -114,7 +116,33 @@ HDRIs are CC0.
   and radial chromatic aberration. Keep all three subtle.
 - Optional depth of field (`BokehPass`) focuses on the orbit target.
 
-## 10. Ship it light
+## 10. Sharpen, then add depth cues
+
+- **Contrast-adaptive sharpening** (CAS) runs in the last pass. It
+  sharpens most where local contrast is low and leaves already sharp
+  edges alone, so it recovers detail softened by bloom and MSAA without
+  halos.
+- **Parallax dust:** 1,400 faint grains live in a 60-unit box that wraps
+  around the camera. They are nearly invisible when still, but they sell
+  depth as soon as you orbit or fly.
+- **Scale layers:** five moons, an outer icy belt of 9,000 points, and
+  deep-sky objects give the eye near, middle and far planes. The
+  deep-sky set is a ring nebula with a white-dwarf core, two irregular
+  dwarf galaxies, and a young cluster with diffraction spikes.
+
+## 11. Make the image explain itself
+
+- The Render Stack groups switches into Light, Sky, Lines & Data, and
+  Camera. A pipeline strip shows the order each frame is built in
+  (Geometry › Light › Bloom › Tone › Lens › Sharpen › Display) and dims
+  any stage that is switched off.
+- The target card adds a short field-guide paragraph for each body, and
+  the mission log records aspects forming, comet perihelion and planet
+  years as they happen.
+- Free roam (`F`, or the button) flies the camera with W A S D, Q/E for
+  down and up, drag to look, and Shift to boost.
+
+## 12. Ship it light
 
 - The stills are JPEG at quality 90: 270–420 KB each, instead of a 4.2 MB
   PNG.
