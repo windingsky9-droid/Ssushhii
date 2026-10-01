@@ -6,6 +6,7 @@ This repository has **two visual systems** and no front-end framework, bundler, 
 |---|---|---|---|
 | **Sushir 3D Studio** (portfolio + 3D demos) | `portfolio/index.html`, `portfolio/demos/*.html` | Observatory deck: near-black ground, sun gold / orbit teal / glyph violet, condensed display type | An inline `<style>` `:root` block at the top of **each** page |
 | **Market Observatory** (Flask app) | `templates/index.html`, `static/styles.css`, `static/app.js` | Research dashboard: lime + cyan accents | `:root` in `static/styles.css` |
+| **Sushir 3D Studio** (Birth Sky MCP view) | `mcp/birth-sky-mcp-server/ui/chart-view.html` | The studio look in one dark card (MCP Apps chart wheel) | Its own inline `:root`, same values as the studio block |
 
 `public-demo/` is **generated** from the Flask template and `static/styles.css` by `scripts/build_public_demo.py`. Never edit `public-demo/` by hand. Change the source, then run `python scripts/build_public_demo.py`.
 
@@ -213,6 +214,7 @@ portfolio/index.html           Sushir 3D Studio page (live orrery hero)
 portfolio/demos/               one self-contained HTML file per 3D demo
 portfolio/media/               images (original + WebP)
 tests/                         pytest, including portfolio link/host/synthetic checks
+mcp/birth-sky-mcp-server/      TypeScript MCP server (birth charts) with an MCP Apps view; `npm test` there
 docs/                          launch, revenue, and seller-kit notes
 ```
 

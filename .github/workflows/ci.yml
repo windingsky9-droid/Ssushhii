@@ -16,3 +16,18 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - run: python -m pytest -q
       - run: python -m compileall app.py src
+
+  birth-sky-mcp:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp/birth-sky-mcp-server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: mcp/birth-sky-mcp-server/package-lock.json
+      - run: npm ci
+      - run: npm test
