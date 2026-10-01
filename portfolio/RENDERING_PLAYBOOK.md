@@ -1,8 +1,8 @@
 # Rendering playbook: from flat to cinematic
 
-This is the checklist behind the V14 Celestial Observatory
+This is the checklist behind the V15 Celestial Observatory
 (`demos/celestial-observatory-cinematic.html`). Each item names what it
-fixes, where it lives in the V14 source, and how to apply it in other
+fixes, where it lives in the V15 source, and how to apply it in other
 tools. Open the demo and use **Compare** (or press `C`) to split the frame
 into a flat baseline and the full stack. Each switch in the Render Stack
 panel turns off one technique so you can see what it adds.
@@ -224,6 +224,40 @@ remap works as a displacement map in Nuke or After Effects.
 - **Keep it honest.** The reading is a playful layer on live geometry, not
   a forecast. The scene is synthetic and uses no birth data.
 
+## 17. Put the real sky behind it
+
+- **Real data, not noise.** 3,232 stars to magnitude 5.6 and the 88
+  constellation figures come from the d3-celestial catalogue (BSD-3,
+  © 2015 Olaf Frohn), embedded in the page so it runs offline.
+- **Ecliptic coordinates.** Each star is placed by ecliptic longitude and
+  latitude on a sphere of radius 1320: `x = cos β cos λ · r`,
+  `y = −sin β · r`, `z = cos β sin λ · r`. Longitude matches the scene's
+  `atan2(z, x)`, so the zodiac constellations sit behind their sign tiles.
+  The `−sin β` keeps the figures unmirrored from inside the sphere.
+- **Brightness from magnitude.** Size and brightness follow
+  `k = sqrt(10^(−0.4 (m − 1)))`, so Regulus and Spica read first and the
+  faint stars fill in. Color comes from B−V.
+- **Honest precession.** The tiles are tropical signs and the figures are
+  the real constellations, so Leo sits close to a whole sign ahead of ♌.
+  The real-sky shot (`8`, or `?shot=sky`) frames exactly that.
+
+## 18. Lens ghosts, only when earned
+
+- The sun is projected to screen space each frame and tested against every
+  planet's disc. Ghosts and a halo fade in only when the sun is on screen
+  and unblocked, mirrored through the frame center at five distances, each
+  with its own tint and size, like reflections between real lens elements.
+
+## 19. Film it deterministically, and keep it cool
+
+- **Capture mode** (`?capture`). The page stops its own animation loop and
+  exposes `window.__frame(dt)`. A Playwright script calls it with a fixed
+  step (1/24 s), screenshots each frame and hands the sequence to ffmpeg.
+  Every run produces the same film, whatever the machine's speed.
+- **Frame cap.** The loop renders at most 60 frames a second (30 in
+  **Cool** mode, `E`). On a 144 Hz laptop that halves the GPU work, and the
+  heat, with no visible loss.
+
 ## Rendering stills from the demo
 
 URL parameters make the scene scriptable for headless capture:
@@ -232,13 +266,16 @@ URL parameters make the scene scriptable for headless capture:
 |---|---|
 | `ui=off` | hides the HUD for clean plates |
 | `wheel` | opens the orrery card as the chart wheel |
-| `shot=hero\|horizon\|ringed\|comet\|top\|erebus\|pulsar` | starts on a camera shot |
+| `shot=hero\|horizon\|ringed\|comet\|top\|erebus\|pulsar\|sky` | starts on a camera shot |
 | `tour=3` | starts the director tour at shot 3, with the letterbox and caption |
 | `quality=eco\|balanced\|ultra` | sets the render scale |
 | `compare=0.5` | opens the split view with the divider at that fraction |
 | `dpr=1` | pins the pixel ratio |
 | `t=40` | advances the simulation 40 seconds before the first frame |
+| `ui=clean` | the clean view: HUD hidden, with a pill to bring it back |
+| `capture` | stops the animation loop and exposes `window.__frame(dt)` for film capture |
+| `fps=30` | caps the frame rate |
 
-The V14 stills were captured with Playwright and Chromium:
+The stills were captured with Playwright and Chromium:
 `page.goto('…/celestial-observatory-cinematic.html?ui=off&shot=ringed')`,
 wait for `window.__ready`, then `page.screenshot()`.

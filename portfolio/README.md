@@ -33,12 +33,14 @@ python scripts/check_portfolio.py
 | `media/celestial-observatory-v14-erebus.jpg` | Work card still: the lensing black hole as a clean plate. |
 | `media/sky-wheel-card.jpg` | Work card still: the Sky Wheel for an evening in Los Angeles. |
 | `media/celestial-observatory-v14-wheel.jpg` | The full HUD: target sign, aspect reading, chart wheel and ingress log. |
+| `media/celestial-observatory-v15-sky.jpg` | The V15 real-sky shot: Leo and Cancer drawn from catalogue stars behind the ♌ tile. |
+| `demos/archive/celestial-observatory-v14.html` | V14 frozen as it shipped, for comparison. |
 | `media/archive/` | Earlier stills (V11 showpiece, V13 hero, black hole and pulsar), kept for reference. |
-| `RENDERING_PLAYBOOK.md` | The sixteen techniques behind the observatory and how to reuse them. |
+| `RENDERING_PLAYBOOK.md` | The nineteen techniques behind the observatory and how to reuse them. |
 
 ## The observatory
 
-V14 keeps everything from V13: physically lit procedural planets, filmic
+V15 keeps everything from V13 and V14: physically lit procedural planets, filmic
 tone mapping, HDR bloom, image-based light, blackbody stars, a Keplerian
 comet, five moons, deep-sky objects, a lensing black hole, a pulsar,
 flares, meteors, a ten-aspect web with a traits reading, a narrated
@@ -49,6 +51,14 @@ V14 reads the sky as a chart. Every body shows its zodiac sign and degree,
 ingresses are logged as they happen, and the orrery card flips into a
 chart wheel (`Z`) with aspect chords and fixed stars.
 
+V15 puts the real sky behind it: 3,232 catalogue stars to magnitude 5.6
+and the 88 constellation figures, set on the ecliptic so the zodiac
+constellations line up with the sign tiles (about a sign apart, which is
+precession). It adds lens ghosts that appear when the sun is on screen and
+unblocked, a clean view (`H`) that hides the HUD, a deterministic capture
+mode for frame-by-frame film rendering, and a frame cap (60 fps, or 30 with
+**Cool** / `E`) so high-refresh laptops don't run hot.
+
 Deep links open it in a specific mode:
 
 | Link | Opens |
@@ -58,6 +68,9 @@ Deep links open it in a specific mode:
 | `?shot=erebus` | the black hole |
 | `?shot=pulsar` | the pulsar |
 | `?compare` | the flat-versus-full split |
+| `?shot=sky` | the real sky, with Leo behind the ♌ tile |
+| `?ui=clean` | the clean view, no HUD |
+| `?fps=30` | Cool mode from the start |
 
 The full parameter list is at the end of `RENDERING_PLAYBOOK.md`.
 
