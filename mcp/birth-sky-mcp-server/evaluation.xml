@@ -1,0 +1,44 @@
+<evaluation>
+  <!-- Ten read-only questions. Each answer was produced through the server and cross-checked against PyEphem
+       or published ephemeris dates. Times are UTC unless stated. -->
+  <qa_pair>
+    <question>Mercury turned retrograde three times in 2023. In which tropical zodiac sign did Mercury stand at the station that began its last retrograde of that year?</question>
+    <answer>Capricorn</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>A total solar eclipse crossed North America on 8 April 2024. On what UTC date did the next lunar eclipse after it occur? Answer as YYYY-MM-DD.</question>
+    <answer>2024-09-18</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Someone was born in Greenwich, London (latitude 51.4779 N, longitude 0.0015 W, time zone Europe/London) on 1 January 2000 at 12:00 local time. On what UTC date does transiting Saturn first make an exact conjunction with their natal Saturn (their first Saturn return)? Answer as YYYY-MM-DD.</question>
+    <answer>2028-07-21</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Apollo 11's lunar module landed at 20:17 UTC on 20 July 1969. For a chart cast for that moment at Mission Control in Houston (latitude 29.5593 N, longitude 95.0900 W), which of the ten bodies (Sun, Moon and planets through Pluto) lay closest in ecliptic longitude to the Ascendant degree?</question>
+    <answer>Neptune</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>At 20:17 UTC on 20 July 1969, when Apollo 11 landed, two planets were conjunct within less than one degree of each other. Which planet was conjunct Jupiter?</question>
+    <answer>Uranus</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Calendar year 2020 (UTC) had two Full Moons in October. In which tropical zodiac sign was the Moon at the second of them?</question>
+    <answer>Taurus</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>During 2022 Jupiter entered Aries, slipped back into Pisces while retrograde, and then entered Aries again. On what UTC date did it re-enter Aries? Answer as YYYY-MM-DD.</question>
+    <answer>2022-12-20</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Compare two charts: chart A for 20 July 1969 at 20:17 UTC in Houston (29.5593 N, 95.0900 W), and chart B for 1 January 2000 at 12:00 in Greenwich (51.4779 N, 0.0015 W, Europe/London). Which body of chart B is involved in the tightest cross-chart aspect between the two charts?</question>
+    <answer>Jupiter</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which planet made a retrograde or direct station closest in time to the total solar eclipse of 8 April 2024?</question>
+    <answer>Mercury</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>India became independent at midnight (00:00 Indian Standard Time) on 15 August 1947 in New Delhi (28.6139 N, 77.2090 E, time zone Asia/Kolkata). In the tropical zodiac, how many of the ten bodies (Sun, Moon and planets through Pluto) were in Leo at that moment?</question>
+    <answer>5</answer>
+  </qa_pair>
+</evaluation>

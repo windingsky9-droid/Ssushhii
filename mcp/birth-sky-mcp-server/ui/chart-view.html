@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birth Sky</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93%E2%98%89%E2%98%BD%E2%98%BF%E2%99%80%E2%99%82%E2%99%83%E2%99%84%E2%99%85%E2%99%86%E2%99%87%E2%98%8C%E2%98%8D%E2%9A%B9%E2%96%A1%E2%96%B3%E2%84%9E&display=swap">
+<style>
+  /* Sushir 3D Studio tokens (see the repo's CLAUDE.md). One dark instrument card, whatever the host theme. */
+  :root{
+    --ground:#04070c; --deck:#0a1018; --deck-2:#0e1621;
+    --rule:rgba(214,232,255,.12); --ink:#eef3f7; --haze:#8e9bab;
+    --sun:#f6c177; --orbit:#4fe0c8; --glyph:#a898f0; --flare:#ff7a66; --frost:#b9d4ff;
+    --sun-soft:rgba(246,193,119,.14); --orbit-soft:rgba(79,224,200,.1);
+    --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+    --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sym:"Noto Sans Symbols","Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols","DejaVu Sans",sans-serif;
+    --radius:18px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:transparent}
+  body{font:14px/1.5 var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  [hidden]{display:none!important}
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--orbit);outline-offset:2px}
+  .g{font-family:var(--sym);font-style:normal;font-weight:400;font-variant-emoji:text}
+
+  .card{position:relative;overflow:hidden;border:1px solid var(--rule);border-radius:var(--radius);padding:22px 22px 18px;
+    background:
+      radial-gradient(900px 520px at 22% 18%,rgba(168,152,240,.10),transparent 60%),
+      radial-gradient(700px 480px at 92% 8%,rgba(79,224,200,.07),transparent 60%),
+      var(--ground)}
+  .card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;background-image:
+      radial-gradient(1px 1px at 12% 22%,#fff8,transparent 60%),radial-gradient(1px 1px at 68% 12%,#fff6,transparent 60%),
+      radial-gradient(1px 1px at 84% 64%,#fff5,transparent 60%),radial-gradient(1px 1px at 32% 82%,#fff5,transparent 60%),
+      radial-gradient(1.5px 1.5px at 52% 40%,#f6c17788,transparent 60%),radial-gradient(1px 1px at 92% 30%,#b9d4ff99,transparent 60%),
+      radial-gradient(1px 1px at 6% 58%,#a898f099,transparent 60%),radial-gradient(1px 1px at 44% 6%,#fff6,transparent 60%)}
+
+  header{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .kicker{margin:0 0 6px;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--haze)}
+  .kicker b{color:var(--sun);font-weight:500}
+  h1{margin:0;font:800 clamp(30px,6vw,46px)/.92 var(--display);font-stretch:78%;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--sun)}
+  .when{margin:6px 0 0;color:var(--haze);font-size:13px}
+  .when b{color:var(--ink);font-weight:500}
+  .when span{display:block}
+  .iconbtn{flex:none;padding:7px 10px;border:1px solid var(--rule);border-radius:9px;background:rgba(255,255,255,.03);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--haze)}
+  .iconbtn:hover{color:var(--ink);border-color:var(--haze)}
+
+  .layout{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;margin-top:14px;align-items:start}
+  @container (max-width:640px){.layout{grid-template-columns:minmax(0,1fr)}}
+  .wrap{container-type:inline-size}
+  @media (max-width:640px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+  .wheelbox{position:relative}
+  svg.wheel{display:block;width:100%;height:auto;overflow:visible;touch-action:manipulation}
+  svg.wheel text{font-family:var(--mono)}
+  svg.wheel .sym{font-family:var(--sym)}
+  svg .pl{cursor:pointer;outline:none}
+  svg .pl circle.hit{fill:transparent}
+  svg .pl .halo{opacity:0;transition:opacity .2s}
+  svg .pl:hover .halo,svg .pl.on .halo,svg .pl:focus-visible .halo{opacity:1}
+  svg .asp{transition:opacity .25s,stroke-width .25s}
+  svg.dim .asp{opacity:.06!important}
+  svg.dim .asp.lit{opacity:1!important;stroke-width:1.8}
+  svg.dim .pl:not(.on):not(.mate){opacity:.35}
+  .readout{min-height:40px;margin:6px 2px 0;text-wrap:balance;font:400 12px/1.45 var(--mono);color:var(--haze);text-align:center}
+  .readout b{color:var(--ink);font-weight:500}
+  .readout .g{font-size:14px}
+
+  .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .tile{min-width:0;padding:11px 10px 10px;border:1px solid var(--rule);border-radius:12px;background:linear-gradient(160deg,rgba(255,255,255,.035),rgba(255,255,255,.01))}
+  .tile span{display:block;font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--haze)}
+  .tile .g{display:block;margin:9px 0 5px;font-size:28px;line-height:1;color:var(--c)}
+  .tile b{display:block;font:800 19px/1 var(--display);font-stretch:85%;letter-spacing:-.01em;overflow-wrap:anywhere}
+  .tile b.long{font-size:16px;font-stretch:75%}
+  .tile small{display:block;margin-top:5px;font:400 11px/1.2 var(--mono);color:var(--haze);font-variant-numeric:tabular-nums}
+  .tile.none b{color:var(--haze);font-size:15px}
+  ul.lede{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;font-size:13px;line-height:1.45}
+  ul.lede li{display:grid;grid-template-columns:12px minmax(0,1fr);gap:8px}
+  ul.lede li::before{content:"";width:6px;height:6px;margin-top:6.5px;border-radius:50%;background:var(--c,var(--sun));box-shadow:0 0 8px var(--c,var(--sun))}
+
+  .tabs{position:relative;display:flex;flex-wrap:wrap;gap:4px;margin:18px 0 10px;padding:3px;width:max-content;max-width:100%;border:1px solid var(--rule);border-radius:11px;background:rgba(10,16,24,.7)}
+  .tabs button{padding:7px 12px;border:0;border-radius:8px;background:transparent;font:500 12px/1 var(--mono);color:var(--haze)}
+  .tabs button[aria-selected="true"]{background:var(--sun-soft);color:var(--sun)}
+  .pane{position:relative}
+
+  table{width:100%;border-collapse:collapse;font:400 12.5px/1 var(--mono);font-variant-numeric:tabular-nums}
+  th{padding:0 6px 8px 0;font-weight:500;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--haze);text-align:left}
+  td{padding:7px 6px 7px 0;border-top:1px solid var(--rule);white-space:nowrap}
+  td .g{font-size:15px;color:var(--c)}
+  td .sg{color:var(--haze);margin-right:5px;font-size:13px}
+  .num{text-align:right}
+  .rx{color:var(--flare);font-size:10.5px;padding-left:4px}
+  .tag{font:500 10px/1 var(--mono);letter-spacing:.06em;color:var(--orbit)}
+  tr[data-k]{cursor:pointer}
+  tr.on td{background:rgba(246,193,119,.08)}
+  tr.on td:first-child{box-shadow:inset 2px 0 var(--sun)}
+  .scroll{overflow-x:auto}
+
+  ul.asp{margin:0;padding:0;list-style:none}
+  ul.asp li{display:grid;grid-template-columns:22px 22px 22px minmax(0,1fr) auto;align-items:center;gap:4px;padding:7px 0;border-top:1px solid var(--rule);font:400 12.5px/1.25 var(--mono)}
+  ul.asp li:first-child{border-top:0}
+  ul.asp .g{font-size:15px;text-align:center}
+  ul.asp em{font-style:normal;color:var(--haze);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  ul.asp em i{font-style:normal;color:var(--ink)}
+  ul.asp b{font-weight:500;text-align:right}
+  ul.asp small{display:block;font-size:10px;color:var(--haze);text-align:right}
+  .who{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--haze)}
+
+  .bal{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+  .bal li{display:grid;grid-template-columns:70px minmax(0,1fr) 22px;align-items:center;gap:10px;font:400 12px/1 var(--mono)}
+  .bal li span{color:var(--haze)}
+  .bal li b{font-weight:500;text-align:right}
+  .track{display:flex;gap:3px;height:9px}
+  .track i{flex:1;border-radius:2px;background:rgba(255,255,255,.06);transform-origin:left}
+  .track i.on{background:var(--c)}
+  .bal + .bal{margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)}
+  .key{display:flex;gap:16px;margin:0 0 10px;font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--haze)}
+  .key i{display:inline-block;width:9px;height:9px;margin-right:6px;border-radius:2px;background:var(--c);vertical-align:-1px}
+
+  .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .pair .col{min-width:0;padding:11px;border:1px solid var(--rule);border-radius:12px}
+  .pair h3{margin:0 0 8px;font:800 20px/1 var(--display);font-stretch:82%;color:var(--c)}
+  .pair dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 10px;margin:0;font:400 12px/1.2 var(--mono)}
+  .pair dt{color:var(--haze)}
+  .pair dd{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pair dd .g{color:var(--c)}
+
+  ul.events{margin:0;padding:0;list-style:none}
+  ul.events li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;padding:7px 0;border-top:1px solid var(--rule);font:400 12.5px/1.35 var(--mono)}
+  ul.events li:first-child{border-top:0}
+  ul.events time{color:var(--haze)}
+  ul.events .ecl{color:var(--sun)}
+
+  footer{position:relative;margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font:400 11px/1.5 var(--body);color:var(--haze)}
+
+  .state{position:relative;display:grid;place-items:center;gap:14px;min-height:280px;text-align:center;color:var(--haze)}
+  .state p{margin:0;max-width:30rem}
+  .state.err p{color:var(--flare)}
+  .orrery{width:74px;height:74px;position:relative}
+  .orrery i{position:absolute;inset:0;border:1px solid var(--rule);border-radius:50%}
+  .orrery i:nth-child(2){inset:14px}
+  .orrery b{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:var(--sun);box-shadow:0 0 16px var(--sun)}
+  .orrery em{position:absolute;inset:0;animation:spin 2.4s linear infinite}
+  .orrery em::after{content:"";position:absolute;left:50%;top:-3px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--orbit);box-shadow:0 0 10px var(--orbit)}
+  .orrery em:nth-of-type(2){inset:14px;animation-duration:1.5s}
+  .orrery em:nth-of-type(2)::after{background:var(--glyph);box-shadow:0 0 10px var(--glyph)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main class="card" id="root">
+    <div class="state" id="state">
+      <div class="orrery" aria-hidden="true"><i></i><i></i><b></b><em></em><em></em></div>
+      <p id="state-text">Computing the sky…</p>
+    </div>
+  </main>
+</div>
+<script type="module">
+/*__MCP_APPS__*/
+
+const $ = (s, r = document) => r.querySelector(s);
+const root = $("#root");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const VS = "︎";
+const NS = "http://www.w3.org/2000/svg";
+const SIGNS = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+const SG = ["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+const ELC = ["flare","sun","frost","orbit"];
+const BODY_C = { Sun:"sun", Moon:"ink", Mercury:"frost", Venus:"orbit", Mars:"flare", Jupiter:"sun", Saturn:"glyph", Uranus:"orbit", Neptune:"frost", Pluto:"flare" };
+const ASP_C = { conjunction:"sun", sextile:"frost", square:"flare", trine:"orbit", opposition:"flare" };
+const css = getComputedStyle(document.documentElement);
+const col = n => css.getPropertyValue("--" + n).trim() || "#fff";
+const cv = n => `var(--${n})`;
+const g = ch => `<i class="g">${ch}${VS}</i>`;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const rev = x => ((x % 360) + 360) % 360;
+const dm = x => { const t = Math.floor(x * 60 + 1e-6); return `${Math.floor(t / 60)}°${String(t % 60).padStart(2, "0")}′`; };
+
+function whenText(m) {
+  const [date, time] = m.local.split(" ");
+  const [y, mo, d] = date.split("-").map(Number), [hh, mi] = time.split(":").map(Number);
+  const day = new Date(Date.UTC(y, mo - 1, d)).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  return `${day} · ${((hh + 11) % 12) + 1}:${String(mi).padStart(2, "0")} ${hh < 12 ? "a.m." : "p.m."} ${esc(m.zone_label)}`;
+}
+
+/* ---------- the wheel ---------- */
+const S = 680, C = S / 2;
+function el(name, attrs = {}, parent) {
+  const n = document.createElementNS(NS, name);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+/** Spread glyphs so neighbours sit at least `min` degrees apart; returns display longitudes. */
+function spread(lons, min) {
+  const idx = lons.map((l, i) => ({ i, d: rev(l) })).sort((a, b) => a.d - b.d);
+  const n = idx.length;
+  if (n < 2) return lons.slice();
+  for (let it = 0; it < 300; it++) {
+    let moved = false;
+    for (let k = 0; k < n; k++) {
+      const a = idx[k], b = idx[(k + 1) % n];
+      // Signed gap in sorted order, so a pair that has crossed still pushes apart.
+      const gap = k === n - 1 ? b.d + 360 - a.d : b.d - a.d;
+      if (gap < min - 1e-6) { const push = (min - gap) / 2; a.d -= push; b.d += push; moved = true; }
+    }
+    if (!moved) break;
+  }
+  const out = []; idx.forEach(o => out[o.i] = rev(o.d)); return out;
+}
+
+/**
+ * Draws a chart wheel. rings: [{ bodies, r, tint, owner }] (first ring = primary). The wheel is turned so the
+ * Ascendant sits on the left; without one, 0° Aries does.
+ */
+function drawWheel(svg, { anchor, houses, angles, rings, aspects, points = {} }) {
+  svg.innerHTML = "";
+  svg.setAttribute("viewBox", `0 0 ${S} ${S}`);
+  const defs = el("defs", {}, svg);
+  const glow = el("radialGradient", { id: "core" }, defs);
+  el("stop", { offset: "0", "stop-color": col("glyph"), "stop-opacity": ".16" }, glow);
+  el("stop", { offset: ".55", "stop-color": col("orbit"), "stop-opacity": ".05" }, glow);
+  el("stop", { offset: "1", "stop-color": col("ground"), "stop-opacity": "0" }, glow);
+  const blur = el("filter", { id: "soft", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+  el("feGaussianBlur", { stdDeviation: "4" }, blur);
+
+  const rot = anchor ?? 0;
+  const ang = lon => (180 + (lon - rot)) * Math.PI / 180;
+  const P = (lon, r) => [C + r * Math.cos(ang(lon)), C - r * Math.sin(ang(lon))];
+  const RO = 300, RZ = 254, RT = 246;
+  const two = rings.length > 1;
+  const RH = houses ? 222 : null;
+  const RA = two ? 112 : 128;
+
+  el("circle", { cx: C, cy: C, r: RO, fill: "url(#core)" }, svg);
+  const zod = el("g", { class: "zod" }, svg);
+  for (let i = 0; i < 12; i++) {
+    const a0 = ang(i * 30), a1 = ang(i * 30 + 30);
+    const p = (a, r) => `${C + r * Math.cos(a)},${C - r * Math.sin(a)}`;
+    el("path", {
+      d: `M${p(a0, RO)} A${RO},${RO} 0 0 0 ${p(a1, RO)} L${p(a1, RZ)} A${RZ},${RZ} 0 0 1 ${p(a0, RZ)} Z`,
+      fill: col(ELC[i % 4]), "fill-opacity": i % 2 ? ".07" : ".11", stroke: col("rule"), "stroke-width": "1",
+      class: "seg", style: `--i:${i}`,
+    }, zod);
+    const [x, y] = P(i * 30 + 15, (RO + RZ) / 2);
+    const t = el("text", { x, y, "text-anchor": "middle", "dominant-baseline": "central", class: "sym", "font-size": "21", fill: col(ELC[i % 4]) }, zod);
+    t.textContent = SG[i] + VS;
+  }
+  el("circle", { cx: C, cy: C, r: RO, fill: "none", stroke: col("rule") }, svg);
+  el("circle", { cx: C, cy: C, r: RZ, fill: "none", stroke: col("rule") }, svg);
+  const ticks = [];
+  for (let d = 0; d < 360; d++) {
+    const len = d % 10 === 0 ? 10 : d % 5 === 0 ? 7 : 3.5;
+    const [x1, y1] = P(d, RZ), [x2, y2] = P(d, RZ - len);
+    ticks.push(`M${x1.toFixed(1)},${y1.toFixed(1)}L${x2.toFixed(1)},${y2.toFixed(1)}`);
+  }
+  el("path", { d: ticks.join(""), stroke: col("haze"), "stroke-opacity": ".45", "stroke-width": "1" }, svg);
+
+  if (houses) {
+    el("circle", { cx: C, cy: C, r: RH, fill: "none", stroke: col("rule") }, svg);
+    houses.forEach((h, i) => {
+      const [x1, y1] = P(h, RT - 10), [x2, y2] = P(h, RA);
+      const axis = i % 3 === 0;
+      el("line", { x1, y1, x2, y2, stroke: axis ? col("orbit") : col("rule"), "stroke-opacity": axis ? ".55" : "1", "stroke-width": axis ? "1.2" : "1" }, svg);
+      const [tx, ty] = P(h + 15, (RT - 10 + RH) / 2 + 1);
+      const t = el("text", { x: tx, y: ty, "text-anchor": "middle", "dominant-baseline": "central", "font-size": "10", fill: col("haze"), "fill-opacity": ".8" }, svg);
+      t.textContent = i + 1;
+    });
+  }
+  if (angles) {
+    for (const [lon, label] of [[angles.asc, "AC"], [angles.mc, "MC"]]) {
+      const [x, y] = P(lon, RO + 20);
+      const t = el("text", { x, y, "text-anchor": "middle", "dominant-baseline": "central", "font-size": "13", "font-weight": "500", fill: col("orbit"), "letter-spacing": "1" }, svg);
+      t.textContent = label;
+      const [a1, b1] = P(lon, RO + 4), [a2, b2] = P(lon, RO + 10);
+      el("line", { x1: a1, y1: b1, x2: a2, y2: b2, stroke: col("orbit"), "stroke-width": "2" }, svg);
+    }
+  }
+  el("circle", { cx: C, cy: C, r: RA, fill: col("ground"), "fill-opacity": ".55", stroke: col("rule") }, svg);
+
+  el("circle", { cx: C, cy: C, r: 5, fill: col("orbit"), "fill-opacity": ".25", stroke: col("orbit"), "stroke-opacity": ".7" }, svg);
+
+  // Aspect lines.
+  const aspG = el("g", { class: "asps" }, svg);
+  const lonOf = new Map();
+  rings.forEach(ring => ring.bodies.forEach(b => lonOf.set(ring.owner + ":" + b.name, b.lon)));
+  if (angles) { lonOf.set(rings[0].owner + ":Ascendant", angles.asc); lonOf.set(rings[0].owner + ":Midheaven", angles.mc); }
+  for (const k in points) lonOf.set(k, points[k]);
+  const aspEls = [];
+  aspects.forEach((a, i) => {
+    const la = lonOf.get(a.ka), lb = lonOf.get(a.kb);
+    if (la === undefined || lb === undefined) return;
+    const [x1, y1] = P(la, RA), [x2, y2] = P(lb, RA);
+    const strength = Math.max(.25, 1 - a.orb / 8);
+    const line = el("line", {
+      x1, y1, x2, y2, class: "asp", stroke: col(ASP_C[a.aspect] || "haze"), "stroke-width": (0.8 + strength).toFixed(2),
+      "stroke-opacity": (0.25 + 0.6 * strength).toFixed(2), "stroke-dasharray": a.aspect === "opposition" ? "5 4" : a.aspect === "sextile" ? "2 3" : "",
+      "data-a": a.ka, "data-b": a.kb,
+    }, aspG);
+    aspEls.push(line);
+  });
+
+  // Bodies.
+  const plG = el("g", {}, svg);
+  const nodes = [];
+  rings.forEach((ring, ri) => {
+    const shown = spread(ring.bodies.map(b => b.lon), ri > 0 ? 12.5 : two ? 10 : 9);
+    ring.bodies.forEach((b, i) => {
+      const key = ring.owner + ":" + b.name;
+      const grp = el("g", { class: "pl", tabindex: "0", role: "button", "aria-label": `${ring.owner === "_" ? "" : ring.owner + " "}${b.name} ${dm(b.degree)} ${b.sign}${b.retrograde ? ", retrograde" : ""}`, "data-k": key }, plG);
+      const c = col(BODY_C[b.name]);
+      const tint = ring.tint ? col(ring.tint) : c;
+      const lead = el("line", { stroke: tint, "stroke-opacity": ".55", "stroke-width": "1" }, grp);
+      const dot = el("circle", { r: "2.6", fill: tint }, grp);
+      const halo = el("circle", { r: "17", class: "halo", fill: tint, "fill-opacity": ".16", stroke: tint, "stroke-opacity": ".6" }, grp);
+      const plate = el("circle", { r: "14", fill: col("ground"), "fill-opacity": ".9", stroke: tint, "stroke-opacity": ring.tint ? ".9" : ".35", "stroke-width": ring.tint ? "1.4" : "1", "stroke-dasharray": ring.tint ? "3 2" : "" }, grp);
+      const t = el("text", { "text-anchor": "middle", "dominant-baseline": "central", class: "sym", "font-size": "17", fill: c }, grp);
+      t.textContent = b.glyph + VS;
+      const lab = el("text", { "text-anchor": "middle", "dominant-baseline": "central", "font-size": "9.5", fill: col("haze") }, grp);
+      // The inner ring of a two-chart wheel has no room for degree labels; the readout and tables carry them.
+      lab.textContent = ri > 0 ? (b.retrograde ? "℞" : "") : `${Math.floor(b.degree)}°${b.retrograde ? "℞" : ""}`;
+      el("circle", { r: "18", class: "hit" }, grp);
+      nodes.push({ key, b, ring, ri, grp, lead, dot, halo, plate, t, lab, to: shown[i], true: b.lon });
+    });
+  });
+
+  function place(n, disp) {
+    const r = n.ring.r;
+    const [gx, gy] = P(disp, r), [lx, ly] = P(disp, n.ri > 0 ? r + 19 : r - 26);
+    const inner = n.ri > 0;
+    const [dx, dy] = P(n.true, inner ? RA + 1 : RZ - 1), [ex, ey] = P(disp, inner ? r - 15 : r + 15);
+    n.lead.setAttribute("x1", dx); n.lead.setAttribute("y1", dy); n.lead.setAttribute("x2", ex); n.lead.setAttribute("y2", ey);
+    n.dot.setAttribute("cx", dx); n.dot.setAttribute("cy", dy);
+    for (const e of [n.halo, n.plate]) { e.setAttribute("cx", gx); e.setAttribute("cy", gy); }
+    n.grp.querySelector(".hit").setAttribute("cx", gx); n.grp.querySelector(".hit").setAttribute("cy", gy);
+    n.t.setAttribute("x", gx); n.t.setAttribute("y", gy + 0.5);
+    n.lab.setAttribute("x", lx); n.lab.setAttribute("y", ly);
+  }
+
+  // Entrance: bodies sweep from the Ascendant to their places; aspect lines fade in after.
+  if (reduced) { nodes.forEach(n => place(n, n.to)); }
+  else {
+    aspEls.forEach(l => { l.style.opacity = "0"; });
+    const t0 = performance.now(), dur = 1300;
+    const ease = x => 1 - Math.pow(1 - x, 3);
+    const start = rot;
+    const frame = now => {
+      let done = true;
+      nodes.forEach((n, i) => {
+        const p = Math.min(1, Math.max(0, (now - t0 - i * 45) / dur));
+        if (p < 1) done = false;
+        const span = rev(n.to - start);
+        place(n, start + span * ease(p));
+        n.grp.style.opacity = String(Math.min(1, p * 3));
+      });
+      if (!done) requestAnimationFrame(frame);
+      else aspEls.forEach((l, i) => { l.style.transition = `opacity .5s ${i * 25}ms`; l.style.opacity = ""; });
+    };
+    requestAnimationFrame(frame);
+  }
+  return { nodes, aspEls };
+}
+
+/* ---------- interaction ---------- */
+function wire(svg, nodes, readout, describe, onSelect) {
+  let sel = null;
+  const set = key => {
+    sel = key;
+    svg.classList.toggle("dim", !!key);
+    const mates = new Set();
+    svg.querySelectorAll(".asp").forEach(l => {
+      const lit = key && (l.dataset.a === key || l.dataset.b === key);
+      l.classList.toggle("lit", !!lit);
+      if (lit) { mates.add(l.dataset.a); mates.add(l.dataset.b); }
+    });
+    nodes.forEach(n => { n.grp.classList.toggle("on", n.key === key); n.grp.classList.toggle("mate", mates.has(n.key) && n.key !== key); });
+    readout.innerHTML = key ? describe(key) : readout.dataset.idle;
+    onSelect?.(key);
+  };
+  nodes.forEach(n => {
+    n.grp.addEventListener("click", () => set(sel === n.key ? null : n.key));
+    n.grp.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); set(sel === n.key ? null : n.key); } });
+    n.grp.addEventListener("mouseenter", () => { if (!sel) { readout.innerHTML = describe(n.key); } });
+    n.grp.addEventListener("mouseleave", () => { if (!sel) readout.innerHTML = readout.dataset.idle; });
+  });
+  return set;
+}
+
+/* ---------- panels ---------- */
+function tiles(c) {
+  const sun = c.bodies.find(b => b.name === "Sun"), moon = c.bodies.find(b => b.name === "Moon"), asc = c.angles?.ascendant;
+  const t = (label, p, color) => p
+    ? `<div class="tile" style="--c:${cv(color)}"><span>${label}</span>${g(p.sign_glyph)}<b class="${p.sign.length > 8 ? "long" : ""}">${p.sign}</b><small>${p.dm}</small></div>`
+    : `<div class="tile none"><span>${label}</span><i class="g" style="display:block;margin:9px 0 5px;font-size:28px;line-height:1;color:var(--haze)">·</i><b>Needs place</b><small>lat · lon</small></div>`;
+  return `<div class="three">${t("Sun", sun, "sun")}${t("Moon", moon, "ink")}${t("Rising", asc, "orbit")}</div>`;
+}
+const HL_C = ["sun", "ink", "glyph", "orbit", "flare", "frost", "haze"];
+const lede = items => `<ul class="lede">${items.map((h, i) => `<li style="--c:${cv(HL_C[i % HL_C.length])}">${esc(h)}</li>`).join("")}</ul>`;
+
+function positionsTable(c, owner = "_") {
+  const rows = c.bodies.map(b => `<tr data-k="${esc(owner)}:${b.name}" style="--c:${cv(BODY_C[b.name])}"><td>${g(b.glyph)}</td><td>${b.name}</td><td><span class="g sg">${b.sign_glyph}${VS}</span>${b.sign}</td><td class="num">${b.dm}${b.retrograde ? '<span class="rx">℞</span>' : ""}</td>${c.house_system ? `<td class="num">${b.house}</td>` : ""}</tr>`).join("");
+  const ang = c.angles ? [["AC", "Ascendant", c.angles.ascendant, 1], ["MC", "Midheaven", c.angles.midheaven, c.houses ? Math.floor(rev(c.angles.midheaven.lon - c.houses[0].cusp.lon) / 30) + 1 : 10]]
+    .map(([tag, n, p, h]) => `<tr style="--c:${cv("orbit")}"><td><span class="tag">${tag}</span></td><td>${n}</td><td><span class="g sg">${p.sign_glyph}${VS}</span>${p.sign}</td><td class="num">${p.dm}</td>${c.house_system ? `<td class="num">${h}</td>` : ""}</tr>`).join("") : "";
+  return `<div class="scroll"><table><thead><tr><th></th><th>Body</th><th>Sign</th><th class="num">Degree</th>${c.house_system ? '<th class="num">House</th>' : ""}</tr></thead><tbody>${rows}${ang}</tbody></table></div>`;
+}
+const GLYPH = { Sun:"☉", Moon:"☽", Mercury:"☿", Venus:"♀", Mars:"♂", Jupiter:"♃", Saturn:"♄", Uranus:"♅", Neptune:"♆", Pluto:"♇", Ascendant:"AC", Midheaven:"MC" };
+const pg = n => GLYPH[n].length > 1 ? `<span class="tag">${GLYPH[n]}</span>` : `<i class="g" style="color:${cv(BODY_C[n])}">${GLYPH[n]}${VS}</i>`;
+function aspectList(list, owners) {
+  if (!list.length) return '<p class="when">No major aspects within orb.</p>';
+  return `<ul class="asp">${list.map(a => `<li>${pg(a.a)}<i class="g" style="color:${cv(ASP_C[a.aspect])}">${a.glyph}${VS}</i>${pg(a.b)}<em>${owners ? `<span class="who">${esc(a.a_owner)}</span> ` : ""}<i>${a.a}</i> ${a.aspect} ${owners ? `<span class="who">${esc(a.b_owner)}</span> ` : ""}<i>${a.b}</i></em><b>${dm(a.orb)}${a.applying === null || a.applying === undefined ? "" : `<small>${a.applying ? "applying" : "separating"}</small>`}</b></li>`).join("")}</ul>`;
+}
+function balanceBars(charts, names) {
+  const two = charts.length === 2, rows = (keys, colors) => keys.map((k, i) => {
+    const bar = (n, c) => `<div class="track" style="--c:${cv(c)}">${Array.from({ length: 10 }, (_, j) => `<i class="${j < n ? "on" : ""}"></i>`).join("")}</div>`;
+    const v = charts.map(c => (c.balance.elements[k] ?? c.balance.modalities[k]));
+    return `<li><span>${k}</span>${bar(v[0], two ? "sun" : colors[i])}<b>${v[0]}</b></li>` + (two ? `<li><span></span>${bar(v[1], "glyph")}<b>${v[1]}</b></li>` : "");
+  }).join("");
+  const key = two ? `<p class="key"><span style="--c:${cv("sun")}"><i></i>${esc(names[0])}</span><span style="--c:${cv("glyph")}"><i></i>${esc(names[1])}</span></p>` : "";
+  return key + `<ul class="bal">${rows(["Fire", "Earth", "Air", "Water"], ELC)}</ul><ul class="bal">${rows(["Cardinal", "Fixed", "Mutable"], ["haze", "haze", "haze"])}</ul>`;
+}
+function eventsList(evs) {
+  if (!evs.length) return '<p class="when">Nothing in this window.</p>';
+  return `<ul class="events">${evs.map(e => `<li><time>${new Date(e.utc).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })} ${e.utc.slice(11, 16)}</time><span class="${e.eclipse ? "ecl" : ""}">${esc(e.summary)} · ${esc(e.position)}</span></li>`).join("")}</ul>`;
+}
+
+function tabs(container, defs) {
+  const bar = document.createElement("div"); bar.className = "tabs"; bar.setAttribute("role", "tablist");
+  const pane = document.createElement("div"); pane.className = "pane";
+  defs.forEach((d, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "tab"); b.textContent = d.label;
+    b.setAttribute("aria-selected", String(i === 0));
+    b.addEventListener("click", () => { bar.querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", String(x === b))); pane.innerHTML = d.html(); d.after?.(pane); });
+    bar.appendChild(b);
+  });
+  container.append(bar, pane);
+  pane.innerHTML = defs[0].html(); defs[0].after?.(pane);
+}
+
+/* ---------- views ---------- */
+let fullscreenBtn = "";
+function header(kicker, title, lines) {
+  return `<header class="rise"><div><p class="kicker">${kicker}</p><h1>${title}</h1><p class="when">${lines.map(l => `<span>${l}</span>`).join("")}</p></div>${fullscreenBtn}</header>`;
+}
+
+function renderChart(c) {
+  const sky = c.kind === "sky";
+  const where = c.location ? `<b>${esc(c.location.place ?? `${c.location.latitude}°, ${c.location.longitude}°`)}</b> · ` : "";
+  const kicker = sky ? `Birth Sky · <b>The sky</b>` : `Birth Sky · <b>Natal chart</b>`;
+  const title = sky ? (c.location?.place ? esc(c.location.place) : "Overhead now") : esc(c.name ?? "Birth chart");
+  root.innerHTML = header(kicker, title, [`${where}${whenText(c.moment)}`]) +
+    `<div class="layout"><div class="wheelbox rise" style="animation-delay:.05s"><svg class="wheel" role="img" aria-label="Chart wheel"></svg><p class="readout"></p></div><div class="side rise" style="animation-delay:.12s">${tiles(c)}${lede(c.highlights)}</div></div><section id="more"></section><footer>${esc(c.precision_note)} Tropical zodiac${c.house_system ? `, ${c.house_system === "equal" ? "equal" : "whole-sign"} houses` : ""}.</footer>`;
+  const svg = $("svg.wheel"), readout = $(".readout");
+  readout.dataset.idle = `Tap a planet to trace its aspects. <b>${c.moon_phase.name}</b> · ${c.moon_phase.illumination}% lit`;
+  readout.innerHTML = readout.dataset.idle;
+  const anchor = c.angles ? c.angles.ascendant.lon : 0;
+  const { nodes } = drawWheel(svg, {
+    anchor, houses: c.houses ? c.houses.map(h => h.cusp.lon) : null,
+    angles: c.angles ? { asc: c.angles.ascendant.lon, mc: c.angles.midheaven.lon } : null,
+    rings: [{ bodies: c.bodies, r: 190, owner: "_" }],
+    aspects: c.aspects.map(a => ({ ...a, ka: "_:" + a.a, kb: "_:" + a.b })),
+  });
+  const byKey = Object.fromEntries(c.bodies.map(b => ["_:" + b.name, b]));
+  const describe = k => {
+    const b = byKey[k]; if (!b) return "";
+    const n = c.aspects.filter(a => a.a === b.name || a.b === b.name).length;
+    return `${g(b.glyph)} <b>${b.name}</b> ${b.dm} ${b.sign}${b.house ? ` · house ${b.house}` : ""}${b.retrograde ? " · retrograde" : ""} · ${n} aspect${n === 1 ? "" : "s"}`;
+  };
+  let markRow = () => {};
+  const select = wire(svg, nodes, readout, describe, k => markRow(k));
+  const hook = pane => {
+    markRow = k => pane.querySelectorAll("tr[data-k]").forEach(tr => tr.classList.toggle("on", tr.dataset.k === k));
+    pane.querySelectorAll("tr[data-k]").forEach(tr => tr.addEventListener("click", () => select(tr.classList.contains("on") ? null : tr.dataset.k)));
+  };
+  const defs = [
+    { label: "Positions", html: () => positionsTable(c), after: hook },
+    { label: `Aspects · ${c.aspects.length}`, html: () => aspectList(c.aspects) },
+    { label: "Balance", html: () => balanceBars([c], []) },
+  ];
+  if (sky && c.upcoming?.length) defs.splice(1, 0, { label: `Coming up · ${c.upcoming.length}`, html: () => eventsList(c.upcoming) });
+  tabs($("#more"), defs);
+}
+
+function renderComparison(x) {
+  const [a, b] = x.charts;
+  const na = a.name ?? "Person A", nb = b.name ?? "Person B";
+  const where = c => c.location?.place ? `<b>${esc(c.location.place)}</b> · ` : "";
+  root.innerHTML = header(`Birth Sky · <b>Two charts</b>`, `${esc(na)} <em>&amp;</em> ${esc(nb)}`, [`${where(a)}${whenText(a.moment)}`, `${where(b)}${whenText(b.moment)}`]) +
+    `<div class="layout"><div class="wheelbox rise"><svg class="wheel" role="img" aria-label="Two charts on one wheel"></svg><p class="readout"></p></div><div class="side rise" style="animation-delay:.12s">${pairCols(a, b)}${lede(x.highlights)}</div></div><section id="more"></section><footer>${esc(na)}'s planets sit on the outer ring, marked at the zodiac edge; ${esc(nb)}'s sit on the inner violet ring, marked on the centre circle. Houses are ${esc(na)}'s. ${esc(x.precision_note)}</footer>`;
+  const svg = $("svg.wheel"), readout = $(".readout");
+  readout.dataset.idle = `Tap a planet to see where it meets the other chart.`;
+  readout.innerHTML = readout.dataset.idle;
+  const { nodes } = drawWheel(svg, {
+    anchor: a.angles ? a.angles.ascendant.lon : 0, houses: a.houses ? a.houses.map(h => h.cusp.lon) : null,
+    angles: a.angles ? { asc: a.angles.ascendant.lon, mc: a.angles.midheaven.lon } : null,
+    rings: [{ bodies: a.bodies, r: 200, owner: na }, { bodies: b.bodies, r: 150, owner: nb, tint: "glyph" }],
+    points: b.angles ? { [nb + ":Ascendant"]: b.angles.ascendant.lon, [nb + ":Midheaven"]: b.angles.midheaven.lon } : {},
+    aspects: x.cross_aspects.map(c => ({ ...c, ka: c.a_owner + ":" + c.a, kb: c.b_owner + ":" + c.b })),
+  });
+  const all = Object.fromEntries([...a.bodies.map(z => [na + ":" + z.name, [na, z]]), ...b.bodies.map(z => [nb + ":" + z.name, [nb, z]])]);
+  const describe = k => {
+    const [who, z] = all[k] || []; if (!z) return "";
+    const hits = x.cross_aspects.filter(c => (c.a_owner + ":" + c.a) === k || (c.b_owner + ":" + c.b) === k);
+    const best = hits[0];
+    return `<span class="who">${esc(who)}</span> ${g(z.glyph)} <b>${z.name}</b> ${z.dm} ${z.sign} · ${hits.length} contact${hits.length === 1 ? "" : "s"}${best ? ` · tightest: ${best.aspect} ${esc(best.a_owner === who ? best.b_owner : best.a_owner)}'s ${best.a_owner === who ? best.b : best.a} (${dm(best.orb)})` : ""}`;
+  };
+  wire(svg, nodes, readout, describe);
+  tabs($("#more"), [
+    { label: `Where they meet · ${x.cross_aspects.length}`, html: () => aspectList(x.cross_aspects, true) },
+    { label: "Balance", html: () => balanceBars([a, b], [na, nb]) },
+    ...(x.house_overlays.length ? [{ label: "House overlays", html: () => overlays(x, na, nb) }] : []),
+  ]);
+}
+function pairCols(a, b) {
+  const col = (c, color) => {
+    const row = (n, p) => p ? `<dt>${n}</dt><dd>${g(p.sign_glyph)} ${p.sign}</dd>` : `<dt>${n}</dt><dd style="color:var(--haze)">—</dd>`;
+    return `<div class="col" style="--c:${cv(color)}"><h3>${esc(c.name)}</h3><dl>${row("Sun", c.bodies[0])}${row("Moon", c.bodies[1])}${row("Rising", c.angles?.ascendant)}</dl></div>`;
+  };
+  return `<div class="pair">${col(a, "sun")}${col(b, "glyph")}</div>`;
+}
+function overlays(x, na, nb) {
+  const block = owner => {
+    const rows = x.house_overlays.filter(o => o.owner === owner);
+    if (!rows.length) return "";
+    return `<p class="kicker" style="margin-top:4px">${esc(owner)}'s planets in ${esc(rows[0].in_houses_of)}'s houses</p><div class="scroll"><table><tbody>${rows.map(o => `<tr style="--c:${cv(BODY_C[o.body])}"><td>${g(GLYPH[o.body])}</td><td>${o.body}</td><td class="num">house ${o.house}</td></tr>`).join("")}</tbody></table></div>`;
+  };
+  return block(na) + `<div style="height:14px"></div>` + block(nb);
+}
+
+function render(data) {
+  if (!data) return;
+  if (data.kind === "comparison") renderComparison(data);
+  else if (data.kind === "chart" || data.kind === "sky") renderChart(data);
+}
+function showState(text, err) {
+  root.innerHTML = `<div class="state${err ? " err" : ""}">${err ? "" : '<div class="orrery" aria-hidden="true"><i></i><i></i><b></b><em></em><em></em></div>'}<p>${esc(text)}</p></div>`;
+}
+
+/* ---------- host connection ---------- */
+const app = new McpApps.App({ name: "Birth Sky", version: "1.0.0" }, {}, { autoResize: true });
+app.ontoolinput = p => {
+  const a = p.arguments || {};
+  const who = a.name || (a.person_a && a.person_b ? `${a.person_a.name || "A"} & ${a.person_b.name || "B"}` : a.place || "the sky");
+  showState(`Computing ${who}…`);
+};
+app.ontoolresult = r => {
+  if (r.isError) { showState((r.content || []).map(c => c.text).join(" ") || "The calculation failed.", true); return; }
+  try { render(r.structuredContent); }
+  catch (e) { showState("Could not draw this chart: " + e.message, true); }
+};
+app.ontoolcancelled = () => showState("Cancelled.", true);
+app.onhostcontextchanged = () => {};
+try {
+  await app.connect();
+  const modes = app.getHostContext()?.availableDisplayModes || [];
+  if (modes.includes("fullscreen")) {
+    fullscreenBtn = '<button class="iconbtn" type="button" data-full>Expand</button>';
+    document.addEventListener("click", e => {
+      const b = e.target.closest?.("[data-full]");
+      if (!b) return;
+      const cur = app.getHostContext()?.displayMode;
+      app.requestDisplayMode({ mode: cur === "fullscreen" ? "inline" : "fullscreen" }).then(r => { b.textContent = r.mode === "fullscreen" ? "Close" : "Expand"; }).catch(() => {});
+    });
+    const hdr = root.querySelector("header");
+    if (hdr && !hdr.querySelector("[data-full]")) hdr.insertAdjacentHTML("beforeend", fullscreenBtn);
+  }
+} catch (e) {
+  showState("This view needs an MCP Apps host. The text result has the full reading.", true);
+}
+window.__birthSkyRender = render;
+</script>
+</body>
+</html>
