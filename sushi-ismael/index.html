@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500&family=Syncopate:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93%E2%98%89%E2%98%BD%E2%98%BF%E2%99%80%E2%99%82%E2%99%83%E2%99%84%E2%99%85%E2%99%86%E2%99%87&display=swap">
 <style>
 /* Layout: full-bleed binary-star stage. Brand top-left, instruments top-right, telemetry docked right, chapter dock along the bottom edge. Single dark world in the Sushi & Ez type system; Sushi burns red, Ismael burns blue, violet where they meet. */
 :root{
@@ -16,6 +17,7 @@
   --f-display:"Syncopate","Segoe UI",system-ui,sans-serif;
   --f-hud:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
   --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-sym:"Noto Sans Symbols","Noto Sans Symbols 2","Segoe UI Symbol","Apple Symbols","DejaVu Sans",sans-serif;
   --gutter:clamp(16px,2vw,28px);
   color-scheme:dark;
 }
@@ -124,6 +126,7 @@ body.mem-open .tele{opacity:0;visibility:hidden}
 .insp-t{margin:7px 0 3px;font:700 14px/1.2 var(--f-display);letter-spacing:.16em;color:var(--ic,#cdb8ff);text-wrap:balance;overflow-wrap:anywhere}
 .insp-t.plain{font:500 16px/1.35 var(--f-body);letter-spacing:0;color:var(--cream)}
 .insp-t .g{font:500 21px/1 var(--f-body);letter-spacing:0;margin-right:8px;vertical-align:-1px}
+.insp-t .g.sym{font-family:var(--f-sym);font-weight:400}
 .insp-s{margin:0 0 8px;font:400 13px/1.45 var(--f-body);color:rgba(237,247,251,.82)}
 .insp dl{margin:0;display:grid}
 .insp dl div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-top:1px solid rgba(117,215,255,.08);font-size:9.5px}
@@ -139,6 +142,34 @@ body.mem-open .tele{opacity:0;visibility:hidden}
   linear-gradient(var(--rc),var(--rc)) 0 100%/10px 1px no-repeat,linear-gradient(var(--rc),var(--rc)) 0 100%/1px 10px no-repeat,
   linear-gradient(var(--rc),var(--rc)) 100% 100%/10px 1px no-repeat,linear-gradient(var(--rc),var(--rc)) 100% 100%/1px 10px no-repeat}
 @keyframes retspin{to{transform:rotate(360deg)}}
+
+/* up-close chapters: each star wears the sky of the night that person was born */
+body.up-on .tele,body.up-ch .tele{opacity:0;visibility:hidden}
+.lbl.zs>div{transform:translate(-50%,-50%);font:400 15px/1 var(--f-sym);color:var(--zc);text-shadow:0 0 8px rgba(3,7,12,.95),0 0 3px rgba(3,7,12,.95)}
+.lbl.nb>div{transform:translate(8px,-112%);font:400 16px/1 var(--f-sym);color:var(--zc);text-shadow:0 0 10px rgba(3,7,12,.95),0 0 3px rgba(3,7,12,.95)}
+.lbl.ax>div{transform:translate(-50%,-50%);font:500 9px/1 var(--f-hud);letter-spacing:.22em;padding-left:.22em;color:var(--zc);text-shadow:0 0 8px rgba(3,7,12,.95)}
+.dossier{--dc:#7ae6ff;left:var(--gutter);top:calc(env(safe-area-inset-top,0px) + 92px);width:292px;max-height:calc(100% - 92px - 176px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(117,215,255,.25) transparent;padding:14px 16px 12px;border-color:color-mix(in srgb,var(--dc) 40%,transparent);opacity:0;visibility:hidden;transform:translateX(-10px);transition:opacity .9s ease,transform .9s ease,visibility .9s}
+body.up-on .dossier{opacity:1;visibility:visible;transform:none}
+.d-k{margin:0;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.d-t{margin:9px 0 6px;font:700 21px/1 var(--f-display);letter-spacing:.24em}
+.d-when{margin:0 0 12px;font:400 13px/1.45 var(--f-body);color:rgba(237,247,251,.84)}
+.d-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.d-tile{min-width:0;padding:8px 8px 7px;border:1px solid rgba(117,215,255,.14);background:rgba(255,255,255,.025)}
+.d-tile span{display:block;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.d-tile i{display:block;margin:7px 0 5px;font:400 22px/1 var(--f-sym);font-style:normal;color:var(--zc)}
+.d-tile b{display:block;font:500 13px/1.1 var(--f-body);overflow-wrap:anywhere}
+.d-tile small{display:block;margin-top:3px;font-size:9.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.d-live{margin:12px 0 0;display:grid}
+.d-live div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid rgba(117,215,255,.08);font-size:10px}
+.d-live dt{color:var(--muted);letter-spacing:.08em;white-space:nowrap}
+.d-live dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.d-h{margin:14px 0 8px;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dc)}
+.d-light svg{display:block;width:100%;height:auto;overflow:visible}
+.d-light p,.d-facts li{margin:8px 0 0;font:400 12.5px/1.5 var(--f-body);color:rgba(237,247,251,.8)}
+.d-facts{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+.d-facts li{display:grid;grid-template-columns:12px minmax(0,1fr);gap:6px;margin:4px 0 0}
+.d-facts li:before{content:"";width:5px;height:5px;margin-top:8px;border-radius:50%;background:var(--dc);box-shadow:0 0 8px var(--dc)}
+.d-fine{margin:12px 0 0;font-size:9px;line-height:1.6;color:rgba(134,160,175,.85)}
 
 /* intro */
 .intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:24px var(--gutter);text-align:center;background:radial-gradient(ellipse at 50% 50%,rgba(3,7,12,.25),rgba(3,7,12,.9) 72%);cursor:pointer;transition:opacity 1.6s ease,visibility 1.6s}
@@ -164,8 +195,14 @@ body.mem-open .tele{opacity:0;visibility:hidden}
   .mem-btn{padding:8px 10px;font-size:8.5px}
   .mem{left:var(--gutter);right:var(--gutter);width:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 168px);max-height:52%}
   .lbl-name{font-size:11px}
+  .dossier{top:calc(env(safe-area-inset-top,0px) + 92px);right:var(--gutter);width:auto;max-height:30vh;padding:10px 12px}
+  .d-t{margin:6px 0 4px;font-size:15px}
+  .d-when{margin-bottom:8px;font-size:12px}
+  .d-tile{padding:6px 6px 5px}
+  .d-tile i{margin:5px 0 3px;font-size:18px}
+  .d-tile b{font-size:12px}
 }
-@media (prefers-reduced-motion:reduce){.brand,.tele,.intro,.cap-t,.toast{transition:none}.intro-h,.ret i{animation:none}}
+@media (prefers-reduced-motion:reduce){.brand,.tele,.intro,.cap-t,.toast,.dossier{transition:none}.intro-h,.ret i{animation:none}}
 </style>
 </head>
 <body>
@@ -199,6 +236,8 @@ body.mem-open .tele{opacity:0;visibility:hidden}
   </dl>
   <p>Periastron is the point where the two stars pass closest. Distances are in scene units.</p>
 </aside>
+
+<aside class="card dossier" id="dossier" aria-label="Up close" hidden></aside>
 
 <footer class="bottom">
   <div class="caption" aria-live="polite">
@@ -266,6 +305,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 /* ------------------------------------------------------------------ setup */
 const NAME_A = 'Sushi', NAME_B = 'Ismael';
+// The skies of the nights Sushi and Ismael were born. The public repo ships without them; the private build adds a
+// <script type="application/json" id="birth-skies"> block ({ a: Sushi, b: Ismael }) and the up-close chapters draw it.
+const SKY = (() => { try { const el = document.getElementById('birth-skies'); return el ? JSON.parse(el.textContent) : {}; } catch (e) { return {}; } })();
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = Math.min(innerWidth, innerHeight) < 560;
 const $ = (s) => document.querySelector(s);
@@ -453,7 +495,7 @@ scene.add(starGroup);
 /* --------------------------------------------------------------- the stars */
 const STAR_V = `varying vec3 vPos; varying vec3 vN; varying vec3 vV;
   void main(){ vPos = position; vec4 mv = modelViewMatrix*vec4(position,1.0); vN = normalize(normalMatrix*normal); vV = -mv.xyz; gl_Position = projectionMatrix*mv; }`;
-const STAR_F = NOISE + `uniform float uTime, uSeed, uBoost; uniform vec3 uDeep, uMid, uHot, uEdge;
+const STAR_F = NOISE + `uniform float uTime, uSeed, uBoost; uniform vec3 uDeep, uMid, uHot, uEdge; uniform vec3 uFoot[24];
   varying vec3 vPos; varying vec3 vN; varying vec3 vV;
   void main(){
     vec3 p = normalize(vPos);
@@ -462,6 +504,14 @@ const STAR_F = NOISE + `uniform float uTime, uSeed, uBoost; uniform vec3 uDeep, 
     float n2 = snoise(p*5.2 + vec3(0.0, -t*0.11, uSeed));
     float n3 = snoise(p*14.0 + vec3(t*0.19, uSeed, 0.0));
     float heat = 0.56 + 0.27*n1 + 0.17*n2 + 0.09*n3;
+    // granulation: bright convection cells with dark lanes, only really visible up close
+    float lane = 1.0 - smoothstep(0.0, 0.16, abs(snoise(p*30.0 + vec3(t*0.22, uSeed, -t*0.13))));
+    float lane2 = 1.0 - smoothstep(0.0, 0.12, abs(snoise(p*61.0 + vec3(-t*0.3, t*0.17, uSeed))));
+    heat -= lane*0.075 + lane2*0.035;
+    // active regions where the magnetic loops are rooted: bright faculae around dark pores
+    float plage = 0.0, pore = 0.0;
+    for (int i = 0; i < 24; i++) { float d = dot(p, uFoot[i]); plage += smoothstep(0.986, 0.997, d); pore += smoothstep(0.9982, 0.9994, d); }
+    heat += min(plage, 1.0)*0.2 - min(pore, 1.0)*0.42;
     float spot = smoothstep(0.5, 0.78, snoise(p*2.3 + vec3(uSeed*2.0, t*0.02, 1.0)));
     heat -= spot*0.38;
     vec3 col = mix(uDeep, uMid, smoothstep(0.08, 0.55, heat));
@@ -495,7 +545,7 @@ function makeStar(cfg) {
   const group = new THREE.Group();
   const boost = { value: 0 };
   const surf = new THREE.ShaderMaterial({
-    uniforms: { uTime: U.time, uSeed: { value: cfg.seed }, uBoost: boost, uDeep: { value: cfg.deep }, uMid: { value: cfg.mid }, uHot: { value: cfg.hot }, uEdge: { value: cfg.edge } },
+    uniforms: { uTime: U.time, uSeed: { value: cfg.seed }, uBoost: boost, uDeep: { value: cfg.deep }, uMid: { value: cfg.mid }, uHot: { value: cfg.hot }, uEdge: { value: cfg.edge }, uFoot: { value: Array.from({ length: 24 }, () => new THREE.Vector3()) } },
     vertexShader: STAR_V, fragmentShader: STAR_F,
   });
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(RS, small ? 64 : 96, small ? 40 : 64), surf);
@@ -514,11 +564,78 @@ function makeStar(cfg) {
   const light = new THREE.PointLight(cfg.mid, 150, 0, 1.4);
   group.add(light);
   scene.add(group);
-  return { group, mesh, boost, hover: 0 };
+  return { group, mesh, surf, boost, hover: 0 };
 }
 const starA = makeStar({ id: 'a', seed: 1.3, deep: COL.aDeep, mid: COL.aMid, hot: COL.aHot, edge: COL.aEdge });
 const starB = makeStar({ id: 'b', seed: 7.9, deep: COL.bDeep, mid: COL.bMid, hot: COL.bHot, edge: COL.bEdge });
 const posA = starA.group.position, posB = starB.group.position;
+
+/* ------------------------------------------- coronal loops: plasma on magnetic field lines */
+function makeLoops(star, n, seed, hot, edge) {
+  let sd = seed;
+  const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const PER = 380;
+  const A = [], B = [], H = [], T = [], F = [], Z = [], W = [];
+  const feet = star.surf.uniforms.uFoot.value;
+  const c = new THREE.Vector3(), east = new THREE.Vector3(), north = new THREE.Vector3(), axis = new THREE.Vector3();
+  for (let L = 0; L < n; L++) {
+    // loops root in two belts north and south of the equator, the way sunspots do
+    const lat = THREE.MathUtils.degToRad((12 + rnd() * 24) * (rnd() < 0.5 ? -1 : 1)), lon = rnd() * TAU;
+    c.set(Math.cos(lat) * Math.cos(lon), Math.sin(lat), Math.cos(lat) * Math.sin(lon));
+    east.set(-Math.sin(lon), 0, Math.cos(lon));
+    north.crossVectors(east, c).normalize();
+    const big = L < 2;
+    const tilt = (rnd() - 0.5) * 0.9, half = THREE.MathUtils.degToRad(big ? 10 + rnd() * 4 : 3 + rnd() * 6);
+    axis.copy(east).multiplyScalar(Math.cos(tilt)).addScaledVector(north, Math.sin(tilt));
+    const a = c.clone().addScaledVector(axis, Math.tan(half)).normalize();
+    const b = c.clone().addScaledVector(axis, -Math.tan(half)).normalize();
+    if (L * 2 + 1 < feet.length) { feet[L * 2].copy(a); feet[L * 2 + 1].copy(b); }
+    const h = a.distanceTo(b) * (big ? 0.95 + rnd() * 0.45 : 0.7 + rnd() * 1.1) + 0.05;
+    const ph = rnd() * TAU, speed = 0.05 + rnd() * 0.09, dir = rnd() < 0.5 ? 1 : -1;
+    for (let k = 0; k < PER; k++) {
+      A.push(a.x, a.y, a.z); B.push(b.x, b.y, b.z); H.push(h);
+      T.push(k / PER + rnd() * 0.004); F.push(ph, speed, dir); Z.push(0.6 + rnd() * 1.1);
+      W.push((rnd() + rnd() - 1) * (big ? 1.6 : 1));
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(A.length), 3));
+  g.setAttribute('aA', new THREE.Float32BufferAttribute(A, 3));
+  g.setAttribute('aB', new THREE.Float32BufferAttribute(B, 3));
+  g.setAttribute('aH', new THREE.Float32BufferAttribute(H, 1));
+  g.setAttribute('aT', new THREE.Float32BufferAttribute(T, 1));
+  g.setAttribute('aF', new THREE.Float32BufferAttribute(F, 3));
+  g.setAttribute('aSize', new THREE.Float32BufferAttribute(Z, 1));
+  g.setAttribute('aW', new THREE.Float32BufferAttribute(W, 1));
+  const amp = { value: 0.6 };
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uTime: U.time, uPR: U.pr, uAmp: amp, uRs: { value: RS }, uHot: { value: hot }, uEdge: { value: edge } },
+    vertexShader: `attribute vec3 aA; attribute vec3 aB; attribute float aH; attribute float aT; attribute vec3 aF; attribute float aSize; attribute float aW;
+      uniform float uTime, uPR, uAmp, uRs; uniform vec3 uHot, uEdge; varying vec3 vColor; varying float vA;
+      void main(){
+        float t = fract(aT + uTime*aF.y*aF.z);
+        float arch = sin(3.14159265*t);
+        vec3 dir = normalize(mix(aA, aB, t));
+        float lift = aH*(1.0 + 0.1*sin(uTime*0.35 + aF.x))*arch;
+        vec3 side = normalize(cross(aB - aA, dir) + 1e-5);
+        // a tube of plasma: particles spread across the field line, a little wider at the top of the arch
+        vec3 p = dir*uRs*(1.0 + lift) + side*uRs*0.012*aW*(0.5 + arch);
+        vec4 mv = modelViewMatrix*vec4(p, 1.0); gl_Position = projectionMatrix*mv;
+        gl_PointSize = clamp(aSize*uPR*(13.0/-mv.z), 1.0, 16.0);
+        float flare = pow(max(0.0, sin(uTime*0.21 + aF.x*3.0)), 60.0);
+        vA = uAmp*smoothstep(0.0, 0.07, t)*smoothstep(1.0, 0.93, t)*(0.4 + 0.6*arch)*(1.0 - 0.35*abs(aW))*(1.0 + 2.6*flare);
+        vColor = mix(uHot, uEdge, 0.3 + 0.7*arch);
+      }`,
+    fragmentShader: `varying vec3 vColor; varying float vA;
+      void main(){ float r = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, r); gl_FragColor = vec4(vColor*a*a*vA*0.85, 1.0); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  });
+  const pts = new THREE.Points(g, m);
+  pts.frustumCulled = false;
+  star.group.add(pts);
+  return amp;
+}
+const loops = { a: makeLoops(starA, 11, 1871, COL.aHot, COL.aEdge), b: makeLoops(starB, 12, 6421, COL.bHot, COL.bEdge) };
 scene.add(new THREE.HemisphereLight(0x22324a, 0x050308, 0.35));
 
 function kepler(t) {
@@ -1044,6 +1161,165 @@ const bary = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: COL.b
 bary.scale.setScalar(0.6);
 scene.add(bary);
 
+/* ------------------------- up close: each star wears the sky of the night that person was born */
+const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+const SG = ['\u2648', '\u2649', '\u264A', '\u264B', '\u264C', '\u264D', '\u264E', '\u264F', '\u2650', '\u2651', '\u2652', '\u2653'];
+const ELEMENT = ['#ff9a76', '#e3c27f', '#cdb8ff', '#7ae6ff']; // fire, earth, air, water
+const VS = '\uFE0E'; // text presentation, never emoji
+const signOf = (lon) => Math.floor((((lon % 360) + 360) % 360) / 30);
+const dm = (x) => { x = ((x % 30) + 30) % 30; const t = Math.floor(x * 60 + 1e-6); return Math.floor(t / 60) + '°' + String(t % 60).padStart(2, '0') + '′'; };
+const ASPECTS = [
+  { k: 'conjunct', a: 0, orb: 8, g: '\u260C' },
+  { k: 'sextile', a: 60, orb: 4, g: '\u26B9', c: '#7ae6ff' },
+  { k: 'square', a: 90, orb: 6, g: '\u25A1', c: '#ff7a66' },
+  { k: 'trine', a: 120, orb: 7, g: '\u25B3', c: '#7cf2d6' },
+  { k: 'opposite', a: 180, orb: 8, g: '\u260D', c: '#ff6f91' },
+];
+function aspectsOf(D) {
+  const out = [], keys = Object.keys(D.bodies);
+  keys.forEach((a, i) => keys.forEach((b, j) => {
+    if (j <= i) return;
+    let sep = Math.abs(((D.bodies[a].lon - D.bodies[b].lon) % 360 + 360) % 360); if (sep > 180) sep = 360 - sep;
+    for (const asp of ASPECTS) {
+      const lim = asp.orb * (a === 'Sun' || a === 'Moon' || b === 'Sun' || b === 'Moon' ? 1 : 0.85), orb = Math.abs(sep - asp.a);
+      if (orb <= lim) out.push({ a, b, asp, orb });
+    }
+  }));
+  return out.sort((x, y) => x.orb - y.orb);
+}
+const NATAL_BODIES = [
+  { k: 'Sun', g: '\u2609', c: '#ffd27a', s: 0.62, r: 3.95 },
+  { k: 'Moon', g: '\u263D', c: '#e8eef5', s: 0.5, r: 3.45 },
+  { k: 'Mercury', g: '\u263F', c: '#b9d4ff', s: 0.34, r: 3.7 },
+  { k: 'Venus', g: '\u2640', c: '#7cf2d6', s: 0.42, r: 3.95 },
+  { k: 'Mars', g: '\u2642', c: '#ff7a66', s: 0.38, r: 3.6 },
+  { k: 'Jupiter', g: '\u2643', c: '#f6c177', s: 0.5, r: 3.85 },
+  { k: 'Saturn', g: '\u2644', c: '#cdb8ff', s: 0.46, r: 3.95 },
+  { k: 'Uranus', g: '\u2645', c: '#5ef2ff', s: 0.36, r: 3.45 },
+  { k: 'Neptune', g: '\u2646', c: '#6f8dff', s: 0.36, r: 3.7 },
+  { k: 'Pluto', g: '\u2647', c: '#ff6f91', s: 0.3, r: 3.95 },
+];
+function makeNatal(who) {
+  const D = SKY[who];
+  if (!D || !D.bodies || typeof D.asc !== 'number') return null;
+  const R0 = 4.4, R1 = 5.2, RI = 3.1;
+  const ang = (lon) => THREE.MathUtils.degToRad(lon - D.asc + 180); // Ascendant on the left, signs running counterclockwise
+  const at = (lon, r, out = new THREE.Vector3()) => out.set(Math.cos(ang(lon)) * r, 0, -Math.sin(ang(lon)) * r);
+  const group = new THREE.Group();
+  group.visible = false;
+  scene.add(group);
+  const fadeMats = [];
+  // zodiac band: element tints, sign boundaries and degree ticks
+  {
+    const W = 4096, Hh = 128, cv = document.createElement('canvas'); cv.width = W; cv.height = Hh;
+    const x = cv.getContext('2d');
+    for (let i = 0; i < 12; i++) { x.fillStyle = ELEMENT[i % 4] + '1c'; x.fillRect((i / 12) * W, 0, W / 12, Hh); }
+    x.fillStyle = 'rgba(237,247,251,.8)'; x.fillRect(0, 0, W, 3); x.fillRect(0, Hh - 3, W, 3);
+    for (let deg = 0; deg < 360; deg++) {
+      const px = (deg / 360) * W;
+      if (deg % 30 === 0) { x.fillStyle = 'rgba(237,247,251,.75)'; x.fillRect(px - 1.5, 0, 3, Hh); continue; }
+      const len = deg % 10 === 0 ? 34 : deg % 5 === 0 ? 22 : 11;
+      x.fillStyle = deg % 5 === 0 ? 'rgba(237,247,251,.7)' : 'rgba(237,247,251,.4)';
+      x.fillRect(px - 0.9, Hh - 3 - len, 1.8, len);
+    }
+    const tex = new THREE.CanvasTexture(cv);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const S = 720, pos = new Float32Array((S + 1) * 6), uv = new Float32Array((S + 1) * 4), idx = [];
+    const v = new THREE.Vector3();
+    for (let i = 0; i <= S; i++) {
+      const lon = (i / S) * 360;
+      at(lon, R0, v); pos.set([v.x, 0, v.z], i * 6);
+      at(lon, R1, v); pos.set([v.x, 0, v.z], i * 6 + 3);
+      uv.set([i / S, 0, i / S, 1], i * 4);
+      if (i < S) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
+    m.userData.base = 0.85;
+    fadeMats.push(m);
+    group.add(new THREE.Mesh(g, m));
+  }
+  // inner circle, house cusps, the four angles and a stem from each planet to its degree
+  {
+    const P = [], C = [];
+    const seg = (l0, r0, l1, r1, col, a) => { const u = at(l0, r0), w = at(l1, r1); P.push(u.x, 0, u.z, w.x, 0, w.z); const cc = new THREE.Color(col).multiplyScalar(a); C.push(cc.r, cc.g, cc.b, cc.r, cc.g, cc.b); };
+    for (let i = 0; i < 180; i++) seg(i * 2, RI, i * 2 + 2, RI, '#cdb8ff', 0.5);
+    for (let h = 1; h < 12; h++) if (h !== 6) seg(D.asc + h * 30, RI, D.asc + h * 30, R0, '#86a0af', 0.35);
+    seg(D.asc, RI, D.asc, R1 + 0.75, '#7ae6ff', 1.4);
+    seg(D.asc + 180, RI, D.asc + 180, R1 + 0.35, '#7ae6ff', 0.55);
+    seg(D.mc, RI, D.mc, R1 + 0.75, '#cdb8ff', 1.4);
+    seg(D.mc + 180, RI, D.mc + 180, R1 + 0.35, '#cdb8ff', 0.55);
+    for (const b of NATAL_BODIES) seg(D.bodies[b.k].lon, b.r + 0.16, D.bodies[b.k].lon, R0, b.c, 0.75);
+    // the aspect web: a chord for every major angle between two planets, the way a chart draws them
+    for (const x of aspectsOf(D)) if (x.asp.c) seg(D.bodies[x.a].lon, RI, D.bodies[x.b].lon, RI, x.asp.c, 0.42 * (1 - x.orb / (x.asp.orb + 2)) + 0.12);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
+    const m = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+    m.userData.base = 0.9;
+    fadeMats.push(m);
+    group.add(new THREE.LineSegments(g, m));
+  }
+  // the ten bodies, each a small light at the degree it held
+  const bodies = NATAL_BODIES.map((b) => {
+    const d = D.bodies[b.k];
+    const m = new THREE.SpriteMaterial({ map: GLOW, color: new THREE.Color(b.c).multiplyScalar(2.2), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 });
+    m.userData.base = 1;
+    fadeMats.push(m);
+    const sp = new THREE.Sprite(m);
+    sp.scale.setScalar(b.s);
+    at(d.lon, b.r, sp.position);
+    group.add(sp);
+    const el = makeLabel('nb', b.g + VS);
+    el.style.setProperty('--zc', b.c);
+    return { ...b, d, local: sp.position.clone(), el, world: new THREE.Vector3() };
+  });
+  const signs = SIGNS.map((n, i) => {
+    const el = makeLabel('zs', SG[i] + VS);
+    el.style.setProperty('--zc', ELEMENT[i % 4]);
+    return { el, local: at(i * 30 + 15, (R0 + R1) / 2), world: new THREE.Vector3() };
+  });
+  const axes = [['AC', D.asc, '#7ae6ff'], ['MC', D.mc, '#cdb8ff']].map(([t, lon, c]) => {
+    const el = makeLabel('ax', t);
+    el.style.setProperty('--zc', c);
+    return { el, local: at(lon, R1 + 1.05), world: new THREE.Vector3() };
+  });
+  return { who, D, aspects: aspectsOf(D), pos: who === 'a' ? posA : posB, group, bodies, signs, axes, fadeMats, fade: 0, rot: 0 };
+}
+const natals = { a: makeNatal('a'), b: makeNatal('b') };
+const natalList = [natals.a, natals.b].filter(Boolean);
+const natalUp = { a: 0, b: 0 };
+function updateNatal(dt, upWho) {
+  let any = 0;
+  for (const n of natalList) {
+    const want = n.who === upWho;
+    n.fade += ((want ? 1 : 0) - n.fade) * Math.min(1, dt * (want ? 1.1 : 3));
+    natalUp[n.who] = n.fade;
+    any = Math.max(any, n.fade);
+    const on = n.fade > 0.004;
+    n.group.visible = on;
+    if (on) {
+      // keep the chart readable from wherever you look: Ascendant on your left, Midheaven away from you
+      camera.getWorldDirection(tmp1);
+      const goal = Math.atan2(-tmp1.x, -tmp1.z);
+      n.rot += Math.atan2(Math.sin(goal - n.rot), Math.cos(goal - n.rot)) * Math.min(1, dt * 4);
+      n.group.rotation.y = n.rot;
+      n.group.position.copy(n.pos);
+      for (const m of n.fadeMats) m.opacity = m.userData.base * n.fade;
+    }
+    const show = n.fade > 0.55;
+    for (const o of n.bodies.concat(n.signs, n.axes)) {
+      if (show) o.world.copy(o.local).applyAxisAngle(UP, n.rot).add(n.pos);
+      placeLabel(o.el, o.world, 0, show);
+    }
+  }
+  document.body.classList.toggle('up-on', any > 0.35);
+}
+
 /* ------------------------------------------------------------- memories */
 const MEM_KEY = 'sushi-ismael-orbit-memories-v1';
 const memories = [];
@@ -1168,7 +1444,7 @@ const greekTags = sky.stars.filter((st) => st.rank < 5).map((st) => ({ s: st, el
 const _v = new THREE.Vector3();
 const _w = new THREE.Vector3();
 const tagState = { a: { x: 0, y: 0, dx: 0, dy: -1, on: false }, b: { x: 0, y: 0, dx: 0, dy: -1, on: false } };
-function placeStarLabels(show, dt) {
+function placeStarLabels(show, dt, hide) {
   // Each tag sits above its star, and glides to the side facing away from the other star
   // when the two come close on screen. Direction and position are both smoothed, so tags never jump.
   const halfH = innerHeight / 2 / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
@@ -1184,7 +1460,7 @@ function placeStarLabels(show, dt) {
   const kd = 1 - Math.exp(-dt * 5), kp = 1 - Math.exp(-dt * 16);
   for (const [key, other, el] of [['a', 'b', lblA], ['b', 'a', lblB]]) {
     const me = P[key], ot = P[other], st = tagState[key];
-    el.style.opacity = me.on ? '' : '0';
+    el.style.opacity = me.on && !(hide && hide[key]) ? '' : '0';
     if (!me.on) { st.on = false; continue; }
     const dx = me.x - ot.x, dy = me.y - ot.y, len = Math.hypot(dx, dy);
     let wx = 0, wy = -1;
@@ -1217,7 +1493,11 @@ const CH = [
   { id: 'b', num: 'III', name: NAME_B, text: `${NAME_B} burns blue, cold and electric at the edges. Look at any planet and you will find both colors on it, red on one side and blue on the other.` },
   { id: 'bond', num: 'IV', name: 'The bond', text: `A double helix of light runs between them. Red flows toward ${NAME_B}, blue flows toward ${NAME_A}, and the two meet in violet at the center. The orbit is slightly oval, so they move fastest when they are closest.` },
   { id: 'sky', num: 'V', name: 'Written in the sky', text: `Both names are drawn into the far sky as constellations, ${sky.letters} letters made of ${sky.stars.length} stars. Every star has its own name, class and temperature. Hover or tap one to read it.` },
+  ...[['b', 'VI', NAME_B, 'blue'], ['a', 'VII', NAME_A, 'red']].map(([who, num, name, hue]) => ({ id: 'up-' + who, who, num, name: `${name} up close`, text: natals[who]
+    ? `Up close, loops of glowing plasma arc off ${name} and flare. The wheel around the star is the sky of the night ${name} was born, ${SKY[who].day} at ${SKY[who].time}, with every planet where it really stood. Hover or tap a planet to read it.`
+    : `Up close, ${name}'s ${hue} surface boils with granulation. Dark pores mark where magnetic fields break through, and loops of glowing plasma arc between them and flare.` })),
 ];
+const UP_CH = { a: CH.findIndex((c) => c.id === 'up-a'), b: CH.findIndex((c) => c.id === 'up-b') };
 const view = { mode: 'follow', ch: 0, since: 0, pos: new THREE.Vector3(), target: new THREE.Vector3() };
 const tour = { on: false };
 const rail = $('#rail');
@@ -1241,7 +1521,10 @@ function setChapter(i) {
   clearTimeout(capTimer);
   capTimer = setTimeout(() => { $('#cap-k').textContent = `${c.num} · ${c.name}`; t.textContent = c.text; t.classList.remove('fade'); }, reduced ? 0 : 260);
   if (c.id === 'sky') { sky.reveal.value = 0; sky.running = true; }
+  document.body.classList.toggle('up-ch', !!c.who);
+  if (c.who) renderDossier(c.who);
 }
+const _d = new THREE.Vector3(), _l = new THREE.Vector3();
 function setTour(on) {
   tour.on = on;
   $('#btn-tour').setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -1271,6 +1554,22 @@ function computeView(id) {
     tmp1.copy(s).setY(0).normalize(); tmp2.crossVectors(UP, tmp1).normalize();
     p.copy(s).addScaledVector(tmp1, 7.2 * fit).addScaledVector(UP, 2.2).addScaledVector(tmp2, 4.4 * fit);
     t.copy(s).multiplyScalar(0.4);
+  } else if (id === 'up-a' || id === 'up-b') {
+    // close on the surface first, then pull back to show the wheel of that person's birth sky
+    const who = id.slice(3), s = who === 'a' ? posA : posB, has = !!natals[who];
+    const el = (performance.now() - view.since) / 1000;
+    const k = THREE.MathUtils.smoothstep(el, 6, 12) * (has ? 1 : 0.3);
+    tmp1.copy(s).setY(0).normalize(); tmp2.crossVectors(UP, tmp1).normalize();
+    const dist = THREE.MathUtils.lerp(5.2, (innerWidth > 700 ? 14.5 : 11.5) * fit, k), elev = THREE.MathUtils.lerp(0.16, 0.6, k), side = THREE.MathUtils.lerp(0.55, 0.18, k);
+    _d.copy(tmp1).multiplyScalar(Math.cos(elev)).addScaledVector(tmp2, side).addScaledVector(UP, Math.sin(elev)).normalize();
+    p.copy(s).addScaledVector(_d, dist);
+    t.copy(s);
+    if (has) {
+      // leave room for the profile card: the star sits right of center on wide screens, lower on phones
+      const half = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      if (innerWidth > 700) t.addScaledVector(_l.crossVectors(_d, UP).normalize(), (165 / innerWidth) * 2 * dist * half * camera.aspect * k);
+      else t.y += (84 / innerHeight) * 2 * dist * half * k;
+    }
   } else if (id === 'bond') {
     tmp1.subVectors(posB, posA).normalize(); tmp2.crossVectors(tmp1, UP).normalize();
     p.copy(tmp2).multiplyScalar(13.5 * fit).addScaledVector(UP, 3.4); t.set(0, 0, 0);
@@ -1285,6 +1584,7 @@ function computeView(id) {
 controls.addEventListener('start', () => {
   if (view.mode === 'free') return;
   view.mode = 'free';
+  document.body.classList.remove('up-ch');
   setTour(false);
   controls.autoRotate = !reduced;
   railBtns.forEach((b) => b.setAttribute('aria-current', 'false'));
@@ -1301,12 +1601,14 @@ const targets = [
   { key: 'bary', kind: 'bary', world: () => bary.position, radius: 0.35, minPx: 12 },
   ...planets.map((p) => { const w = new THREE.Vector3(); return { key: 'planet-' + p.kind, kind: 'planet', p, world: () => p.mesh.getWorldPosition(w), radius: p.size * (p.ringed ? 2.3 : 1.15), minPx: 14 }; }),
   ...sky.stars.map((st) => ({ key: 'sky-' + st.idx, kind: 'sky', s: st, world: () => st.world, radius: 0.9, minPx: 15 })),
+  ...natalList.flatMap((n) => n.bodies.map((b) => ({ key: 'natal-' + n.who + '-' + b.k, kind: 'natal', n, b, world: () => b.world, radius: 0.3, minPx: 13 }))),
 ];
 const memTarget = (m) => m.target || (m.target = { key: 'mem-' + m.id, kind: 'mem', m, world: () => m.sprite.position, radius: 0.45, minPx: 14 });
 function pickable(t) {
   if (t.kind === 'sky') return t.s.delay < sky.reveal.value;
   if (t.kind === 'bary') return camera.position.length() < 70;
   if (t.kind === 'mem') return memories.includes(t.m);
+  if (t.kind === 'natal') return t.n.fade > 0.6;
   return true;
 }
 function screenOf(t) {
@@ -1328,7 +1630,8 @@ function pickAt(cx, cy, coarse) {
   }
   return best;
 }
-const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th'];
+const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
+const compass = (az) => ['north', 'north-northeast', 'northeast', 'east-northeast', 'east', 'east-southeast', 'southeast', 'south-southeast', 'south', 'south-southwest', 'southwest', 'west-southwest', 'west', 'west-northwest', 'northwest', 'north-northwest'][Math.round((((az % 360) + 360) % 360) / 22.5) % 16];
 const HEX_A = '#ff3d4f', HEX_B = '#4f8dff', HEX_V = '#cdb8ff';
 function infoFor(t) {
   const { r } = kepler(orbitT);
@@ -1337,7 +1640,16 @@ function infoFor(t) {
     return { live: true, k: 'Binary star · component ' + (a ? 'A' : 'B'), title: a ? NAME_A : NAME_B, color: a ? HEX_A : HEX_B,
       sub: a ? 'Red star: crimson body, coral-hot cells, hot-pink corona.' : 'Blue star: cobalt body, ice-white cells, electric-cyan corona.',
       rows: [['Mass', '1.00, equal to ' + (a ? NAME_B : NAME_A)], ['From barycenter', (r / 2).toFixed(2) + ' u'], ['From ' + (a ? NAME_B : NAME_A), r.toFixed(2) + ' u'], ['Orbital speed', Math.sqrt(2 * SEP_A / r - 1).toFixed(2) + '×']],
-      note: 'Click to fly to this star.' };
+      note: view.mode === 'follow' && CH[view.ch].id === t.who && natals[t.who] ? 'Click again to see the sky of the night ' + (a ? NAME_A : NAME_B) + ' was born.' : view.mode === 'follow' && CH[view.ch].id === t.who ? 'Click again to fly in close.' : 'Click to fly to this star.' };
+  }
+  if (t.kind === 'natal') {
+    const D = t.n.D, b = t.b, d = b.d, sg = signOf(d.lon), house = Math.floor((((d.lon - D.asc) % 360) + 360) % 360 / 30) + 1;
+    const where = d.alt > 0 ? `${Math.round(d.alt)}° up, ${compass(d.az)}` : 'Below the horizon';
+    return { k: `${D.name}'s sky · ${D.time}, ${D.day.replace(/^\w+ /, '')}`, greek: b.g + VS, sym: true, title: b.k, color: b.c,
+      sub: `In ${SIGNS[sg]} at ${dm(d.lon)}, in the ${ORD[house - 1]} house${d.speed < 0 ? ', moving retrograde' : ''}.`,
+      rows: [['Sign', SIGNS[sg]], ['Degree', dm(d.lon)], ['House', ORD[house - 1]], ['Motion', d.speed < 0 ? 'Retrograde' : 'Direct'], ['At ' + D.time, where],
+        ...t.n.aspects.filter((x) => x.a === b.k || x.b === b.k).slice(0, 3).map((x) => [x.asp.k.charAt(0).toUpperCase() + x.asp.k.slice(1) + ' ' + (x.a === b.k ? x.b : x.a), dm(x.orb) + ' orb'])],
+      note: (D.notes && D.notes[b.k]) || '' };
   }
   if (t.kind === 'sky') {
     const st = t.s, a = st.who === 'a';
@@ -1367,7 +1679,7 @@ function renderCard(info, pinned) {
   card.classList.toggle('pinned', pinned);
   card.append(mk('p', 'insp-k', info.k));
   const h = mk('h3', 'insp-t' + (info.plain ? ' plain' : ''));
-  if (info.greek) h.append(mk('span', 'g', info.greek), document.createTextNode(info.title.toUpperCase()));
+  if (info.greek) h.append(mk('span', info.sym ? 'g sym' : 'g', info.greek), document.createTextNode(info.title.toUpperCase()));
   else h.textContent = info.plain ? info.title : info.title.toUpperCase();
   card.append(h);
   if (info.sub) card.append(mk('p', 'insp-s', info.sub));
@@ -1415,7 +1727,12 @@ canvas.addEventListener('pointerup', (e) => {
   const t = pickAt(e.clientX, e.clientY, e.pointerType !== 'mouse');
   insp.pinned = t;
   if (!t) return;
-  if (t.kind === 'star') { setTour(false); setChapter(t.who === 'a' ? 1 : 2); chime(t.who === 'a' ? 523.25 : 783.99); }
+  if (t.kind === 'star') {
+    // first click flies to the star, a second click goes up close
+    const again = view.mode === 'follow' && CH[view.ch].id === t.who;
+    setTour(false); setChapter(again ? UP_CH[t.who] : t.who === 'a' ? 1 : 2); chime(t.who === 'a' ? 523.25 : 783.99);
+  }
+  else if (t.kind === 'natal') chime(880);
   else chime(t.kind === 'sky' ? (t.s.who === 'a' ? 587.33 : 880) : 659.25);
 });
 
@@ -1514,6 +1831,93 @@ addEventListener('keydown', (e) => {
   else if (e.key === 'Escape') { if (!memPanel.hidden) setMemPanel(false); else insp.pinned = null; }
 });
 
+/* --------------------------------------- the profile card for the up-close chapters */
+const dossier = $('#dossier');
+const LIGHT = [['Sirius', 8.6], ['Altair', 16.7], ['Vega', 25.04], ['Arcturus', 36.7], ['Capella', 42.9], ['Castor', 51], ['Aldebaran', 65.3]];
+const live = { who: null };
+function renderDossier(who) {
+  const D = SKY[who];
+  if (!natals[who] || live.who === who) return;
+  live.who = who;
+  dossier.hidden = false;
+  dossier.textContent = '';
+  dossier.style.setProperty('--dc', who === 'a' ? '#ff9a76' : '#7ae6ff');
+  dossier.setAttribute('aria-label', D.name + ', up close');
+  const b = D.bodies;
+  const tile = (label, lon, color) => { const d = mk('div', 'd-tile'); d.style.setProperty('--zc', color); d.append(mk('span', null, label), mk('i', null, SG[signOf(lon)] + VS), mk('b', null, SIGNS[signOf(lon)]), mk('small', null, dm(lon))); return d; };
+  const three = mk('div', 'd-three');
+  three.append(tile('Sun', b.Sun.lon, '#ffd27a'), tile('Moon', b.Moon.lon, '#e8eef5'), tile('Rising', D.asc, '#7ae6ff'));
+  const dl = mk('dl', 'd-live');
+  for (const [k, id] of [['On Earth', 'age'], ['Days', 'days'], ['Around the Sun', 'laps'], ['Distance travelled', 'km']]) { const row = mk('div'); const dd = mk('dd'); live[id] = dd; row.append(mk('dt', null, k), dd); dl.append(row); }
+  const night = mk('dl', 'd-live');
+  const el = { Fire: 0, Earth: 0, Air: 0, Water: 0 };
+  for (const k in b) el[['Fire', 'Earth', 'Air', 'Water'][signOf(b[k].lon) % 4]]++;
+  const elText = Object.entries(el).sort((x, y) => y[1] - x[1]).filter(([, n]) => n).map(([k, n]) => `${k}\u00a0${n}`).join(' · ');
+  const tight = natals[who].aspects[0];
+  for (const [k, v] of [['Moon', D.moonPhase], ['Chinese year', D.chinese], ['Elements', elText], ['Closest aspect', tight ? `${tight.a} ${tight.asp.k} ${tight.b}, ${dm(tight.orb)}` : '']]) {
+    if (!v) continue;
+    const row = mk('div'); row.append(mk('dt', null, k), mk('dd', null, v)); night.append(row);
+  }
+  const light = mk('div', 'd-light');
+  const svgNS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 260 64'); svg.setAttribute('aria-hidden', 'true');
+  const X = (ly) => 6 + (ly / 70) * 248;
+  const add = (tag, attrs, text) => { const e = document.createElementNS(svgNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text) e.textContent = text; svg.append(e); return e; };
+  const gid = 'lightgrad-' + who;
+  const grad = document.createElementNS(svgNS, 'linearGradient'); grad.id = gid;
+  for (const [o, a] of [[0, 0.12], [1, 0.95]]) { const st = document.createElementNS(svgNS, 'stop'); st.setAttribute('offset', o); st.setAttribute('stop-color', who === 'a' ? '#ff9a76' : '#7ae6ff'); st.setAttribute('stop-opacity', a); grad.append(st); }
+  add('defs', {}).append(grad);
+  add('line', { x1: X(0), y1: 32, x2: X(70), y2: 32, stroke: 'rgba(117,215,255,.25)', 'stroke-width': 1 });
+  live.bar = add('rect', { x: X(0), y: 30, width: 0, height: 4, fill: `url(#${gid})` });
+  live.front = add('circle', { cx: X(0), cy: 32, r: 3.6, fill: who === 'a' ? '#ffd9cc' : '#d9f1ff' });
+  live.ticks = LIGHT.map(([n, d], i) => {
+    const up = i % 2 === 0;
+    add('line', { x1: X(d), y1: up ? 25 : 35, x2: X(d), y2: up ? 30 : 39, stroke: 'rgba(237,247,251,.55)', 'stroke-width': 1 });
+    return add('text', { x: X(d), y: up ? 20 : 50, 'text-anchor': 'middle', fill: 'rgba(237,247,251,.6)', 'font-size': 8.5, 'font-family': 'IBM Plex Mono, monospace' }, n);
+  });
+  add('text', { x: X(0), y: 62, fill: 'rgba(134,160,175,.85)', 'font-size': 7.5, 'font-family': 'IBM Plex Mono, monospace' }, '0 ly');
+  add('text', { x: X(70), y: 62, 'text-anchor': 'end', fill: 'rgba(134,160,175,.85)', 'font-size': 7.5, 'font-family': 'IBM Plex Mono, monospace' }, '70 light-years');
+  live.lightText = mk('p');
+  light.append(svg, live.lightText);
+  const facts = mk('ul', 'd-facts');
+  for (const f of D.facts || []) facts.append(mk('li', null, f));
+  const h = mk('h2', 'd-t'); h.append(mk('span', who === 'a' ? 'grad-a' : 'grad-b', D.name.toUpperCase()));
+  dossier.append(mk('p', 'd-k', `${CH[UP_CH[who]].num} · Component ${who.toUpperCase()}, up close`), h, mk('p', 'd-when', `Born ${D.day}, ${D.time}`), three, dl,
+    mk('p', 'd-h', 'That night'), night, mk('p', 'd-h', 'The light of that night'), light, mk('p', 'd-h', 'The sky at that minute'), facts, mk('p', 'd-fine', D.fine || ''));
+  dossier.scrollTop = 0;
+  updateDossier(true);
+}
+function updateDossier(force) {
+  if (!live.who || (!force && !document.body.classList.contains('up-on'))) return;
+  const D = SKY[live.who], born = Date.parse(D.utc), now = Date.now(), ms = now - born;
+  const d0 = new Date(born);
+  const anniv = (y) => { const a = new Date(born); a.setUTCFullYear(d0.getUTCFullYear() + y); return a.getTime(); };
+  let years = new Date(now).getUTCFullYear() - d0.getUTCFullYear();
+  if (anniv(years) > now) years--;
+  const extra = Math.floor((now - anniv(years)) / 864e5);
+  live.age.textContent = `${years} years, ${extra} ${extra === 1 ? 'day' : 'days'}`;
+  live.days.textContent = Math.floor(ms / 864e5).toLocaleString('en-US');
+  live.laps.textContent = years + ' times';
+  live.km.textContent = Math.floor((ms / 1000) * 29.78).toLocaleString('en-US') + ' km';
+  // light covers one light-year per Julian year
+  const ly = ms / (365.25 * 864e5);
+  const X = (v) => 6 + (Math.min(v, 70) / 70) * 248;
+  live.bar.setAttribute('width', (X(ly) - X(0)).toFixed(1));
+  live.front.setAttribute('cx', X(ly).toFixed(1));
+  live.ticks.forEach((t, i) => t.setAttribute('fill', LIGHT[i][1] <= ly ? (live.who === 'a' ? 'rgba(255,154,118,.95)' : 'rgba(122,230,255,.95)') : 'rgba(237,247,251,.55)'));
+  const passed = LIGHT.filter(([, d]) => d <= ly).map(([n]) => n).slice(-4);
+  const next = LIGHT.find(([, d]) => d > ly);
+  const list = passed.length > 1 ? passed.slice(0, -1).join(', ') + ' and ' + passed[passed.length - 1] : passed[0] || '';
+  let txt = `The light that left Earth the night ${D.name} was born is ${ly.toFixed(2)} light-years out by now.`;
+  if (list) txt += ` It has already passed ${list}.`;
+  if (next) {
+    const yrs = next[1] - ly, weeks = Math.round(yrs * 52.18);
+    const when = yrs < 1 ? (weeks <= 1 ? 'a matter of days' : `about ${weeks} weeks`) : Math.round(yrs) === 1 ? 'about a year' : `about ${Math.round(yrs)} years`;
+    txt += ` In ${when} it reaches ${next[0]}` + (next[0] === 'Aldebaran' ? ', the eye of Taurus' + (signOf(D.asc) === 1 ? `, ${D.name}'s rising sign.` : '.') : '.');
+  }
+  if (live.lightText.textContent !== txt) live.lightText.textContent = txt;
+}
+
 /* ---------------------------------------------------- telemetry mini-map */
 const mini = $('#mini'), mctx = mini.getContext('2d');
 function drawMini(nu, r) {
@@ -1597,6 +2001,8 @@ function frame() {
   trailU.uNu.value = nu;
   starA.group.rotation.y += dt * 0.05 * rate;
   starB.group.rotation.y -= dt * 0.04 * rate;
+  const upWho = CH[view.ch].who || null;
+  for (const w of ['a', 'b']) loops[w].value += ((upWho === w ? 1.15 : 0.6) - loops[w].value) * Math.min(1, dt * 2);
   for (const s of [starA, starB]) {
     const it = insp.pinned || insp.hover;
     const want = it && it.kind === 'star' && it.who === s.mesh.userData.id ? 0.55 : 0;
@@ -1649,7 +2055,8 @@ function frame() {
   // camera
   if (tour.on && view.mode === 'follow') {
     const el = (performance.now() - view.since) / 1000;
-    const dur = CH[view.ch].id === 'sky' ? 13 : 11;
+    const cur = CH[view.ch];
+    const dur = cur.id === 'sky' ? 13 : cur.who ? (natals[cur.who] ? 22 : 12) : 11;
     const pb = railBtns[view.ch].querySelector('.prog');
     pb.style.width = `calc((100% - 24px) * ${Math.min(1, el / dur).toFixed(3)})`;
     if (el > dur) { pb.style.width = '0'; setChapter((view.ch + 1) % CH.length); }
@@ -1662,11 +2069,15 @@ function frame() {
   }
   controls.update();
   starGroup.position.copy(camera.position);
+  // soften the bloom when the camera is right on top of a star, so surface detail is not washed out
+  const nearStar = Math.min(camera.position.distanceTo(posA), camera.position.distanceTo(posB));
+  bloom.strength = 0.72 * THREE.MathUtils.lerp(0.5, 1, THREE.MathUtils.smoothstep(nearStar, 5.5, 11));
 
   // labels
   const inSky = view.mode === 'follow' && CH[view.ch].id === 'sky';
   spineFade.value += ((inSky ? 0 : 1) - spineFade.value) * Math.min(1, dt * 2);
-  placeStarLabels(!inSky, dt);
+  updateNatal(dt, upWho && (view.mode !== 'follow' || (performance.now() - view.since) / 1000 > 6.5) ? upWho : null);
+  placeStarLabels(!inSky, dt, { a: natalUp.a > 0.3, b: natalUp.b > 0.3 });
   for (const gl of greekTags) placeLabel(gl.el, gl.s.world, 0, inSky && sky.reveal.value > gl.s.delay + 0.04);
   placeLabel(lblBary, bary.position, 0, !inSky && camera.position.length() < 70);
   const near = camera.position.length() < 75;
@@ -1698,6 +2109,7 @@ function frame() {
     h.textContent = atPeri ? 'periastron now' : heading;
     h.classList.toggle('near', atPeri);
     drawMini(nu, r);
+    updateDossier();
   }
 
   updateInspector(time);
