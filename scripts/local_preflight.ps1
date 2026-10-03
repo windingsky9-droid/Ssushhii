@@ -1,6 +1,6 @@
 $ErrorActionPreference='Stop'
 $repo = Split-Path -Parent $PSScriptRoot
-$envRoot = Join-Path $env:LOCALAPPDATA 'Sushir\repo-health-venv'
+$envRoot = Join-Path $env:USERPROFILE '.sushir\repo-health-venv'
 $python = Join-Path $envRoot 'Scripts\python.exe'
 
 function Invoke-Checked {
