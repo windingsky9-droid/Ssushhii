@@ -11,6 +11,10 @@ on:
       - "publisher-site/**"
       - ".github/workflows/live-site-smoke.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
