@@ -11,6 +11,10 @@ This repository mixes a Flask application, static publisher content, tests, depl
 python -m pytest -q
 python -m compileall -q app.py src tests scripts
 python scripts/validate_publisher_site.py
+ruff check app.py src tests scripts
+mypy app.py src --config-file mypy.ini
+bandit -q -r app.py src scripts
+pre-commit run --all-files
 ~~~
 4. Check the visual result when changing HTML/CSS/Three.js work.
 5. Include evidence in the PR: test output, screenshot, benchmark, or public URL.
