@@ -1,7 +1,1 @@
-[Reading 3 lines from start (total: 3 lines, 0 remaining)]
-
-User-agent: *
-Allow: /
-Sitemap: /sitemap.xml
-
-[executed on device: Omen (5b99300c-8844-4b8e-9d20-880e8f93848d)]
+[object Object]
