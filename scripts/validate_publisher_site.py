@@ -1,10 +1,11 @@
-from pathlib import Path
-from html.parser import HTMLParser
 import json
 import re
 import sys
+from html.parser import HTMLParser
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1] / "publisher-site"
+
 
 class PageParser(HTMLParser):
     def __init__(self):
@@ -66,7 +67,7 @@ for page in ROOT.rglob("*.html"):
 
 try:
     json.loads((ROOT / "site.webmanifest").read_text(encoding="utf-8"))
-except Exception:
+except (OSError, UnicodeError, json.JSONDecodeError):
     results["asset_errors"].append("invalid site.webmanifest")
 
 favicon = ROOT / "favicon.svg"
