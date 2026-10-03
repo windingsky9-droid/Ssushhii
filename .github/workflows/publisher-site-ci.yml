@@ -15,6 +15,10 @@ on:
       - "scripts/validate_publisher_site.py"
       - ".github/workflows/publisher-site-ci.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
