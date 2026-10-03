@@ -1,1 +1,3 @@
-[object Object]
+User-agent: *
+Allow: /
+Sitemap: /sitemap.xml
