@@ -40,7 +40,7 @@ Protects the Flask application and Python runtime.
 Checks the static publisher package for broken internal links, missing metadata, invalid public assets, and secret-like strings.
 
 ### Repository Health
-Combines compile checks, tests, publisher validation, Ruff static analysis, and Python dependency auditing.
+Combines compile checks, tests, publisher validation, Ruff, mypy, Bandit, and Python dependency auditing.
 
 ### CodeQL
 Runs semantic security analysis for Python and JavaScript/TypeScript.
