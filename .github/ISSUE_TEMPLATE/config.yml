@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security report
+    url: https://github.com/windingsky9-droid/Ssushhii/security
+    about: Do not post secrets or sensitive vulnerability details in a public issue.

@@ -8,10 +8,11 @@ DEFAULT_BASE_URL = "https://factorweave.com/api"
 
 class FactorWeaveClient:
     def __init__(self, api_key: str | None = None, base_url: str | None = None):
-        self.api_key = api_key or os.getenv("FACTORWEAVE_API_KEY")
-        self.base_url = (base_url or os.getenv("FACTORWEAVE_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
-        if not self.api_key:
+        resolved_api_key = api_key or os.getenv("FACTORWEAVE_API_KEY")
+        if not resolved_api_key:
             raise RuntimeError("Set FACTORWEAVE_API_KEY in your environment or .env file.")
+        self.api_key: str = resolved_api_key
+        self.base_url = (base_url or os.getenv("FACTORWEAVE_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
 
     @property
     def headers(self) -> dict[str, str]:

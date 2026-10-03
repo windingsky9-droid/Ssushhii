@@ -1,0 +1,60 @@
+name: Live Site Smoke
+
+on:
+  schedule:
+    - cron: "17 8 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - publisher-tech-site
+    paths:
+      - "publisher-site/**"
+      - ".github/workflows/live-site-smoke.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-publisher:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SITE: https://sushir-systems-lab.netlify.app
+
+    steps:
+      - name: Check public resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in             "/"             "/articles/webgl-performance.html"             "/robots.txt"             "/sitemap.xml"             "/.well-known/security.txt"
+          do
+            echo "Checking ${SITE}${path}"
+            curl --fail --silent --show-error --location               --retry 2 --connect-timeout 10 --max-time 20               "${SITE}${path}" >/dev/null
+          done
+
+      - name: Verify security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          headers="$(curl --fail --silent --show-error --head --location "${SITE}/" | tr -d '\r')"
+          echo "$headers" | grep -qi '^content-security-policy:'
+          echo "$headers" | grep -qi '^x-frame-options: DENY'
+          echo "$headers" | grep -qi '^x-content-type-options: nosniff'
+          echo "$headers" | grep -qi '^referrer-policy:'
+          echo "$headers" | grep -qi '^permissions-policy:'
+
+      - name: Verify sitemap contains core pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          sitemap="$(curl --fail --silent --show-error "${SITE}/sitemap.xml")"
+          echo "$sitemap" | grep -q "${SITE}/"
+          echo "$sitemap" | grep -q "${SITE}/articles/webgl-performance.html"
+          echo "$sitemap" | grep -q "${SITE}/legal/privacy.html"
+
+      - name: Smoke-test summary
+        run: echo "Live publisher checks passed."

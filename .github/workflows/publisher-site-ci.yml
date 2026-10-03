@@ -1,0 +1,45 @@
+name: Publisher Site CI
+
+on:
+  pull_request:
+    paths:
+      - "publisher-site/**"
+      - "scripts/validate_publisher_site.py"
+      - ".github/workflows/publisher-site-ci.yml"
+  push:
+    branches:
+      - main
+      - publisher-tech-site
+    paths:
+      - "publisher-site/**"
+      - "scripts/validate_publisher_site.py"
+      - ".github/workflows/publisher-site-ci.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-publisher-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Validate static publisher site
+        run: python scripts/validate_publisher_site.py
+
+      - name: Verify no accidental generated preview
+        shell: bash
+        run: |
+          test ! -f publisher-site/preview.png
+          echo "Publisher site validation passed."

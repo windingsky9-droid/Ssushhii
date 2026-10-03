@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from scripts.build_public_demo import build_public_demo
 
 

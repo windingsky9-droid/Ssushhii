@@ -1,0 +1,4 @@
+Contact: mailto:windingsky9@gmail.com
+Preferred-Languages: en
+Canonical: https://sushir-systems-lab.netlify.app/.well-known/security.txt
+Policy: https://sushir-systems-lab.netlify.app/legal/contact.html
