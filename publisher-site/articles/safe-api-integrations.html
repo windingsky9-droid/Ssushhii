@@ -1,11 +1,1 @@
-[Reading 7 lines from start (total: 7 lines, 0 remaining)]
-
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Practical patterns for secure, resilient API integrations."><title>Safe API Integrations — Sushir Systems Lab</title><link rel="stylesheet" href="../assets/styles.css"></head><body><div class="wrap"><header class="nav"><a class="brand" href="../index.html">SUSHIR SYSTEMS LAB</a><nav class="navlinks"><a href="../index.html#guides">Guides</a><a href="../legal/privacy.html">Privacy</a><a href="../legal/contact.html">Contact</a></nav></header><article class="article"><div class="ey">API engineering</div><h1>Safe API integrations are mostly boundary design.</h1><p class="meta">Practical notes for small Python and web projects.</p>
-<p>A reliable integration begins by separating the browser from private credentials. The client should call your server, and your server should call the provider. That one boundary prevents a large class of accidental leaks.</p>
-<h2>Keep secrets out of the client</h2><p>Environment variables and deployment secrets belong on the server. Never bake a production token into browser JavaScript, committed source, screenshots, or example configuration.</p>
-<h2>Wrap providers behind a stable interface</h2><p>Create one small adapter per provider. The rest of the application should depend on your own functions and data shapes rather than a vendor-specific response object.</p>
-<div class="note"><strong>Useful rule:</strong> if changing vendors requires editing UI code everywhere, the provider boundary is too weak.</div>
-<h2>Make failure states boring</h2><p>Handle timeouts, rate limits, malformed responses, and authentication errors explicitly. Return a predictable application error instead of letting raw provider exceptions leak into the interface.</p>
-<h2>Test the unhappy path</h2><p>Mock successful responses, empty responses, slow responses, and provider failures. A production integration is defined as much by its error behavior as by its happy path.</p></article><footer class="footer">© 2026 Sushir Systems Lab · Original technical content.</footer></div></body></html>
-
-[executed on device: Omen (5b99300c-8844-4b8e-9d20-880e8f93848d)]
+[object Object]
