@@ -36,7 +36,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pip-audit
+          pip install ruff pip-audit mypy bandit
 
       - name: Compile Python
         run: python -m compileall -q app.py src tests scripts
@@ -49,6 +49,12 @@ jobs:
 
       - name: Ruff static analysis
         run: ruff check app.py src tests scripts --output-format=github
+
+      - name: MyPy static typing
+        run: mypy app.py src --config-file mypy.ini
+
+      - name: Bandit security scan
+        run: bandit -q -r app.py src scripts
 
       - name: Audit Python dependencies
         run: pip-audit -r requirements.txt
