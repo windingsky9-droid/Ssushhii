@@ -1,1 +1,11 @@
-[object Object]
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>/index.html</loc></url>
+<url><loc>/articles/safe-api-integrations.html</loc></url>
+<url><loc>/articles/demo-mode-architecture.html</loc></url>
+<url><loc>/articles/webgl-performance.html</loc></url>
+<url><loc>/articles/remote-ai-workflow.html</loc></url>
+<url><loc>/legal/privacy.html</loc></url>
+<url><loc>/legal/terms.html</loc></url>
+<url><loc>/legal/contact.html</loc></url>
+</urlset>
