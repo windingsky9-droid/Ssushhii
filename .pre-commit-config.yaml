@@ -1,0 +1,37 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff
+        entry: ruff check app.py src tests scripts
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: publisher-validator
+        name: Publisher site validator
+        entry: python scripts/validate_publisher_site.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: mypy
+        name: mypy
+        entry: mypy app.py src --config-file mypy.ini
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: bandit
+        name: Bandit
+        entry: bandit -q -r app.py src scripts
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: pytest
+        name: pytest
+        entry: python -m pytest -q
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
