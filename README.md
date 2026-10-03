@@ -96,7 +96,7 @@ Changes on the active development branch are checked through multiple independen
 
 1. **Market Observatory CI** — installs the application, runs pytest, and compiles Python.
 2. **Publisher Site CI** — validates static pages, links, metadata, assets, and secret-like patterns.
-3. **Repository Health** — compile, tests, publisher validation, Ruff, and dependency audit.
+3. **Repository Health** — compile, tests, publisher validation, Ruff, mypy, Bandit, and dependency audit.
 4. **CodeQL** — Python and JavaScript/TypeScript security analysis.
 5. **Live Site Smoke** — scheduled checks against the public publisher deployment and security headers.
 
