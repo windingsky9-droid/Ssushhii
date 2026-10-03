@@ -14,7 +14,7 @@ try {
   if(-not (Test-Path $python)){
     py -m venv $envRoot
     Invoke-Checked { & $python -m pip install --upgrade pip } 'pip upgrade'
-    Invoke-Checked { & $python -m pip install ruff pip-audit } 'audit tool install'
+    Invoke-Checked { & $python -m pip install ruff pip-audit mypy bandit } 'quality tool install'
   }
 
   Invoke-Checked { & $python -m pip install -r requirements.txt } 'dependency install'
@@ -22,6 +22,8 @@ try {
   Invoke-Checked { & $python -m pytest -q } 'pytest'
   Invoke-Checked { & $python scripts\validate_publisher_site.py } 'publisher validation'
   Invoke-Checked { & $python -m ruff check app.py src tests scripts } 'ruff'
+  Invoke-Checked { & $python -m mypy app.py src --config-file mypy.ini } 'mypy'
+  Invoke-Checked { & $python -m bandit -q -r app.py src scripts } 'bandit'
   Invoke-Checked { & $python -m pip_audit -r requirements.txt } 'pip-audit'
 
   Write-Host 'Local preflight passed.'
