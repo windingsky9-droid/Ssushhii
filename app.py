@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
+
 from src.pricing import public_pricing
 from src.research import get_research_provider, normalize_ticker
 
