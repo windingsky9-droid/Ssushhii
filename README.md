@@ -85,22 +85,21 @@ The funnel is designed to turn traffic into technical questions or pilot request
 
 ## Interactive 3D tactical showcase
 
-**Latest:** [Sushir Halo Tactical Command Center V11 — Director Cut](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V11_DIRECTOR_CUT.html)
+**Latest:** [Sushir Halo Tactical Command Center V12 — Cinematic Operations](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V12_CINEMATIC_OPERATIONS.html)
 
-A tested Three.js/WebGL tactical visualization presented as a cinematic replay and decision-analysis product demo.
+A tested Three.js/WebGL tactical visualization presented as a cinematic operations-analysis product demo.
 
-- full-screen **Director Mode**
-- live **LOS beam** that changes with cover visibility
-- **target halo** around the modeled highest-priority enemy
-- replay **ghost trail** showing recent Sushir movement
-- shot label, story beat, decision window, and modeled confidence
-- synchronized scenario playback with play/pause/step/speed
-- cover-aware line-of-sight checks and modeled target priority
-- objective overlays for Slayer, Strongholds, Oddball, and CTF
-- 8×8 modeled role matchup matrix
-- live mini-map, FPS, and draw-call telemetry
-- simple visual language: purple = movement, red = pressure, green = trade safety, gold = vertical advantage
-- explicit separation of modeled values from real/official Halo telemetry
+- **actual vs recommended 3D routes**
+- **freeze-frame tactical analysis**
+- **cause classification** for repeated tactical mistakes
+- **sector focus** showing where pressure matters
+- projected 3D callouts attached to the arena
+- story timeline from read → contact → decision → conversion → reset
+- live tactical verdict explaining commit / hold / reset / change-angle decisions
+- full-screen Director Mode with LOS beam, target halo, replay ghosts, story beat, decision window, and modeled confidence
+- synchronized replay controls, cover-aware LOS checks, modeled target priority, objective overlays, and matchup matrix
+- live mini-map and render telemetry
+- explicit separation of modeled tactical values from real/official Halo telemetry
 
-Low-key version: **I made the angles move, then made the camera explain why.**
+Low-key version: **I made the angles move, then made them explain themselves.**
 
