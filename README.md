@@ -82,3 +82,20 @@ A separate public funnel now showcases the lead-intelligence and developer-servi
 - **Activation controls:** enrichment/outbound are gated until relevance, suppression, basis, and sender-readiness checks are documented.
 
 The funnel is designed to turn traffic into technical questions or pilot requests, not to claim guaranteed revenue or ROI.
+
+## Interactive 3D tactical showcase
+
+**Latest:** [Sushir Halo Tactical Command Center V8 — Clarity Render](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V8_CLARITY.html)
+
+A tested browser-based Three.js/WebGL tactical visualization built to make movement and decision geometry easy to understand visually.
+
+- orbitable 3D arena with selectable player roles
+- player labels, focus ring, scan pulse, and light-column depth cues
+- purple route = movement, red cone = pressure, green link = trade safety, gold height = vertical advantage
+- soft shadows, depth-separated lighting, and performance-conscious rendering
+- overview, flank, trade, shoulder, and enemy POV camera presets
+- five engagement phases and six scenario reads
+- modeled behavior values are explicitly separated from real/official Halo telemetry
+
+Low-key version: **I got tired of explaining angles with paragraphs, so I made the angles move.**
+
