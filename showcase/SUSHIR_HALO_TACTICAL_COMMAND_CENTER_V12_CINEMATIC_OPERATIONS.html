@@ -1,0 +1,562 @@
+[Reading 558 lines from start (total: 558 lines, 0 remaining)]
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sushir Halo Tactical Command Center V12 Cinematic Operations</title>
+<style>
+:root{--bg:#05070d;--panel:#0b1020;--panel2:#10182b;--line:#273553;--text:#edf4ff;--muted:#8d9ab8;--cyan:#6edfff;--purple:#9c7bff;--pink:#ff72b0;--green:#71efb7;--amber:#ffd166;--red:#ff6576;--blue:#68a8ff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,#131b35 0,#070a13 35%,#04060b 75%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}button{font:inherit}
+.app{max-width:1760px;margin:auto;padding:16px}.topbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:18px 20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(17,25,45,.96),rgba(8,12,22,.96));box-shadow:0 20px 80px rgba(0,0,0,.25)}
+.eyebrow{font:800 11px Consolas,monospace;letter-spacing:2px;color:var(--cyan)}h1{margin:5px 0 0;font-size:30px;letter-spacing:-.025em}.sub{margin-top:7px;color:var(--muted);font-size:13px;max-width:920px}
+.statuses{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.pill{border:1px solid #334563;border-radius:999px;padding:8px 11px;font:800 10px Consolas,monospace;letter-spacing:.9px;background:#0b1220}.pill.live{color:var(--green);border-color:#2b6756}.pill.model{color:var(--amber);border-color:#665530}.pill.webgl{color:var(--cyan)}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr) 360px;gap:14px;margin-top:14px}.panel{background:linear-gradient(180deg,rgba(14,20,35,.97),rgba(8,12,22,.97));border:1px solid var(--line);border-radius:16px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #1d2941}.panelTitle{font:800 11px Consolas,monospace;letter-spacing:1.3px;color:#d2def5}.badge{font:800 9px Consolas,monospace;color:var(--cyan);padding:4px 6px;border:1px solid #2b4763;border-radius:7px}
+.left{display:flex;flex-direction:column;min-height:850px}.roleList{padding:10px;display:grid;gap:8px}.roleBtn{border:1px solid #2a3856;border-radius:11px;background:#0a1120;color:#dfe7f9;padding:10px;text-align:left;cursor:pointer;transition:.15s}.roleBtn:hover,.roleBtn.active{border-color:#765dd0;background:#17142e;transform:translateY(-1px)}.roleBtn strong{display:block;font:800 11px Consolas,monospace;letter-spacing:.5px}.roleBtn span{display:block;margin-top:4px;font-size:11px;color:var(--muted)}.legend{margin-top:auto;padding:12px;border-top:1px solid #1c2942;display:grid;gap:7px;font-size:11px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.center{display:grid;gap:14px}.scenePanel{position:relative;min-height:590px}.sceneToolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid #1c2942}.sceneToolbar button,.chipBtn{border:1px solid #30405e;background:#0c1322;color:#dce6f9;border-radius:9px;padding:8px 10px;font:800 10px Consolas,monospace;cursor:pointer}.sceneToolbar button.active,.sceneToolbar button:hover,.chipBtn:hover{border-color:#755dd0;background:#17142e}
+.canvasWrap{position:relative;height:520px;background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),radial-gradient(circle at 50% 50%,rgba(72,67,121,.2),transparent 60%);background-size:30px 30px,30px 30px,auto}#arena{width:100%;height:100%;display:block;cursor:grab}#arena:active{cursor:grabbing}.sceneHud{position:absolute;left:12px;top:12px;display:grid;gap:8px;pointer-events:none}.hudCard{background:rgba(5,8,16,.8);border:1px solid #2b3a59;border-radius:10px;padding:8px 10px;backdrop-filter:blur(8px)}.hudCard strong{display:block;font:800 10px Consolas,monospace;color:#dceaff;letter-spacing:1px}.hudCard span{font-size:11px;color:#91a2c4}.sceneHint{position:absolute;right:12px;bottom:12px;font:800 9px Consolas,monospace;color:#8794b0;background:rgba(6,9,16,.78);padding:7px 9px;border-radius:8px;border:1px solid #25314c}
+.metricsStrip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:10px;border-top:1px solid #1c2942}.metric{padding:10px;border:1px solid #243451;border-radius:10px;background:#0b1220;min-width:0}.metric .k{font:700 9px Consolas,monospace;color:#7d91b5;letter-spacing:1px}.metric .v{font:800 18px Consolas,monospace;margin-top:5px}.metric .mini{height:4px;border-radius:999px;background:#17223a;margin-top:7px;overflow:hidden}.metric .mini i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}.timeline{padding:14px}.phaseRow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.phase{padding:12px;border:1px solid #263653;border-radius:11px;background:#0b1220;cursor:pointer;min-height:96px}.phase.active{border-color:#7b65d1;background:#16142c}.phase b{font:800 10px Consolas,monospace;color:#d7e1f7}.phase span{display:block;margin-top:8px;font-size:11px;line-height:1.35;color:#8ea0c1}
+.scenarios{padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.scenarioBtn{border:1px solid #2b3a59;border-radius:10px;background:#0b1220;color:#dfe7f7;padding:10px;cursor:pointer;text-align:left}.scenarioBtn:hover,.scenarioBtn.active{border-color:#755dd0;background:#17142e}.scenarioBtn strong{display:block;font:800 10px Consolas,monospace}.scenarioBtn span{display:block;color:#8999b7;font-size:10px;margin-top:4px}
+.visualDeck{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.visualCard{min-height:225px}.visualBody{height:188px;padding:10px}.visualBody svg{width:100%;height:100%}
+.right{display:grid;gap:14px;align-content:start}.actorPanel{padding:14px}.actorTitle{font-size:24px;font-weight:800}.actorRole{margin-top:4px;color:var(--cyan);font:800 10px Consolas,monospace;letter-spacing:1px}.actorText{margin-top:10px;color:#aab7d1;font-size:12px;line-height:1.55}.statRows{display:grid;gap:9px;margin-top:14px}.statRow{display:grid;grid-template-columns:105px 1fr 30px;gap:8px;align-items:center}.statRow label{font:700 9px Consolas,monospace;color:#8596b8}.bar{height:6px;border-radius:999px;background:#17243b;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink))}.statRow b{font:800 10px Consolas,monospace;text-align:right}
+.callout{padding:12px;border:1px solid #2d3d5e;border-radius:11px;background:#0b1220;margin-top:12px}.callout h3{margin:0 0 6px;font:800 10px Consolas,monospace;color:var(--amber);letter-spacing:1px}.callout p{margin:0;color:#aab7d1;font-size:12px;line-height:1.5}
+.flow{padding:14px;display:grid;gap:9px}.flowStep{display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:center}.flowStep em{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#15152f;border:1px solid #715bd0;color:#fff;font:800 10px Consolas,monospace;font-style:normal}.flowStep div{border:1px solid #263653;background:#0b1220;border-radius:10px;padding:9px}.flowStep strong{display:block;font:800 10px Consolas,monospace}.flowStep span{display:block;font-size:10px;color:#8fa0bd;margin-top:3px}.disclaimer{padding:12px 14px;color:#8999b5;font-size:11px;line-height:1.45;border-top:1px solid #1c2942;background:#080d18}.footer{margin:14px 0 4px;color:#73819b;font-size:11px;text-align:center}
+
+.clarityGuide{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;border-top:1px solid #1c2942;background:linear-gradient(180deg,rgba(10,15,27,.2),rgba(6,10,18,.76))}
+.guideCard{border:1px solid #293a59;border-radius:11px;padding:10px;background:#0a1120;min-height:104px}
+.guideCard.purple{box-shadow:inset 3px 0 #9c7bff}.guideCard.red{box-shadow:inset 3px 0 #ff6576}.guideCard.green{box-shadow:inset 3px 0 #71efb7}.guideCard.gold{box-shadow:inset 3px 0 #ffd166}
+.guideCard b{display:block;font:800 10px Consolas,monospace;letter-spacing:.65px}.guideCard small{display:block;margin-top:7px;color:#8395b5;font:800 8px Consolas,monospace;letter-spacing:.8px}.guideCard p{margin:4px 0 0;color:#b9c6dc;font-size:11px;line-height:1.4}
+.readFirst{font:800 9px Consolas,monospace;color:#6edfff;letter-spacing:1.4px;margin-right:auto;padding:8px 4px}
+.sceneVignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 110px rgba(0,0,0,.58),inset 0 -50px 90px rgba(0,0,0,.28)}
+@media(max-width:1100px){.clarityGuide{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.clarityGuide{grid-template-columns:1fr}}
+
+
+.showpieceControls{display:flex;gap:7px;align-items:center}
+.showpieceBtn{border:1px solid #355071;background:#0c1424;color:#e6efff;border-radius:9px;padding:8px 10px;font:800 10px Consolas,monospace;cursor:pointer}
+.showpieceBtn.active{border-color:#8d6cff;background:#1a1538;box-shadow:0 0 20px rgba(141,108,255,.18)}
+.miniMapWrap{position:absolute;right:12px;top:54px;width:190px;height:150px;padding:8px;border-radius:12px;border:1px solid #314461;background:rgba(5,8,16,.78);backdrop-filter:blur(8px);pointer-events:none}
+.miniMapWrap b{display:block;font:800 9px Consolas,monospace;color:#9fb2d4;letter-spacing:1px;margin-bottom:5px}
+#miniMap{display:block;width:174px;height:118px;border-radius:8px;background:#070c16}
+.telemetry{position:absolute;left:12px;bottom:12px;display:flex;gap:7px;pointer-events:none}
+.telemetry span{padding:6px 8px;border-radius:8px;background:rgba(5,8,16,.78);border:1px solid #2b3b58;font:800 9px Consolas,monospace;color:#9db1d5}
+.explainPanel{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,72%);padding:10px 12px;border-radius:12px;border:1px solid #6a55b2;background:rgba(11,11,27,.88);backdrop-filter:blur(10px);box-shadow:0 12px 34px rgba(0,0,0,.24);pointer-events:none}
+.explainPanel strong{display:block;font:800 10px Consolas,monospace;color:#d8cfff;letter-spacing:1px}.explainPanel span{display:block;margin-top:4px;font-size:11px;color:#b8c5db;line-height:1.4}
+.tourHint{font:800 8px Consolas,monospace;color:#7f91b4;letter-spacing:.8px;margin-left:4px}
+
+
+.replayLab{margin-top:0}
+.replayBody{padding:12px;display:grid;grid-template-columns:1.25fr .75fr;gap:12px}
+.replayControls{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:10px}
+.replayBtn,.objectiveBtn{border:1px solid #314563;background:#0b1323;color:#e2ebfb;border-radius:9px;padding:8px 10px;font:800 10px Consolas,monospace;cursor:pointer}
+.replayBtn.active,.objectiveBtn.active{border-color:#8c6fff;background:#1b1638;box-shadow:0 0 18px rgba(140,111,255,.16)}
+.replayTrack{display:grid;grid-template-columns:80px 1fr 54px;gap:9px;align-items:center;padding:10px;border:1px solid #283957;border-radius:10px;background:#09111e}
+.replayTrack label{font:800 9px Consolas,monospace;color:#8ea0c0}.replayTrack input{width:100%;accent-color:#9c7bff}.replayTrack b{font:800 10px Consolas,monospace;text-align:right}
+.replayCards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.replayCard{border:1px solid #293a59;border-radius:10px;padding:10px;background:#0a1120}.replayCard b{display:block;font:800 9px Consolas,monospace;color:#6edfff;letter-spacing:1px}.replayCard strong{display:block;margin-top:6px;font-size:17px}.replayCard span{display:block;margin-top:5px;color:#8fa1bf;font-size:10px;line-height:1.35}
+.objectives{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.objectiveRead{margin-top:8px;padding:9px 10px;border:1px solid #30405f;border-radius:10px;background:#0a1120;color:#aebbd2;font-size:11px;line-height:1.45}
+.matrixWrap{border:1px solid #293a59;border-radius:11px;background:#080f1c;padding:9px;overflow:auto}.matrixWrap b{display:block;font:800 9px Consolas,monospace;color:#9fb2d4;letter-spacing:1px;margin-bottom:7px}.matchupMatrix{display:grid;grid-template-columns:64px repeat(8,30px);gap:3px;min-width:332px}.matchupMatrix div{height:27px;display:grid;place-items:center;border-radius:5px;font:800 8px Consolas,monospace}.matrixHead{color:#8fa0bf}.matrixCell{color:#f2f5ff;border:1px solid rgba(255,255,255,.05)}
+.replayLegend{margin-top:7px;color:#7587a8;font-size:9px;line-height:1.4}
+@media(max-width:1100px){.replayBody{grid-template-columns:1fr}.replayCards{grid-template-columns:1fr}}
+
+
+.directorBar{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:5;display:grid;grid-template-columns:repeat(3,auto) minmax(170px,250px);gap:7px;align-items:center;pointer-events:none}
+.directorChip{padding:7px 9px;border-radius:9px;border:1px solid #354866;background:rgba(5,8,16,.84);font:800 8px Consolas,monospace;color:#8295b7;letter-spacing:.8px;white-space:nowrap}
+.directorChip b{display:block;margin-top:3px;color:#eef4ff;font-size:10px;letter-spacing:.5px}
+.confidenceBox{padding:7px 9px;border-radius:9px;border:1px solid #5a4b91;background:rgba(11,9,26,.88);font:800 8px Consolas,monospace;color:#b2a7d9;letter-spacing:.8px}
+.confidenceTop{display:flex;justify-content:space-between;gap:10px}.confidenceTrack{height:4px;border-radius:999px;background:#1c2133;margin-top:5px;overflow:hidden}.confidenceTrack i{display:block;height:100%;background:linear-gradient(90deg,#6edfff,#9c7bff,#ff72b0)}
+.directorMode .layout{grid-template-columns:1fr}
+.directorMode .left,.directorMode .right,.directorMode .replayLab,.directorMode .grid2,.directorMode .visualDeck{display:none}
+.directorMode .center{grid-column:1/-1}
+.directorMode .scenePanel{min-height:900px}
+.directorMode .canvasWrap{height:730px}
+.directorMode .clarityGuide{grid-template-columns:repeat(4,1fr)}
+.directorMode .sceneToolbar{justify-content:center}
+.directorMode .topbar{position:sticky;top:8px;z-index:10}
+.directorMode .scenePanel{box-shadow:0 28px 100px rgba(0,0,0,.42),0 0 0 1px rgba(156,123,255,.10)}
+.targetLegend{position:absolute;right:12px;bottom:40px;padding:6px 8px;border-radius:8px;border:1px solid #493858;background:rgba(12,7,17,.8);font:800 8px Consolas,monospace;color:#ff98a5;pointer-events:none}
+@media(max-width:1100px){.directorBar{grid-template-columns:repeat(2,auto);left:14px;right:14px;transform:none}.directorMode .canvasWrap{height:620px}}
+
+
+.filmOps{margin-top:0}
+.filmBody{padding:12px;display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.storyTimeline{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.timelineBeat{border:1px solid #2a3b59;border-radius:10px;background:#09111e;padding:9px;min-height:82px;transition:.15s}
+.timelineBeat.active{border-color:#9c7bff;background:#17132e;box-shadow:0 0 22px rgba(156,123,255,.12)}
+.timelineBeat b{display:block;font:800 9px Consolas,monospace;color:#d9e2f7}.timelineBeat span{display:block;margin-top:6px;color:#8698b7;font-size:10px;line-height:1.35}
+.causeRow{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.causeChip{border:1px solid #344662;border-radius:999px;background:#0b1322;color:#9eb0cf;padding:6px 9px;font:800 9px Consolas,monospace;cursor:pointer}.causeChip.active{border-color:#ff7da7;color:#ffd4e1;background:#21111d}
+.verdictBox{height:100%;border:1px solid #3b4a6c;border-radius:12px;background:linear-gradient(180deg,#0c1323,#080d18);padding:12px}
+.verdictBox h3{margin:0;font:800 10px Consolas,monospace;color:#6edfff;letter-spacing:1px}.verdictMain{margin-top:8px;font-size:24px;font-weight:800}.verdictReason{margin-top:8px;color:#a9b7cf;font-size:11px;line-height:1.5}.verdictGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.verdictGrid div{padding:8px;border:1px solid #263753;border-radius:9px;background:#08101d}.verdictGrid b{display:block;font:800 8px Consolas,monospace;color:#7f93b7}.verdictGrid span{display:block;margin-top:4px;font:800 12px Consolas,monospace}
+.routeLegend{position:absolute;left:12px;top:104px;display:grid;gap:5px;pointer-events:none}
+.routeLegend span{padding:5px 7px;border-radius:7px;background:rgba(5,8,16,.78);border:1px solid #293956;font:800 8px Consolas,monospace}
+.routeLegend .actual{color:#ff72b0}.routeLegend .recommended{color:#71efb7}.routeLegend .sector{color:#ffd166}
+.freezeStamp{position:absolute;right:18px;top:220px;transform:rotate(-7deg);padding:8px 12px;border:2px solid rgba(255,209,102,.7);border-radius:8px;color:#ffd166;font:900 13px Consolas,monospace;letter-spacing:2px;opacity:0;transition:.15s;pointer-events:none;background:rgba(22,16,5,.35)}
+.freezeStamp.show{opacity:1}
+.directorMode .filmOps{display:block}
+.directorMode .filmBody{grid-template-columns:1.2fr .8fr}
+@media(max-width:1050px){.filmBody{grid-template-columns:1fr}.storyTimeline{grid-template-columns:1fr}}
+
+@media(max-width:1250px){.layout{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;grid-template-columns:repeat(2,1fr)}.visualDeck{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){.layout{grid-template-columns:1fr}.left{min-height:0}.roleList{grid-template-columns:repeat(2,1fr)}.right{grid-template-columns:1fr}.visualDeck{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.metricsStrip{grid-template-columns:repeat(3,1fr)}.phaseRow{grid-template-columns:1fr}.scenarios{grid-template-columns:1fr}.canvasWrap{height:420px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+<div><div class="eyebrow">SUSHIR // HALO TACTICAL COMMAND CENTER V12</div><h1>3D Combat Intelligence / Movement / Angle Geometry</h1><div class="sub">CINEMATIC OPERATIONS: freeze-frame tactical analysis with actual vs recommended routes, sector focus, cause classification, projected 3D callouts, and a live tactical verdict.</div></div>
+<div class="statuses"><div class="pill live">● LIVE SCENE</div><div class="pill webgl">WEBGL / ORBIT</div><div class="pill model">MODELED TENDENCY</div></div>
+</header>
+
+<main class="layout">
+<aside class="panel left">
+<div class="panelHead"><div class="panelTitle">PLAYER ROLES</div><div class="badge">SELECT</div></div>
+<div class="roleList">
+<button class="roleBtn" data-role="sushir"><strong>SUSHIR</strong><span>Adaptive info player</span></button>
+<button class="roleBtn" data-role="entry"><strong>ENTRY</strong><span>First-contact initiator</span></button>
+<button class="roleBtn" data-role="anchor"><strong>ANCHOR</strong><span>Space stabilizer</span></button>
+<button class="roleBtn" data-role="trade"><strong>TRADE</strong><span>Conversion / recovery</span></button>
+<button class="roleBtn" data-role="flank"><strong>FLANK</strong><span>Attention splitter</span></button>
+<button class="roleBtn" data-role="rusher"><strong>RUSHER</strong><span>Enemy pressure</span></button>
+<button class="roleBtn" data-role="holder"><strong>HOLDER</strong><span>Enemy angle control</span></button>
+<button class="roleBtn" data-role="rotator"><strong>ROTATOR</strong><span>Enemy timing shift</span></button>
+</div>
+<div class="legend"><div><span class="dot" style="background:#6edfff"></span>friendly / info geometry</div><div><span class="dot" style="background:#ff6576"></span>enemy pressure geometry</div><div><span class="dot" style="background:#9c7bff"></span>Sushir route / focus</div><div><span class="dot" style="background:#ffd166"></span>elevation / decision window</div></div>
+</aside>
+
+<section class="center">
+<section class="panel scenePanel">
+<div class="panelHead"><div class="panelTitle">TACTICAL 3D ARENA</div><div class="badge">ANGLE FAN · TRADE LINK · THREAT CONE · VERTICALITY</div></div>
+<div class="sceneToolbar">
+<button class="camBtn active" data-cam="overview">Overview</button><button class="camBtn" data-cam="flank">Flank POV</button><button class="camBtn" data-cam="trade">Trade POV</button>
+<button id="toggleHeat">HEAT ZONES</button><button id="toggleThreat">THREAT CONE</button><button id="toggleLinks">TRADE LINK</button><button id="toggleAngles">ANGLE FAN</button><button class="camBtn" data-cam="shoulder">Shoulder Cam</button><button class="camBtn" data-cam="enemy">Enemy POV</button><div class="showpieceControls"><button class="showpieceBtn" id="tourBtn">CINEMATIC TOUR</button><button class="showpieceBtn" id="explainBtn">EXPLAIN MODE</button><button class="showpieceBtn" id="directorBtn">DIRECTOR MODE</button><button class="showpieceBtn" id="freezeBtn">FREEZE FRAME</button></div><div class="readFirst">READ THIS FIRST</div>
+</div>
+<div class="canvasWrap"><canvas id="arena"></canvas><div class="sceneVignette"></div>
+<div class="directorBar" id="directorBar">
+  <span class="directorChip">SHOT<b id="directorShot">01 / OVERVIEW</b></span>
+  <span class="directorChip">STORY BEAT<b id="storyBeat">READ PRESSURE</b></span>
+  <span class="directorChip">DECISION WINDOW<b id="decisionWindow">HOLD</b></span>
+  <div class="confidenceBox"><div class="confidenceTop"><span>MODELED CONFIDENCE</span><b id="confidenceLabel">74%</b></div><div class="confidenceTrack"><i id="confidenceMeter" style="width:74%"></i></div></div>
+</div><div class="routeLegend"><span class="actual">ACTUAL ROUTE</span><span class="recommended">RECOMMENDED ROUTE</span><span class="sector">SECTOR FOCUS</span></div><div class="freezeStamp" id="freezeStamp">FREEZE FRAME</div><div class="miniMapWrap"><b>LIVE MINI-MAP</b><canvas id="miniMap" width="348" height="236"></canvas></div><div class="telemetry"><span id="fpsReadout">FPS --</span><span id="drawCallsReadout">CALLS --</span></div><div class="explainPanel" id="explainPanel"><strong>WHAT YOU SEE</strong><span id="explainCopy">Purple movement path, red enemy pressure, green trade safety, and gold height cues.</span></div><div class="sceneHud"><div class="hudCard"><strong id="hudRole">SUSHIR / ADAPTIVE</strong><span id="hudRead">scan → angle shift → commit → reset</span></div><div class="hudCard"><strong>VERTICALITY</strong><span id="hudElevation">mid-platform reacquisition favored</span></div></div><div class="targetLegend">LOS BEAM · TARGET HALO · REPLAY GHOST TRAIL</div><div class="sceneHint">DRAG = ORBIT · WHEEL = ZOOM · CLICK PLAYER = FOCUS</div></div>
+<div class="metricsStrip">
+<div class="metric"><div class="k">ANGLE CHANGE</div><div class="v" id="mAngle">86</div><div class="mini"><i id="bAngle" style="width:86%"></i></div></div>
+<div class="metric"><div class="k">TRADE VALUE</div><div class="v" id="mTrade">78</div><div class="mini"><i id="bTrade" style="width:78%"></i></div></div>
+<div class="metric"><div class="k">PRESSURE</div><div class="v" id="mPressure">74</div><div class="mini"><i id="bPressure" style="width:74%"></i></div></div>
+<div class="metric"><div class="k">RESET</div><div class="v" id="mReset">82</div><div class="mini"><i id="bReset" style="width:82%"></i></div></div>
+<div class="metric"><div class="k">VERTICALITY</div><div class="v" id="mVertical">76</div><div class="mini"><i id="bVertical" style="width:76%"></i></div></div>
+<div class="metric"><div class="k">SPACING</div><div class="v" id="mSpacing">81</div><div class="mini"><i id="bSpacing" style="width:81%"></i></div></div>
+</div>
+<div class="clarityGuide">
+  <div class="guideCard purple"><b>PURPLE PATH = YOUR MOVEMENT</b><small>WHAT YOU SEE</small><p>The glowing route shows where Sushir changes position.</p><small>WHY IT MATTERS</small><p>A changed angle forces the enemy to re-aim.</p></div>
+  <div class="guideCard red"><b>RED CONE = ENEMY PRESSURE</b><small>WHAT YOU SEE</small><p>The red sector is the area the enemy can punish quickly.</p><small>WHY IT MATTERS</small><p>Do not re-enter through the same danger lane twice.</p></div>
+  <div class="guideCard green"><b>GREEN LINK = TRADE SAFETY</b><small>WHAT YOU SEE</small><p>The green line connects you to a teammate who can trade.</p><small>WHY IT MATTERS</small><p>If the link breaks, lower aggression and reset.</p></div>
+  <div class="guideCard gold"><b>GOLD HEIGHT = VERTICAL ADVANTAGE</b><small>WHAT YOU SEE</small><p>Raised platforms and gold cues show elevation changes.</p><small>WHY IT MATTERS</small><p>Changing height changes what enemies can pre-aim.</p></div>
+</div>
+</section>
+
+
+
+<section class="panel filmOps">
+  <div class="panelHead"><div class="panelTitle">CINEMATIC OPERATIONS</div><div class="badge">STORY TIMELINE · CAUSE CLASSIFICATION · TACTICAL VERDICT</div></div>
+  <div class="filmBody">
+    <div>
+      <div class="storyTimeline" id="storyTimeline">
+        <div class="timelineBeat active" data-beat="0"><b>01 · READ</b><span>Identify enemy pressure, exits, and trade support.</span></div>
+        <div class="timelineBeat" data-beat="1"><b>02 · CONTACT</b><span>Test the angle without donating the reset path.</span></div>
+        <div class="timelineBeat" data-beat="2"><b>03 · DECISION</b><span>Commit, hold, or break based on LOS + priority.</span></div>
+        <div class="timelineBeat" data-beat="3"><b>04 · CONVERSION</b><span>Trade damage or redirect pressure.</span></div>
+        <div class="timelineBeat" data-beat="4"><b>05 · RESET</b><span>Leave on one ray and return on another.</span></div>
+      </div>
+      <div class="causeRow">
+        <button class="causeChip active" data-cause="same-angle re-peek">same-angle re-peek</button>
+        <button class="causeChip" data-cause="broken trade spacing">broken trade spacing</button>
+        <button class="causeChip" data-cause="over-commit">over-commit</button>
+        <button class="causeChip" data-cause="late reset">late reset</button>
+      </div>
+    </div>
+    <div class="verdictBox">
+      <h3>TACTICAL VERDICT</h3>
+      <div class="verdictMain" id="tacticalVerdict">CHANGE ANGLE</div>
+      <div class="verdictReason" id="verdictReason">The actual route re-enters the same pressure sector. Recommended route breaks the pre-aim and preserves trade safety.</div>
+      <div class="verdictGrid">
+        <div><b>CAUSE CLASSIFICATION</b><span id="causeClassification">same-angle re-peek</span></div>
+        <div><b>SECTOR FOCUS</b><span id="sectorFocus">EAST PRESSURE</span></div>
+        <div><b>ACTUAL ROUTE</b><span id="actualRouteRead">HIGH EXPOSURE</span></div>
+        <div><b>RECOMMENDED ROUTE</b><span id="recommendedRouteRead">LOWER EXPOSURE</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel replayLab">
+  <div class="panelHead"><div class="panelTitle">REPLAY LAB</div><div class="badge">LOS CHECK · TARGET PRIORITY · OBJECTIVE MODE · MATCHUP MATRIX</div></div>
+  <div class="replayBody">
+    <div>
+      <div class="replayControls">
+        <button class="replayBtn" id="replayPlay">PLAY</button>
+        <button class="replayBtn" id="replayPause">PAUSE</button>
+        <button class="replayBtn" id="replayStep">STEP</button>
+        <button class="replayBtn active" data-speed="1">SPEED 1×</button>
+        <button class="replayBtn" data-speed=".5">0.5×</button>
+        <button class="replayBtn" data-speed="2">2×</button>
+      </div>
+      <div class="replayTrack"><label>REPLAY</label><input id="replaySlider" type="range" min="0" max="1000" value="0"><b id="replayPct">0%</b></div>
+      <div class="replayCards">
+        <div class="replayCard"><b>LOS CHECK</b><strong id="losRead">CHECKING</strong><span id="losDetail">Cover-aware line from selected role to highest-priority enemy.</span></div>
+        <div class="replayCard"><b>TARGET PRIORITY</b><strong id="priorityRead">RUSHER</strong><span id="priorityDetail">Modeled from threat role, distance, and current line-of-sight.</span></div>
+        <div class="replayCard"><b>OBJECTIVE MODE</b><strong id="objectiveReadLabel">SLAYER</strong><span>Conceptual tactical overlay — not live Halo match telemetry.</span></div>
+      </div>
+      <div class="objectives">
+        <button class="objectiveBtn active" data-objective="SLAYER">SLAYER</button>
+        <button class="objectiveBtn" data-objective="STRONGHOLDS">STRONGHOLDS</button>
+        <button class="objectiveBtn" data-objective="ODDBALL">ODDBALL</button>
+        <button class="objectiveBtn" data-objective="CTF">CTF</button>
+      </div>
+      <div class="objectiveRead" id="objectiveCopy">Prioritize survivable damage, trade spacing, and angle changes that preserve a second fight option.</div>
+    </div>
+    <div class="matrixWrap"><b>MATCHUP MATRIX · MODELED ROLE INTERACTION</b><div id="matchupMatrix" class="matchupMatrix"></div><div class="replayLegend">Higher values indicate a stronger modeled tactical advantage for the row role against the column role in this visualization.</div></div>
+  </div>
+</section>
+
+<section class="grid2">
+<div class="panel"><div class="panelHead"><div class="panelTitle">ENGAGEMENT TIMELINE</div><div class="badge">5 PHASES</div></div><div class="timeline"><div class="phaseRow">
+<div class="phase active" data-phase="0"><b>PRE-CONTACT</b><span>scan lanes, map exits, ping pressure</span></div>
+<div class="phase" data-phase="1"><b>FIRST CONTACT</b><span>test angle, avoid over-commit</span></div>
+<div class="phase" data-phase="2"><b>DAMAGE EXCHANGE</b><span>trade geometry + crossfire timing</span></div>
+<div class="phase" data-phase="3"><b>RESET</b><span>break sightline, restore options</span></div>
+<div class="phase" data-phase="4"><b>RE-ENTRY</b><span>return from changed angle / height</span></div>
+</div></div></div>
+
+<div class="panel"><div class="panelHead"><div class="panelTitle">SCENARIO PLAYBACK</div><div class="badge">6 READS</div></div><div class="scenarios">
+<button class="scenarioBtn" data-scenario="rush"><strong>RUSH</strong><span>fast re-peek enemy</span></button>
+<button class="scenarioBtn" data-scenario="lane"><strong>ANCHOR LANE</strong><span>cross long sightline</span></button>
+<button class="scenarioBtn" data-scenario="trade"><strong>TRADE BREAK</strong><span>link disappears</span></button>
+<button class="scenarioBtn" data-scenario="flank"><strong>FLANK MATURES</strong><span>attention split</span></button>
+<button class="scenarioBtn" data-scenario="low"><strong>LOW GROUND</strong><span>vertical reacquisition</span></button>
+<button class="scenarioBtn" data-scenario="reset"><strong>RESET WINDOW</strong><span>disengage + re-entry</span></button>
+</div></div>
+</section>
+
+<section class="visualDeck">
+<div class="panel visualCard"><div class="panelHead"><div class="panelTitle">ANGLE FAN</div><div class="badge">12 RAYS</div></div><div class="visualBody"><svg viewBox="0 0 320 180"><g stroke="#365073" stroke-width="1"><line x1="160" y1="150" x2="160" y2="20"/><line x1="160" y1="150" x2="190" y2="24"/><line x1="160" y1="150" x2="220" y2="34"/><line x1="160" y1="150" x2="250" y2="52"/><line x1="160" y1="150" x2="276" y2="78"/><line x1="160" y1="150" x2="290" y2="110"/><line x1="160" y1="150" x2="130" y2="24"/><line x1="160" y1="150" x2="100" y2="34"/><line x1="160" y1="150" x2="70" y2="52"/><line x1="160" y1="150" x2="44" y2="78"/><line x1="160" y1="150" x2="30" y2="110"/><line x1="160" y1="150" x2="160" y2="40"/></g><circle cx="160" cy="150" r="9" fill="#9c7bff"/><path d="M160 150 Q220 95 270 72" fill="none" stroke="#6edfff" stroke-width="5"/><text x="18" y="168" fill="#7f91b6" font-size="11">change angle before re-peek</text></svg></div></div>
+<div class="panel visualCard"><div class="panelHead"><div class="panelTitle">TRADE LINK</div><div class="badge">SPACING</div></div><div class="visualBody"><svg viewBox="0 0 320 180"><circle cx="75" cy="92" r="18" fill="#9c7bff"/><circle cx="245" cy="86" r="18" fill="#6edfff"/><line x1="95" y1="90" x2="225" y2="87" stroke="#71efb7" stroke-width="5" stroke-dasharray="10 7"/><circle cx="160" cy="89" r="42" fill="none" stroke="#2f4568"/><text x="118" y="42" fill="#71efb7" font-size="12">tradeable window</text><text x="42" y="125" fill="#9faecd" font-size="11">SUSHIR</text><text x="228" y="121" fill="#9faecd" font-size="11">TRADE</text></svg></div></div>
+<div class="panel visualCard"><div class="panelHead"><div class="panelTitle">THREAT CONE</div><div class="badge">PRESSURE</div></div><div class="visualBody"><svg viewBox="0 0 320 180"><path d="M255 135 L65 45 L65 160 Z" fill="rgba(255,101,118,.18)" stroke="#ff6576"/><circle cx="255" cy="135" r="10" fill="#ff6576"/><circle cx="118" cy="108" r="10" fill="#9c7bff"/><path d="M118 108 Q145 60 210 50" fill="none" stroke="#6edfff" stroke-width="4" stroke-dasharray="8 6"/><text x="174" y="35" fill="#6edfff" font-size="11">escape line</text></svg></div></div>
+<div class="panel visualCard"><div class="panelHead"><div class="panelTitle">VERTICALITY</div><div class="badge">HEIGHT</div></div><div class="visualBody"><svg viewBox="0 0 320 180"><rect x="35" y="135" width="250" height="18" rx="4" fill="#17233a"/><rect x="76" y="96" width="95" height="16" rx="4" fill="#263453"/><rect x="180" y="55" width="95" height="16" rx="4" fill="#3a3563"/><circle cx="125" cy="85" r="10" fill="#9c7bff"/><path d="M125 82 Q165 68 215 44" fill="none" stroke="#ffd166" stroke-width="4"/><text x="188" y="34" fill="#ffd166" font-size="11">high-ground re-entry</text></svg></div></div>
+</section>
+</section>
+
+<aside class="right">
+<section class="panel"><div class="panelHead"><div class="panelTitle">SELECTED ROLE</div><div class="badge">MODELED TENDENCY</div></div><div class="actorPanel"><div class="actorTitle" id="actorTitle">SUSHIR</div><div class="actorRole" id="actorRole">ADAPTIVE INFORMATION PLAYER</div><div class="actorText" id="actorText">Reads pressure first, shifts angle before recommitting, and tries to preserve a second option instead of living on the first peek.</div><div class="statRows" id="statRows"></div><div class="callout"><h3>WHY THIS ANGLE WORKS</h3><p id="whyText">It changes the enemy's pre-aim while keeping a trade path available. The goal is not maximum movement; it is useful movement that changes the fight geometry.</p></div></div></section>
+<section class="panel"><div class="panelHead"><div class="panelTitle">DECISION FLOW</div><div class="badge">DECISION FLOW</div></div><div class="flow">
+<div class="flowStep"><em>1</em><div><strong>SCAN</strong><span>Where is pressure, cover, and an exit?</span></div></div>
+<div class="flowStep"><em>2</em><div><strong>PING / MARK</strong><span>Make teammate attention useful.</span></div></div>
+<div class="flowStep"><em>3</em><div><strong>COMMIT</strong><span>Take the fight when geometry supports it.</span></div></div>
+<div class="flowStep"><em>4</em><div><strong>RESET</strong><span>Break LOS before the enemy owns your timing.</span></div></div>
+<div class="flowStep"><em>5</em><div><strong>RE-ENTRY</strong><span>Come back from a different angle or elevation.</span></div></div>
+</div><div class="disclaimer">Behavior scores are explanatory modeled values for this visualization. They are not hidden Halo telemetry, private match data, or official player statistics.</div></section>
+<section class="panel"><div class="panelHead"><div class="panelTitle">CURRENT SCENARIO READ</div><div class="badge">TACTICAL</div></div><div class="actorPanel"><div class="callout" style="margin-top:0"><h3 id="scenarioTitle">RUSH / FAST RE-PEEK</h3><p id="scenarioText">Do not mirror the rusher's tempo. Pull the cone across cover, keep the trade link alive, then re-enter from a changed ray.</p></div><div class="callout"><h3>BEST VISUAL CUE</h3><p id="scenarioCue">Watch the red threat cone and purple route ghost. If the cone overlaps the route twice in a row, the angle is stale.</p></div></div></section>
+</aside>
+</main>
+<div class="footer">Sushir Halo Tactical Command Center V12 · CINEMATIC OPERATIONS · WebGL tactical visualization · local OMEN build</div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const actors={
+ sushir:{label:'SUSHIR',role:'ADAPTIVE INFORMATION PLAYER',team:'friendly',color:0x9c7bff,pos:[0,.25,0],stats:[86,78,74,82,76,81],read:'scan → angle shift → commit → reset',why:'It changes the enemy pre-aim while keeping a trade path available. Useful movement changes geometry, not just position.'},
+ entry:{label:'ENTRY',role:'FIRST-CONTACT INITIATOR',team:'friendly',color:0x68a8ff,pos:[-2.7,.25,1.3],stats:[62,70,90,44,58,67],read:'pressure → force reaction → hand off',why:'Entry value rises when teammates can see the same fight and convert the forced reaction.'},
+ anchor:{label:'ANCHOR',role:'SPACE STABILIZER',team:'friendly',color:0x71efb7,pos:[-2.5,.45,-2.2],stats:[45,72,52,88,54,92],read:'hold lane → deny rotate → stabilize',why:'The anchor keeps one side of the map predictable, which makes Sushir angle changes safer.'},
+ trade:{label:'TRADE',role:'CONVERSION / RECOVERY',team:'friendly',color:0x6edfff,pos:[-.9,.25,2.6],stats:[58,94,64,74,52,90],read:'shadow spacing → convert damage',why:'The trade player sits close enough to punish a loss without stacking the same line.'},
+ flank:{label:'FLANK',role:'ATTENTION SPLITTER',team:'friendly',color:0xff72b0,pos:[2.6,.7,-2.4],stats:[94,55,76,68,88,48],read:'stay hidden → mature timing → collapse',why:'A flank becomes valuable when the front pressure exists long enough to hold enemy attention.'},
+ rusher:{label:'RUSHER',role:'ENEMY PRESSURE',team:'enemy',color:0xff6576,pos:[2.9,.25,1.4],stats:[70,42,96,38,50,42],read:'close gap → force panic → repeat peek',why:'The counter is not a faster ego-peek; it is cover displacement plus a second angle.'},
+ holder:{label:'HOLDER',role:'ENEMY ANGLE CONTROL',team:'enemy',color:0xff9966,pos:[2.7,.45,-1.7],stats:[34,50,58,82,45,95],read:'pre-aim lane → punish crossing',why:'Break the held lane with height, timing, or another body. Do not feed the same ray.'},
+ rotator:{label:'ROTATOR',role:'ENEMY TIMING SHIFT',team:'enemy',color:0xffd166,pos:[1.0,.25,2.9],stats:[76,52,62,70,72,64],read:'disappear → reappear off timing',why:'Missing enemy pressure is information. Re-check flank geometry before re-entry.'}
+};
+const statNames=['ANGLE CHANGE','TRADE VALUE','PRESSURE','RESET','VERTICALITY','SPACING'];
+const scene=new THREE.Scene(); scene.fog=new THREE.FogExp2(0x05070d,.055);
+const canvas=document.getElementById('arena');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.16; renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.setClearColor(0x05070d,1);
+const camera=new THREE.PerspectiveCamera(47,1,.1,80); camera.position.set(7,5.6,7.6);
+const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.target.set(0,.35,0); controls.minDistance=3; controls.maxDistance=15; controls.maxPolarAngle=Math.PI*.48; controls.zoomToCursor=true;
+scene.add(new THREE.HemisphereLight(0x8ea4ff,0x12091f,1.38)); const key=new THREE.DirectionalLight(0xe7e0ff,2.5);key.position.set(5,8,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);scene.add(key); const redLight=new THREE.PointLight(0xff405f,11,13,2);redLight.position.set(3,2,2);scene.add(redLight); const cyanLight=new THREE.PointLight(0x55dcff,9,14,2);cyanLight.position.set(-3.3,2.5,-2.2);scene.add(cyanLight); const goldLight=new THREE.PointLight(0xffd166,6.5,11,2);goldLight.position.set(0,4.3,-1.2);scene.add(goldLight);
+const world=new THREE.Group();world.rotation.y=-.13;scene.add(world);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(11,11),new THREE.MeshStandardMaterial({color:0x0a0f1d,roughness:.72,metalness:.18}));floor.rotation.x=-Math.PI/2;floor.position.y=-.02;floor.receiveShadow=true;world.add(floor);
+const grid=new THREE.GridHelper(10,20,0x624fa0,0x24314f);grid.material.transparent=true;grid.material.opacity=.34;world.add(grid);
+const ring=new THREE.Mesh(new THREE.RingGeometry(4.65,4.7,96),new THREE.MeshBasicMaterial({color:0x9c7bff,transparent:true,opacity:.28,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.02;world.add(ring);
+
+const coverData=[[-1.2,.45,-.75,1.25,.9,.55],[1.25,.45,-.85,1.1,.9,.55],[-2.1,.4,1.95,.75,.8,1.25],[2.05,.4,2.05,.8,.8,1.2],[0,.5,-2.65,1.5,1,.5]];const coverMeshes=[];
+coverData.forEach(v=>{const m=new THREE.Mesh(new THREE.BoxGeometry(v[3],v[4],v[5]),new THREE.MeshStandardMaterial({color:0x1a2340,roughness:.38,metalness:.38,emissive:0x100923,emissiveIntensity:.2}));m.position.set(v[0],v[1],v[2]);m.castShadow=true;m.receiveShadow=true;world.add(m);coverMeshes.push(m)});
+[[-2.4,.18,-2.45,1.9,.36,1.5],[2.2,.3,-2.25,1.8,.6,1.5],[0,.14,2.5,2.15,.28,1.25]].forEach((v,i)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(v[3],v[4],v[5]),new THREE.MeshStandardMaterial({color:i===1?0x2a2440:0x171c31,roughness:.5,metalness:.32,emissive:i===1?0x4f3815:0x1a1030,emissiveIntensity:i===1?.34:.18}));m.position.set(v[0],v[1],v[2]);m.castShadow=true;m.receiveShadow=true;world.add(m)});
+
+function makeLabelSprite(textValue,colorHex){
+  const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');
+  x.clearRect(0,0,c.width,c.height);x.fillStyle='rgba(5,8,16,.82)';x.strokeStyle=colorHex;x.lineWidth=3;
+  x.beginPath();x.roundRect(4,4,248,56,12);x.fill();x.stroke();
+  x.font='700 24px Consolas';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#f2f6ff';x.fillText(textValue,128,32);
+  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));spr.scale.set(1.35,.34,1);return spr;
+}
+const actorGroups=new Map();const pickables=[];
+Object.entries(actors).forEach(([id,a])=>{const g=new THREE.Group();g.position.set(...a.pos);g.userData.role=id;const body=new THREE.Mesh(new THREE.CylinderGeometry(.13,.19,.5,18),new THREE.MeshStandardMaterial({color:a.color,emissive:a.color,emissiveIntensity:id==='sushir'?1.2:.65,roughness:.3,metalness:.4}));body.position.y=.3;body.userData.role=id;const head=new THREE.Mesh(new THREE.SphereGeometry(.14,18,18),new THREE.MeshStandardMaterial({color:0xffffff,emissive:a.color,emissiveIntensity:.5}));head.position.y=.64;head.userData.role=id;const tor=new THREE.Mesh(new THREE.TorusGeometry(id==='sushir'?.34:.28,.018,10,42),new THREE.MeshBasicMaterial({color:a.color,transparent:true,opacity:id==='sushir'?.95:.56}));tor.rotation.x=Math.PI/2;tor.position.y=.03;body.castShadow=true;head.castShadow=true;const label=makeLabelSprite(a.label,'#'+a.color.toString(16).padStart(6,'0'));label.position.y=1.02;g.add(body,head,tor,label);g.userData.ring=tor;world.add(g);actorGroups.set(id,g);pickables.push(body,head)});
+
+const routeSpecs={
+ sushir:[[0,.32,0],[-.7,.32,-.6],[-.35,.58,-1.5],[.8,.32,-2]],
+ entry:[[-2.7,.32,1.3],[-1.8,.32,.75],[-1,.32,.25],[-.15,.32,.05]],
+ flank:[[2.6,.75,-2.4],[2.9,.7,-1.4],[2.5,.42,-.35],[1.8,.32,.35]],
+ rotator:[[1,.32,2.9],[1.6,.32,2.3],[2.05,.32,1.55],[2.55,.32,.95]]
+};
+const routeGhosts=[];Object.entries(routeSpecs).forEach(([id,pts],idx)=>{const color=actors[id].color;const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.35);const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,70,id==='sushir'?.028:.018,8,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:id==='sushir'?.72:.35}));world.add(tube);const ghost=new THREE.Mesh(new THREE.SphereGeometry(id==='sushir'?.11:.08,14,14),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9}));world.add(ghost);routeGhosts.push({curve,ghost,speed:.055+idx*.012,phase:idx*.22})});
+
+const tradeLinks=new THREE.Group();[['sushir','trade'],['entry','sushir'],['anchor','sushir']].forEach(([a,b])=>{const pa=new THREE.Vector3(...actors[a].pos).add(new THREE.Vector3(0,.45,0));const pb=new THREE.Vector3(...actors[b].pos).add(new THREE.Vector3(0,.45,0));const geom=new THREE.BufferGeometry().setFromPoints([pa,pb]);const line=new THREE.Line(geom,new THREE.LineDashedMaterial({color:0x71efb7,dashSize:.16,gapSize:.1,transparent:true,opacity:.55}));line.computeLineDistances();tradeLinks.add(line)});world.add(tradeLinks);
+
+const threatGroup=new THREE.Group();[['rusher',2.2,Math.PI*1.02,Math.PI*.72],['holder',2.8,Math.PI*.7,Math.PI*.62]].forEach(([id,r,start,len])=>{const a=actors[id];const m=new THREE.Mesh(new THREE.CircleGeometry(r,72,start,len),new THREE.MeshBasicMaterial({color:0xff6576,transparent:true,opacity:.095,side:THREE.DoubleSide,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(a.pos[0],.035,a.pos[2]);threatGroup.add(m)});world.add(threatGroup);
+
+const angleGroup=new THREE.Group();for(let i=0;i<12;i++){const ang=(i/11-.5)*Math.PI*.9;const start=new THREE.Vector3(actors.sushir.pos[0],.08,actors.sushir.pos[2]);const end=new THREE.Vector3(Math.sin(ang)*4,.08,-Math.cos(ang)*4);const geom=new THREE.BufferGeometry().setFromPoints([start,end]);angleGroup.add(new THREE.Line(geom,new THREE.LineBasicMaterial({color:i===7?0x6edfff:0x3a4d72,transparent:true,opacity:i===7?.8:.26})))}world.add(angleGroup);
+
+const heatGroup=new THREE.Group();[[-1.4,1.4,.85,0xff6576],[1.2,-.8,1.0,0xff6576],[2.3,1.55,.75,0xff9f66],[-2.1,-2.0,.65,0x9c7bff],[.1,-2.2,.8,0x6edfff]].forEach(v=>{const m=new THREE.Mesh(new THREE.CircleGeometry(v[2],40),new THREE.MeshBasicMaterial({color:v[3],transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(v[0],.028,v[1]);heatGroup.add(m)});world.add(heatGroup);
+
+const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.36,3),new THREE.MeshPhysicalMaterial({color:0x9c7bff,emissive:0x4a2791,emissiveIntensity:1.25,roughness:.14,metalness:.42,clearcoat:1}));core.position.set(0,1.35,0);core.castShadow=true;world.add(core);
+const focusRing=new THREE.Mesh(new THREE.TorusGeometry(.46,.032,12,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.82}));focusRing.rotation.x=Math.PI/2;focusRing.position.set(0,.05,0);world.add(focusRing);
+const scanPulse=new THREE.Mesh(new THREE.RingGeometry(.55,.59,96),new THREE.MeshBasicMaterial({color:0x6edfff,transparent:true,opacity:.2,side:THREE.DoubleSide,depthWrite:false}));scanPulse.rotation.x=-Math.PI/2;scanPulse.position.y=.045;world.add(scanPulse);
+const actorBeams=new THREE.Group();Object.entries(actors).forEach(([id,a])=>{const beam=new THREE.Mesh(new THREE.CylinderGeometry(.018,.05,1.18,10,1,true),new THREE.MeshBasicMaterial({color:a.color,transparent:true,opacity:id==='sushir'?.11:.045,depthWrite:false}));beam.position.set(a.pos[0],.62,a.pos[2]);actorBeams.add(beam)});world.add(actorBeams);
+
+const actualPathGroup=new THREE.Group(),recommendedPathGroup=new THREE.Group(),sectorGroup=new THREE.Group();world.add(actualPathGroup,recommendedPathGroup,sectorGroup);
+const actualRouteMat=new THREE.MeshBasicMaterial({color:0xff72b0,transparent:true,opacity:.82,depthWrite:false});
+const recommendedRouteMat=new THREE.MeshBasicMaterial({color:0x71efb7,transparent:true,opacity:.88,depthWrite:false});
+function buildRouteTube(points,mat,radius=.026){const curve=new THREE.CatmullRomCurve3(points);return new THREE.Mesh(new THREE.TubeGeometry(curve,52,radius,8,false),mat)}
+const actualRoutePts=[new THREE.Vector3(0,.34,0),new THREE.Vector3(.45,.34,-.35),new THREE.Vector3(.85,.34,-.7),new THREE.Vector3(1.3,.34,-.85)];
+const recommendedRoute=[new THREE.Vector3(0,.34,0),new THREE.Vector3(-.45,.34,-.5),new THREE.Vector3(-.2,.62,-1.25),new THREE.Vector3(.6,.38,-1.8)];
+actualPathGroup.add(buildRouteTube(actualRoutePts,actualRouteMat,.03));recommendedPathGroup.add(buildRouteTube(recommendedRoute,recommendedRouteMat,.034));
+[['NORTH',0,-2.5,0xffd166],['EAST',2.5,0,0xff6576],['SOUTH',0,2.5,0x6edfff],['WEST',-2.5,0,0x9c7bff]].forEach(([name,x,z,color])=>{const m=new THREE.Mesh(new THREE.RingGeometry(.78,.84,48),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(x,.055,z);m.userData.sector=name;sectorGroup.add(m)});
+function projectCallout(textValue,colorHex){const s=makeLabelSprite(textValue,colorHex);s.scale.set(1.65,.42,1);return s}
+const calloutActual=projectCallout('ACTUAL','#ff72b0');calloutActual.position.set(1.25,.85,-.85);world.add(calloutActual);
+const calloutRecommended=projectCallout('RECOMMENDED','#71efb7');calloutRecommended.position.set(.55,.9,-1.78);world.add(calloutRecommended);
+const losBeamGeom=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(1,0,0)]);
+const losBeam=new THREE.Line(losBeamGeom,new THREE.LineBasicMaterial({color:0x71efb7,transparent:true,opacity:.92}));
+world.add(losBeam);
+const targetHalo=new THREE.Mesh(new THREE.TorusGeometry(.43,.045,12,72),new THREE.MeshBasicMaterial({color:0xff6576,transparent:true,opacity:.92}));
+targetHalo.rotation.x=Math.PI/2;targetHalo.position.set(actors.rusher.pos[0],.07,actors.rusher.pos[2]);world.add(targetHalo);
+const replayGhosts=new THREE.Group();
+for(let i=0;i<7;i++){const g=new THREE.Mesh(new THREE.SphereGeometry(.075,12,12),new THREE.MeshBasicMaterial({color:0x9c7bff,transparent:true,opacity:.34-i*.038,depthWrite:false}));replayGhosts.add(g)}
+world.add(replayGhosts);
+
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+const miniMap=document.getElementById('miniMap'),miniCtx=miniMap.getContext('2d');
+const fpsReadout=document.getElementById('fpsReadout'),drawCallsReadout=document.getElementById('drawCallsReadout');const directorShot=document.getElementById('directorShot'),storyBeat=document.getElementById('storyBeat'),decisionWindow=document.getElementById('decisionWindow'),confidenceMeter=document.getElementById('confidenceMeter'),confidenceLabel=document.getElementById('confidenceLabel');const tacticalVerdict=document.getElementById('tacticalVerdict'),verdictReason=document.getElementById('verdictReason'),sectorFocus=document.getElementById('sectorFocus'),causeClassificationEl=document.getElementById('causeClassification'),actualRouteRead=document.getElementById('actualRouteRead'),recommendedRouteRead=document.getElementById('recommendedRouteRead');
+const explainPanel=document.getElementById('explainPanel'),explainCopy=document.getElementById('explainCopy');
+let autoTourEnabled=false,explainMode=false,directorMode=false,freezeFrame=false;let selectedRoleId='sushir';let currentPriorityId='rusher',currentPriorityScore=74,currentPriorityBlocked=false,currentLOSBlocked=false;
+let selectedCause='same-angle re-peek';
+const directorMoments=[
+  {t:.12,beat:'READ PRESSURE',sector:'EAST PRESSURE',verdict:'HOLD / INFO'},
+  {t:.32,beat:'FIRST CONTACT',sector:'CENTER LANE',verdict:'TEST ANGLE'},
+  {t:.54,beat:'DECISION WINDOW',sector:'EAST PRESSURE',verdict:'CHANGE ANGLE'},
+  {t:.74,beat:'CONVERSION',sector:'TRADE LANE',verdict:'COMMIT / TRADE'},
+  {t:.92,beat:'RESET',sector:'WEST EXIT',verdict:'RESET / RE-ENTRY'}
+];
+const causeClassification={
+ 'same-angle re-peek':{verdict:'CHANGE ANGLE',reason:'Actual route returns into the same pre-aim sector. Recommended route exits the repeated ray.',actual:'HIGH EXPOSURE',recommended:'LOWER EXPOSURE'},
+ 'broken trade spacing':{verdict:'RESET',reason:'The conversion partner is too far away for a reliable trade. Reset until the green link is restored.',actual:'UNTRADEABLE',recommended:'REBUILD SPACING'},
+ 'over-commit':{verdict:'BREAK CONTACT',reason:'Pressure continues past the safe decision window. Keep damage, surrender the lane, and re-enter elsewhere.',actual:'TOO DEEP',recommended:'SHORTER COMMIT'},
+ 'late reset':{verdict:'RESET EARLIER',reason:'The exit occurs after enemy timing has stabilized. Start the disengage before the next pressure peak.',actual:'LATE EXIT',recommended:'EARLY EXIT'}
+};
+const replayState={playing:false,t:0,speed:1,scenario:'rush',lastTs:0};
+const replayScenarios={
+ rush:{sushir:[[-.1,0,.05],[.45,0,-.35]],rusher:[[0,0,0],[-.65,0,-.55]]},
+ lane:{sushir:[[0,0,0],[1.25,0,-.6]],holder:[[0,0,0],[-.1,0,.15]]},
+ trade:{sushir:[[0,0,0],[.55,0,-.2]],trade:[[0,0,0],[-1.0,0,.65]]},
+ flank:{sushir:[[0,0,0],[.2,0,-.45]],flank:[[0,0,0],[-1.4,0,1.4]]},
+ low:{sushir:[[0,0,0],[.65,.55,-.75]],holder:[[0,0,0],[0,0,.2]]},
+ reset:{sushir:[[0,0,0],[-.85,0,.75]],rusher:[[0,0,0],[-.35,0,-.25]]}
+};
+const objectiveModes={
+ SLAYER:'Prioritize survivable damage, trade spacing, and angle changes that preserve a second fight option.',
+ STRONGHOLDS:'Value crossfire between zones, fast re-entry lanes, and not abandoning all map control for one chase.',
+ ODDBALL:'Protect the carrier route first. Trade safety and escape geometry outrank solo pressure.',
+ CTF:'Separate flag route, escort route, and enemy intercept lane. Height and timing matter more than raw distance.'
+};
+const roleIds=['sushir','entry','anchor','trade','flank','rusher','holder','rotator'];
+const matchupMatrix=document.getElementById('matchupMatrix');
+function buildMatchupMatrix(){
+  matchupMatrix.innerHTML='<div></div>'+roleIds.map(r=>'<div class="matrixHead">'+actors[r].label.slice(0,3)+'</div>').join('');
+  roleIds.forEach((row,ri)=>{
+    matchupMatrix.innerHTML+='<div class="matrixHead">'+actors[row].label.slice(0,6)+'</div>';
+    roleIds.forEach((col,ci)=>{
+      const a=actors[row].stats,b=actors[col].stats;
+      const score=Math.max(18,Math.min(94,50+Math.round((a[0]+a[2]+a[5]-b[1]-b[3]-b[4])/7)+(ri-ci)*2));
+      const hue=Math.round(score*1.2+160);
+      matchupMatrix.innerHTML+='<div class="matrixCell" style="background:hsla('+hue+',55%,35%,.35)">'+score+'</div>';
+    });
+  });
+}
+buildMatchupMatrix();
+
+const sceneTour=[
+  {p:[7,5.6,7.6],t:[0,.35,0],label:'Overview'},
+  {p:[1.2,1.45,2.5],t:[0,.42,-1.15],label:'Shoulder'},
+  {p:[5.8,2.5,-5.8],t:[1.3,.4,-1.15],label:'Flank'},
+  {p:[-5,2.35,6],t:[-.7,.3,1.15],label:'Trade'},
+  {p:[3.8,1.65,2.45],t:[0,.4,0],label:'Enemy POV'}
+];
+function drawMiniMap(){
+  const w=miniMap.width,h=miniMap.height;miniCtx.clearRect(0,0,w,h);
+  miniCtx.fillStyle='#060b14';miniCtx.fillRect(0,0,w,h);
+  miniCtx.strokeStyle='#1e304b';miniCtx.lineWidth=2;
+  for(let i=1;i<5;i++){miniCtx.beginPath();miniCtx.moveTo(i*w/5,0);miniCtx.lineTo(i*w/5,h);miniCtx.stroke();miniCtx.beginPath();miniCtx.moveTo(0,i*h/5);miniCtx.lineTo(w,i*h/5);miniCtx.stroke();}
+  const map=(x,z)=>[(x+5)/10*w,(z+5)/10*h];
+  miniCtx.strokeStyle='#71efb7';miniCtx.setLineDash([8,6]);[['sushir','trade'],['entry','sushir'],['anchor','sushir']].forEach(([a,b])=>{const A=map(actors[a].pos[0],actors[a].pos[2]),B=map(actors[b].pos[0],actors[b].pos[2]);miniCtx.beginPath();miniCtx.moveTo(...A);miniCtx.lineTo(...B);miniCtx.stroke();});miniCtx.setLineDash([]);
+  Object.entries(actors).forEach(([id,a])=>{const g=actorGroups.get(id);const p=g?g.position:{x:a.pos[0],z:a.pos[2]};const [x,y]=map(p.x,p.z);miniCtx.beginPath();miniCtx.fillStyle='#'+a.color.toString(16).padStart(6,'0');miniCtx.arc(x,y,id==='sushir'?9:6,0,Math.PI*2);miniCtx.fill();});
+}
+
+renderer.domElement.addEventListener('pointerup',e=>{const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(pickables)[0];if(hit){selectRole(hit.object.userData.role)}});
+
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(canvas);resize();
+
+const statRows=document.getElementById('statRows');
+function selectRole(id){selectedRoleId=id;document.querySelectorAll('.roleBtn').forEach(b=>b.classList.toggle('active',b.dataset.role===id));const a=actors[id];focusRing.position.set(a.pos[0],.05,a.pos[2]);focusRing.material.color.set(a.color);document.getElementById('actorTitle').textContent=a.label;document.getElementById('actorRole').textContent=a.role;document.getElementById('actorText').textContent='Operating pattern: '+a.read+'. This panel is explanatory, not hidden match telemetry.';document.getElementById('whyText').textContent=a.why;document.getElementById('hudRole').textContent=a.label+' / '+a.role;document.getElementById('hudRead').textContent=a.read;statRows.innerHTML='';a.stats.forEach((v,i)=>{const row=document.createElement('div');row.className='statRow';row.innerHTML='<label>'+statNames[i]+'</label><div class="bar"><i style="width:'+v+'%"></i></div><b>'+v+'</b>';statRows.appendChild(row)});['Angle','Trade','Pressure','Reset','Vertical','Spacing'].forEach((k,i)=>{document.getElementById('m'+k).textContent=a.stats[i];document.getElementById('b'+k).style.width=a.stats[i]+'%'});const g=actorGroups.get(id);controls.target.copy(g.position).add(new THREE.Vector3(0,.35,0));}
+document.querySelectorAll('.roleBtn').forEach(b=>b.addEventListener('click',()=>{autoTourEnabled=false;document.getElementById('tourBtn').classList.remove('active');selectRole(b.dataset.role)}));selectRole('sushir');
+
+const cams={overview:{p:[7,5.6,7.6],t:[0,.35,0]},flank:{p:[5.8,2.5,-5.8],t:[1.3,.4,-1.15]},trade:{p:[-5,2.35,6],t:[-.7,.3,1.15]},shoulder:{p:[1.2,1.45,2.5],t:[0,.42,-1.15]},enemy:{p:[3.8,1.65,2.45],t:[0,.4,0]}};
+document.querySelectorAll('.camBtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.camBtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');const c=cams[b.dataset.cam];camera.position.set(...c.p);controls.target.set(...c.t);controls.update()}));
+function toggler(id,obj){document.getElementById(id).addEventListener('click',e=>{obj.visible=!obj.visible;e.currentTarget.classList.toggle('active',obj.visible)})}
+toggler('toggleHeat',heatGroup);toggler('toggleThreat',threatGroup);toggler('toggleLinks',tradeLinks);toggler('toggleAngles',angleGroup);
+document.getElementById('tourBtn').addEventListener('click',e=>{autoTourEnabled=!autoTourEnabled;e.currentTarget.classList.toggle('active',autoTourEnabled);if(autoTourEnabled){explainCopy.textContent='Camera tour cycles through overview, shoulder, flank, trade, and enemy POV so the geometry explains itself.'}});
+document.getElementById('explainBtn').addEventListener('click',e=>{explainMode=!explainMode;e.currentTarget.classList.toggle('active',explainMode);heatGroup.visible=!explainMode;angleGroup.visible=!explainMode;actorBeams.visible=!explainMode;threatGroup.visible=true;tradeLinks.visible=true;explainCopy.textContent=explainMode?'Explain Mode hides secondary layers. Read red pressure + green trade link first, then follow the purple movement path.':'All tactical layers restored.';});
+document.getElementById('directorBtn').addEventListener('click',e=>{directorMode=!directorMode;document.body.classList.toggle('directorMode',directorMode);e.currentTarget.classList.toggle('active',directorMode);if(directorMode){autoTourEnabled=true;document.getElementById('tourBtn').classList.add('active');camera.position.set(7,5.6,7.6);controls.target.set(0,.35,0);}});
+document.getElementById('freezeBtn').addEventListener('click',e=>{freezeFrame=!freezeFrame;e.currentTarget.classList.toggle('active',freezeFrame);document.getElementById('freezeStamp').classList.toggle('show',freezeFrame);replayState.playing=!freezeFrame&&replayState.playing;});
+document.querySelectorAll('.causeChip').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.causeChip').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedCause=b.dataset.cause;updateFilmOps()}));
+if(new URLSearchParams(location.search).get('director')==='1'){setTimeout(()=>document.getElementById('directorBtn').click(),80);}
+
+
+
+const phaseReads=['scan lanes / map exits','test angle / preserve cover','convert damage with trade geometry','break LOS / restore options','re-enter from changed ray or height'];
+document.querySelectorAll('.phase').forEach(p=>p.addEventListener('click',()=>{document.querySelectorAll('.phase').forEach(x=>x.classList.remove('active'));p.classList.add('active');document.getElementById('hudElevation').textContent=phaseReads[+p.dataset.phase]}));
+
+const scenarioText={
+ rush:['RUSH / FAST RE-PEEK','Do not mirror the rusher tempo. Pull the cone across cover, keep the trade link alive, then re-enter from a changed ray.','Watch the red threat cone and purple route ghost. If the cone overlaps the route twice in a row, the angle is stale.'],
+ lane:['ANCHOR LANE CROSS','Do not cross a held ray for free. Use cover, a teammate body, or elevation to change the holder pre-aim.','The useful cue is line duration: long straight exposure is expensive.'],
+ trade:['TRADE LINK BREAK','If your conversion partner disappears, your effective aggression budget drops immediately.','Watch the green trade line. When it breaks, reset before you ego-chain damage.'],
+ flank:['FLANK MATURES','The flank is not valuable because it is far away. It becomes valuable when the front holds attention long enough.','Watch the pink route and enemy facing. Collapse when attention is split.'],
+ low:['LOW GROUND REACQUISITION','Low ground can be survivable if it creates a clean exit into a different elevation band.','Watch the yellow verticality concept: height change should alter line ownership.'],
+ reset:['RESET WINDOW','A reset is active repositioning, not passive waiting. Break line-of-sight, recover information, then return from changed geometry.','The route ghost should come back on a different ray than the one it left.']
+};
+document.querySelector('[data-scenario="rush"]').classList.add('active');document.querySelectorAll('.scenarioBtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.scenarioBtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');replayState.scenario=b.dataset.scenario;replayState.t=0;const s=scenarioText[b.dataset.scenario];document.getElementById('scenarioTitle').textContent=s[0];document.getElementById('scenarioText').textContent=s[1];document.getElementById('scenarioCue').textContent=s[2]}));
+
+
+const replaySlider=document.getElementById('replaySlider'),replayPct=document.getElementById('replayPct');
+const losRead=document.getElementById('losRead'),losDetail=document.getElementById('losDetail');
+const priorityRead=document.getElementById('priorityRead'),priorityDetail=document.getElementById('priorityDetail');
+document.getElementById('replayPlay').addEventListener('click',()=>{replayState.playing=true});
+document.getElementById('replayPause').addEventListener('click',()=>{replayState.playing=false});
+document.getElementById('replayStep').addEventListener('click',()=>{replayState.playing=false;replayState.t=(replayState.t+.08)%1;updateReplay(0)});
+document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-speed]').forEach(x=>x.classList.remove('active'));b.classList.add('active');replayState.speed=+b.dataset.speed}));
+replaySlider.addEventListener('input',()=>{replayState.playing=false;replayState.t=+replaySlider.value/1000;updateReplay(0)});
+document.querySelectorAll('.objectiveBtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.objectiveBtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('objectiveReadLabel').textContent=b.dataset.objective;document.getElementById('objectiveCopy').textContent=objectiveModes[b.dataset.objective]}));
+
+function resetReplayActors(){
+  roleIds.forEach(id=>{const g=actorGroups.get(id);const a=actors[id];g.position.set(a.pos[0],a.pos[1],a.pos[2]);});
+}
+function updateReplay(dt){
+  if(replayState.playing) replayState.t=(replayState.t+dt*.00012*replayState.speed)%1;
+  resetReplayActors();
+  const sc=replayScenarios[replayState.scenario]||{};
+  Object.entries(sc).forEach(([id,pair])=>{
+    const g=actorGroups.get(id);if(!g)return;const a=pair[0],b=pair[1],t=replayState.t,e=t*t*(3-2*t);
+    g.position.x+=THREE.MathUtils.lerp(a[0],b[0],e);g.position.y+=THREE.MathUtils.lerp(a[1],b[1],e);g.position.z+=THREE.MathUtils.lerp(a[2],b[2],e);
+  });
+  replaySlider.value=Math.round(replayState.t*1000);replayPct.textContent=Math.round(replayState.t*100)+'%';
+  const selected=actorGroups.get(selectedRoleId);if(selected){focusRing.position.set(selected.position.x,.05,selected.position.z)}
+}
+function currentEnemyCandidates(){
+  return ['rusher','holder','rotator'].map(id=>({id,g:actorGroups.get(id)}));
+}
+function updateLOS(){
+  const src=actorGroups.get(selectedRoleId)||actorGroups.get('sushir');
+  const candidates=currentEnemyCandidates().map(c=>({id:c.id,g:c.g,d:src.position.distanceTo(c.g.position)})).sort((a,b)=>a.d-b.d);
+  const target=candidates[0];if(!target)return {blocked:false,target:'NONE',distance:0};
+  const origin=src.position.clone().add(new THREE.Vector3(0,.55,0));const dest=target.g.position.clone().add(new THREE.Vector3(0,.55,0));const dir=dest.clone().sub(origin);const dist=dir.length();raycaster.set(origin,dir.normalize());
+  const hits=raycaster.intersectObjects(coverMeshes,false);const blocked=hits.some(h=>h.distance<dist-.08);
+  currentLOSBlocked=blocked;currentPriorityId=target.id;losRead.textContent=blocked?'BLOCKED':'OPEN';losRead.style.color=blocked?'#ffd166':'#71efb7';
+  losDetail.textContent=(blocked?'Cover interrupts ':'Clear sightline to ')+actors[target.id].label+' · '+dist.toFixed(1)+'m modeled scene distance';
+  return {blocked,target:target.id,distance:dist};
+}
+function updatePriority(){
+  const src=actorGroups.get(selectedRoleId)||actorGroups.get('sushir');
+  const bases={rusher:96,holder:82,rotator:74};
+  let best=null;
+  currentEnemyCandidates().forEach(c=>{
+    const dist=src.position.distanceTo(c.g.position);let score=bases[c.id]-dist*7;
+    const origin=src.position.clone().add(new THREE.Vector3(0,.55,0));const dest=c.g.position.clone().add(new THREE.Vector3(0,.55,0));const dir=dest.clone().sub(origin);const len=dir.length();raycaster.set(origin,dir.normalize());
+    const blocked=raycaster.intersectObjects(coverMeshes,false).some(h=>h.distance<len-.08);if(!blocked)score+=13;
+    if(!best||score>best.score)best={id:c.id,score,blocked,dist};
+  });
+  if(best){currentPriorityId=best.id;currentPriorityScore=best.score;currentPriorityBlocked=best.blocked;priorityRead.textContent=actors[best.id].label+' '+Math.round(best.score);priorityDetail.textContent=(best.blocked?'Behind cover · ':'Direct threat · ')+best.dist.toFixed(1)+'m scene distance · modeled priority';}
+}
+
+
+
+function updateFilmOps(){
+  const c=causeClassification[selectedCause]||causeClassification['same-angle re-peek'];
+  const nearest=directorMoments.reduce((best,m)=>Math.abs(m.t-replayState.t)<Math.abs(best.t-replayState.t)?m:best,directorMoments[0]);
+  tacticalVerdict.textContent=c.verdict;verdictReason.textContent=c.reason;causeClassificationEl.textContent=selectedCause;
+  sectorFocus.textContent=nearest.sector;actualRouteRead.textContent=c.actual;recommendedRouteRead.textContent=c.recommended;
+  document.querySelectorAll('.timelineBeat').forEach((el,i)=>el.classList.toggle('active',i===directorMoments.indexOf(nearest)));
+  sectorGroup.children.forEach(m=>{m.material.opacity=m.userData.sector===nearest.sector.split(' ')[0]?.toUpperCase()?.replace('CENTER','NORTH')?.replace('TRADE','SOUTH')?.replace('WEST','WEST') ? .42 : .11});
+  actualPathGroup.children.forEach(m=>m.material.opacity=freezeFrame?.98:.72);
+  recommendedPathGroup.children.forEach(m=>m.material.opacity=freezeFrame?1:.86);
+}
+
+function updateDirector(t){
+  const src=actorGroups.get(selectedRoleId)||actorGroups.get('sushir');
+  const target=actorGroups.get(currentPriorityId)||actorGroups.get('rusher');
+  const a=src.position.clone().add(new THREE.Vector3(0,.55,0));
+  const b=target.position.clone().add(new THREE.Vector3(0,.55,0));
+  losBeam.geometry.setFromPoints([a,b]);losBeam.material.color.set(currentLOSBlocked?0xffd166:0x71efb7);
+  targetHalo.position.set(target.position.x,.07,target.position.z);targetHalo.material.color.set(currentPriorityBlocked?0xffd166:0xff6576);targetHalo.rotation.z=t*.0012;
+
+  const sc=replayScenarios[replayState.scenario]?.sushir;
+  if(sc){
+    replayGhosts.children.forEach((g,i)=>{
+      const gt=Math.max(0,replayState.t-i*.055),e=gt*gt*(3-2*gt);
+      const base=actors.sushir.pos,from=sc[0],to=sc[1];
+      g.position.set(base[0]+THREE.MathUtils.lerp(from[0],to[0],e),base[1]+.25+THREE.MathUtils.lerp(from[1],to[1],e),base[2]+THREE.MathUtils.lerp(from[2],to[2],e));
+      g.visible=gt>0.01;
+    });
+  }
+
+  const beat=replayState.t<.22?'READ PRESSURE':replayState.t<.50?'CHANGE GEOMETRY':replayState.t<.78?'COMMIT / TRADE':'RESET / RE-ENTRY';
+  const decision=currentLOSBlocked?'REPOSITION':currentPriorityScore>82?'COMMIT':'HOLD / INFO';
+  const confidence=Math.max(44,Math.min(94,Math.round(56+(currentLOSBlocked?-8:12)+Math.min(20,currentPriorityScore*.18)+(selectedRoleId==='sushir'?5:0))));
+  const shotIndex=Math.floor((t/5200)%sceneTour.length),shot=sceneTour[shotIndex];
+  directorShot.textContent=String(shotIndex+1).padStart(2,'0')+' / '+shot.label.toUpperCase();
+  storyBeat.textContent=beat;decisionWindow.textContent=decision;confidenceLabel.textContent=confidence+'%';confidenceMeter.style.width=confidence+'%';
+}
+
+let last=performance.now();let frameCount=0;let telemetryLast=performance.now();let telemetryFrames=0;let replayClock=performance.now();
+function animate(t){
+  const replayDt=t-replayClock;replayClock=t;updateReplay(replayDt);if(Math.floor(t/250)!==Math.floor((t-replayDt)/250)){updateLOS();updatePriority();}
+  if(autoTourEnabled){
+    const dur=5200,idx=Math.floor(t/dur)%sceneTour.length,next=(idx+1)%sceneTour.length,f=(t%dur)/dur;
+    const ease=f*f*(3-2*f),a=sceneTour[idx],b=sceneTour[next];
+    camera.position.lerpVectors(new THREE.Vector3(...a.p),new THREE.Vector3(...b.p),ease);
+    controls.target.lerpVectors(new THREE.Vector3(...a.t),new THREE.Vector3(...b.t),ease);
+  }
+  controls.update();core.rotation.x+=.002;core.rotation.y+=.003;
+  const sp=(t*.00022)%1;scanPulse.scale.setScalar(1+sp*6.6);scanPulse.material.opacity=.2*(1-sp);
+  actorBeams.children.forEach((m,i)=>{m.material.opacity=(i===0?.10:.04)+(Math.sin(t*.002+i)*.012)});
+  routeGhosts.forEach(o=>o.ghost.position.copy(o.curve.getPointAt((o.phase+t*.000055*o.speed*18)%1)));
+  actorGroups.forEach((g,id)=>{g.userData.ring.rotation.z+=id==='sushir'?.012:.006});
+  updateFilmOps();updateDirector(t);drawMiniMap();renderer.render(scene,camera);
+  frameCount++;telemetryFrames++;
+  if(t-last>1000){last=t;frameCount=0}
+  if(t-telemetryLast>1000){fpsReadout.textContent='FPS '+telemetryFrames;drawCallsReadout.textContent='CALLS '+renderer.info.render.calls;telemetryFrames=0;telemetryLast=t}
+  requestAnimationFrame(animate)
+}requestAnimationFrame(animate);
+</script>
+</body></html>
+
+[executed on device: Omen (5b99300c-8844-4b8e-9d20-880e8f93848d)]
