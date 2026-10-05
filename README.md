@@ -85,17 +85,19 @@ The funnel is designed to turn traffic into technical questions or pilot request
 
 ## Interactive 3D tactical showcase
 
-**Latest:** [Sushir Halo Tactical Command Center V8 — Clarity Render](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V8_CLARITY.html)
+**Latest:** [Sushir Halo Tactical Command Center V9 — Showpiece](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V9_SHOWPIECE.html)
 
-A tested browser-based Three.js/WebGL tactical visualization built to make movement and decision geometry easy to understand visually.
+A tested Three.js/WebGL tactical visualization built as a portfolio-grade interactive systems demo.
 
 - orbitable 3D arena with selectable player roles
-- player labels, focus ring, scan pulse, and light-column depth cues
-- purple route = movement, red cone = pressure, green link = trade safety, gold height = vertical advantage
-- soft shadows, depth-separated lighting, and performance-conscious rendering
-- overview, flank, trade, shoulder, and enemy POV camera presets
-- five engagement phases and six scenario reads
-- modeled behavior values are explicitly separated from real/official Halo telemetry
+- **Cinematic Tour** across overview, shoulder, flank, trade, and enemy POV cameras
+- **Explain Mode** that hides secondary noise and emphasizes the core fight geometry
+- live mini-map with actors and trade links
+- live render telemetry for FPS and draw calls
+- labels, focus ring, scan pulse, soft shadows, depth lights, routes, threat cones, trade links, heat zones, and verticality
+- simple visual language: purple = movement, red = pressure, green = trade safety, gold = vertical advantage
+- five engagement phases and six tactical scenario reads
+- explicit separation of modeled behavior values from real/official Halo telemetry
 
-Low-key version: **I got tired of explaining angles with paragraphs, so I made the angles move.**
+Low-key version: **I made the angles move, then gave them a tour guide.**
 
