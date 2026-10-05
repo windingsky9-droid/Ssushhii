@@ -68,3 +68,17 @@ Keep `FACTORWEAVE_API_KEY`, `STRIPE_PRO_URL`, and `STRIPE_CREATOR_URL` in the ho
 ## Visual portfolio
 
 The privacy-safe Sushir 3D Studio showcase is included under [`portfolio/`](portfolio/). Open `portfolio/index.html` locally or serve the folder from any static host. It includes a cinematic still, a synthetic public observatory demo, service positioning, and buyer-facing contact links. Private/name-specific source files are intentionally not included.
+
+## Cargo Profit Engine — live technical-pilot funnel
+
+A separate public funnel now showcases the lead-intelligence and developer-service workflow built around Cargo + Go + Sitelas + Quickchat.
+
+- **Live site:** https://cargo-profit-engine-5820.sitelas.com
+- **Tracked launch link:** https://zipgo.ink/cargo-profit-engine
+- **AI customer guide:** https://app.quickchat.ai/ri4k73zpat
+- **Current verified build:** 8 scored accounts, 3 P1 opportunities, 3 relevant professional buyers found, 0 outbound messages sent during the build.
+- **Developer-service focus:** API integrations, workflow automation, Go/Flask dashboards, testing/CI, and bounded AI/MCP prototypes.
+- **Public/private separation:** public pages show anonymized opportunity categories; exact prospect and buyer identities remain private.
+- **Activation controls:** enrichment/outbound are gated until relevance, suppression, basis, and sender-readiness checks are documented.
+
+The funnel is designed to turn traffic into technical questions or pilot requests, not to claim guaranteed revenue or ROI.
