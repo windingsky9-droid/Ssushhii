@@ -6,6 +6,8 @@ Have a Flask endpoint returning the wrong result or a reproducible error? Send t
 
 <img src="sushir-40-api-fix-promo.png" width="640" alt="Sushir offer: one agreed Flask/API issue for $40 USD, including a code fix, verification and handoff.">
 
+[Download the 15-second promotional video](sushir-40-api-fix-promo.mp4?raw=1)
+
 ## What the $40 scope includes
 
 - One agreed issue in an existing Flask app or REST endpoint.
