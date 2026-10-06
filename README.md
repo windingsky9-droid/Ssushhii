@@ -2,6 +2,12 @@
 
 A zero-required-cost market research MVP built around a clean provider boundary. It runs immediately with deterministic demo data and switches to server-side Factor Weave research when `FACTORWEAVE_API_KEY` is configured.
 
+## Need a small Flask/API fix?
+
+**One scoped issue, starting at $40 USD.** I can review a reproducible Flask or REST endpoint issue and confirm whether it fits the fixed price before you commit. The agreed scope includes the change, a verification check, and a short handoff; timing and any paid services are agreed first.
+
+[Open a developer service brief](https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml) with the expected behavior, error, stack, and relevant documentation. Keep passwords, API keys, and private customer data out of public issues.
+
 ## Why this exists
 
 The goal is to validate whether people will use and pay for a clearer research workflow before spending money on infrastructure. It is a research product, not an auto-trader and not a promise of investment returns.
