@@ -4,6 +4,8 @@ Have a Flask endpoint returning the wrong result or a reproducible error? Send t
 
 **[Open a service brief](https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml)** · **[Download the one-page service sheet](sushir-40-api-fix.pdf?raw=1)**
 
+<img src="sushir-40-api-fix-promo.png" width="640" alt="Sushir offer: one agreed Flask/API issue for $40 USD, including a code fix, verification and handoff.">
+
 ## What the $40 scope includes
 
 - One agreed issue in an existing Flask app or REST endpoint.
