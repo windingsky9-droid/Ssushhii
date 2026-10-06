@@ -4,9 +4,11 @@ A zero-required-cost market research MVP built around a clean provider boundary.
 
 ## Need a small Flask/API fix?
 
-**One scoped issue, starting at $40 USD.** I can review a reproducible Flask or REST endpoint issue and confirm whether it fits the fixed price before you commit. The agreed scope includes the change, a verification check, and a short handoff; timing and any paid services are agreed first.
+**$40 USD for one agreed Flask/API issue.** I can review a reproducible Flask or REST endpoint issue and confirm whether it fits the fixed price before you commit. The agreed scope includes the change, a verification check, and a short handoff; timing and any paid services are agreed first.
 
 [Open a developer service brief](https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml) with the expected behavior, error, stack, and relevant documentation. Keep passwords, API keys, and private customer data out of public issues.
+
+[See the service details and one-page PDF](docs/services/flask-api-fix.md).
 
 ## Why this exists
 
