@@ -25,3 +25,7 @@ The private/name-specific source files remain in Downloads and were not copied i
 ## First-revenue use
 
 Use the three service offers as the first commercial funnel: a tightly scoped API integration, a small dashboard, or a custom 3D/AI build. Confirm scope and licensing before accepting a project. The email and GitHub issue links are prepared but do not submit anything automatically.
+
+## Skill Value Ecosystem
+
+Open [`skill-value.html`](skill-value.html) for the public-safe interactive skills, project evidence, and gross-billings scenario dashboard. Rates, billable hours, and prices are adjustable assumptions—not verified earnings or salaries. The dashboard intentionally separates code/demo evidence from unverified professional claims.
