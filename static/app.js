@@ -297,18 +297,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-const copySnippetButton = $("copy-snippet");
-copySnippetButton?.addEventListener("click", async () => {
-  const snippet = $("provider-snippet");
-  const copyStatus = $("copy-status");
-  if (!snippet || !copyStatus) return;
+document.querySelectorAll(".code-copy").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const snippet = $(button.dataset.copyTarget);
+    const copyStatus = $(button.dataset.copyStatus);
+    if (!snippet || !copyStatus) return;
 
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error("Clipboard access is unavailable.");
-    await navigator.clipboard.writeText(snippet.innerText.trim());
-    copyStatus.textContent = "Copied to clipboard.";
-    copySnippetButton.setAttribute("aria-label", "Code snippet copied to clipboard");
-  } catch (_) {
-    copyStatus.textContent = "Copy unavailable here. The code is visible above for manual selection.";
-  }
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard access is unavailable.");
+      await navigator.clipboard.writeText(snippet.innerText.trim());
+      copyStatus.textContent = "Copied to clipboard.";
+    } catch (_) {
+      copyStatus.textContent = "Copy unavailable. Select the visible code to copy it.";
+    }
+  });
 });
