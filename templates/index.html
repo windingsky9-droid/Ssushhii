@@ -108,15 +108,28 @@
           <div class="code-window-bottom">
             <span><i class="code-status-dot"></i> Python · complete research module</span>
             <span id="copy-status" role="status" aria-live="polite"></span>
-            <button id="copy-snippet" type="button" aria-label="Copy the visible Python code snippet">Copy snippet <span>⧉</span></button>
+            <button id="copy-snippet" class="code-copy" data-copy-target="provider-snippet" data-copy-status="copy-status" type="button" aria-label="Copy the visible Python code snippet">Copy snippet <span>⧉</span></button>
           </div>
         </div>
-        <div class="code-notes">
-          <article><span class="code-note-index">01</span><div><strong>Visible by default</strong><p>The complete module is open in the panel. Scroll inside it to read every line.</p></div></article>
-          <article><span class="code-note-index">02</span><div><strong>Demo stays ready</strong><p>Without a provider key, the dashboard returns deterministic demo research.</p></div></article>
-          <article><span class="code-note-index">03</span><div><strong>Secrets stay server-side</strong><p>The browser never needs to see the provider credential.</p></div></article>
-          <a class="code-source-link" href="https://github.com/windingsky9-droid/Ssushhii/blob/main/src/research.py" target="_blank" rel="noopener">View full source on GitHub <span>↗</span></a>
-        </div>
+        <aside class="code-companion" aria-label="Automated tests for the research provider">
+          <div class="code-window test-window">
+            <div class="code-window-top">
+              <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="code-file"><span class="test-mark">✓</span><span>tests / test_research.py</span></div>
+              <span class="code-live"><i></i> PYTEST</span>
+            </div>
+            <div class="code-body test-code-body" role="region" tabindex="0" aria-label="Pytest example for demo research and provider selection">
+              <pre><code id="test-snippet"><span class="code-line"></span><span class="code-line"><span class="syntax-purple">def</span> test_demo_research_is_deterministic_and_labeled():</span><span class="code-line">    provider = <span class="syntax-yellow">DemoResearchProvider</span>()</span><span class="code-line">    first = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line">    second = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line"></span><span class="code-line">    assert first == second</span><span class="code-line">    assert first[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span><span class="code-line">    assert first[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"demo"</span></span><span class="code-line">    assert <span class="syntax-cyan">0</span> &lt;= first[<span class="syntax-green">"composite_score"</span>] &lt;= <span class="syntax-cyan">100</span></span><span class="code-line">    assert set(first[<span class="syntax-green">"metrics"</span>]) &gt;= {<span class="syntax-green">"momentum"</span>, <span class="syntax-green">"rsi"</span>, <span class="syntax-green">"realized_vol"</span>, <span class="syntax-green">"beta"</span>}</span><span class="code-line"></span><span class="code-line"></span><span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_demo_without_key(monkeypatch):</span><span class="code-line">    monkeypatch.delenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, raising=<span class="syntax-purple">False</span>)</span><span class="code-line">    assert isinstance(get_research_provider(), <span class="syntax-yellow">DemoResearchProvider</span>)</span><span class="code-line"></span><span class="code-line"></span><span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_factorweave_with_key(monkeypatch):</span></code></pre>
+            </div>
+            <div class="code-window-bottom">
+              <span><i class="code-status-dot"></i> Deterministic output · provider routing</span>
+              <span id="test-copy-status" role="status" aria-live="polite"></span>
+              <button class="code-copy" type="button" data-copy-target="test-snippet" data-copy-status="test-copy-status" aria-label="Copy the visible pytest example">Copy <span>⧉</span></button>
+            </div>
+          </div>
+          <p class="code-companion-caption"><strong>Implementation + proof.</strong> The left panel shows the research module; this panel shows how key behavior is checked with pytest.</p>
+          <a class="code-source-link" href="https://github.com/windingsky9-droid/Ssushhii/blob/main/tests/test_research.py" target="_blank" rel="noopener">View test file on GitHub <span>↗</span></a>
+        </aside>
       </div>
     </section>
 
