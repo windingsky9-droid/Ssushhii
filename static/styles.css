@@ -379,3 +379,52 @@ html { scroll-padding-top: 96px; }
   .code-window-bottom button { transition: none; }
   .code-body { scroll-behavior: auto; }
 }
+
+
+/* Second, compact source box for the tests that exercise the demo flow */
+.code-companion { display: flex; flex-direction: column; justify-content: flex-start; gap: 14px; min-width: 0; }
+.test-window { border-color: rgba(166,141,255,.28); }
+.test-mark {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border: 1px solid rgba(166,141,255,.35);
+  border-radius: 6px;
+  color: #c3b5ff;
+  background: rgba(166,141,255,.11);
+  font-size: 12px;
+}
+.test-window .code-live { color: #c3b5ff; }
+.test-window .code-live i { background: #a68dff; box-shadow: 0 0 12px rgba(166,141,255,.75); }
+.test-code-body { max-height: none; padding: 18px 12px 20px; overflow: auto; }
+.test-code-body pre {
+  min-width: 0;
+  font-size: 10px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.test-code-body .code-line { white-space: pre-wrap; }
+.test-code-body .code-line::before { width: 24px; margin-right: 9px; }
+.test-window .code-window-bottom { flex-wrap: wrap; padding: 11px 12px; font-size: 9px; }
+.test-window .code-window-bottom > span:first-child { flex: 1 1 140px; }
+.test-window #test-copy-status { font-size: 10px; }
+.test-window .code-window-bottom button { padding: 6px 8px; font-size: 10px; }
+.code-companion-caption {
+  margin: 0;
+  padding: 0 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.code-companion-caption strong { color: var(--text); }
+@media (max-width: 800px) {
+  .code-showcase { grid-template-columns: 1fr; }
+  .test-code-body pre { font-size: 12px; }
+  .test-code-body .code-line::before { width: 30px; margin-right: 12px; }
+}
+@media (max-width: 520px) {
+  .test-code-body { padding: 14px 10px 16px; }
+  .test-code-body pre { font-size: 10px; }
+  .test-code-body .code-line::before { width: 22px; margin-right: 7px; }
+}
