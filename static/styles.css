@@ -428,3 +428,34 @@ html { scroll-padding-top: 96px; }
   .test-code-body pre { font-size: 10px; }
   .test-code-body .code-line::before { width: 22px; margin-right: 7px; }
 }
+
+
+/* Copyable GPT walkthrough prompt */
+.prompt-window { border-color: rgba(117,215,255,.3); }
+.gpt-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 21px;
+  border: 1px solid rgba(117,215,255,.34);
+  border-radius: 6px;
+  color: #a9e9ff;
+  background: linear-gradient(135deg, rgba(117,215,255,.16), rgba(166,141,255,.15));
+  font: 700 8px "Space Grotesk", sans-serif;
+  letter-spacing: .04em;
+}
+.prompt-window .code-live { color: #a9e9ff; }
+.prompt-window .code-live i { background: #75d7ff; box-shadow: 0 0 12px rgba(117,215,255,.75); }
+.prompt-code-body { max-height: 360px; }
+.prompt-code-body pre { font-size: 11px; line-height: 1.8; }
+.prompt-window .code-window-bottom { flex-wrap: wrap; }
+.prompt-window .code-window-bottom button { border-color: rgba(117,215,255,.26); }
+.prompt-window .code-window-bottom button:hover { border-color: rgba(117,215,255,.62); color: #a9e9ff; background: rgba(117,215,255,.08); }
+@media (max-width: 800px) {
+  .prompt-code-body { max-height: 420px; }
+  .prompt-code-body pre { font-size: 12px; }
+}
+@media (max-width: 520px) {
+  .prompt-code-body { max-height: 420px; }
+  .prompt-window .code-window-bottom button { white-space: normal; }
+}
