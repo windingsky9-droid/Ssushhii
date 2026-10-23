@@ -456,10 +456,10 @@ html { scroll-padding-top: 96px; }
 .prompt-window .code-window-bottom button { border-color: rgba(117,215,255,.26); }
 .prompt-window .code-window-bottom button:hover { border-color: rgba(117,215,255,.62); color: #a9e9ff; background: rgba(117,215,255,.08); }
 @media (max-width: 800px) {
-  .prompt-code-body { max-height: 420px; }
+  .prompt-code-body { max-height: min(82vh, 940px); }
   .prompt-code-body pre { font-size: 12px; }
 }
 @media (max-width: 520px) {
-  .prompt-code-body { max-height: 420px; }
+  .prompt-code-body { max-height: min(82vh, 940px); }
   .prompt-window .code-window-bottom button { white-space: normal; }
 }
