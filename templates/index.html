@@ -116,13 +116,70 @@
             <div class="code-window-top">
               <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
               <div class="code-file"><span class="test-mark">✓</span><span>tests / test_research.py</span></div>
-              <span class="code-live"><i></i> PYTEST</span>
+              <span class="code-live"><i></i> FULL TEST FILE · 58 LINES</span>
             </div>
-            <div class="code-body test-code-body" role="region" tabindex="0" aria-label="Pytest example for demo research and provider selection">
-              <pre><code id="test-snippet"><span class="code-line"><span class="syntax-purple">def</span> test_demo_research_is_deterministic_and_labeled():</span><span class="code-line">    provider = <span class="syntax-yellow">DemoResearchProvider</span>()</span><span class="code-line">    first = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line">    second = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line"></span><span class="code-line">    <span class="syntax-purple">assert</span> first == second</span><span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span><span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"demo"</span></span><span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-cyan">0</span> &lt;= first[<span class="syntax-green">"composite_score"</span>] &lt;= <span class="syntax-cyan">100</span></span><span class="code-line">    <span class="syntax-purple">assert</span> set(first[<span class="syntax-green">"metrics"</span>]) &gt;= {<span class="syntax-green">"momentum"</span>, <span class="syntax-green">"rsi"</span>, <span class="syntax-green">"realized_vol"</span>, <span class="syntax-green">"beta"</span>}</span><span class="code-line"></span><span class="code-line"></span><span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_demo_without_key(monkeypatch):</span><span class="code-line">    monkeypatch.delenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, raising=<span class="syntax-purple">False</span>)</span><span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">DemoResearchProvider</span>)</span></code></pre>
+            <div class="code-body test-code-body" role="region" tabindex="0" aria-label="Full pytest source file with all research tests">
+              <pre><code id="test-snippet"><span class="code-line"><span class="syntax-purple">import</span> pytest</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">from</span> src.research <span class="syntax-purple">import</span> (</span>
+<span class="code-line">    <span class="syntax-yellow">DemoResearchProvider</span>,</span>
+<span class="code-line">    <span class="syntax-yellow">FactorWeaveResearchProvider</span>,</span>
+<span class="code-line">    get_research_provider,</span>
+<span class="code-line">    normalize_ticker,</span>
+<span class="code-line">)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_normalize_ticker_trims_and_uppercases():</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> normalize_ticker(<span class="syntax-green">" spy "</span>) == <span class="syntax-green">"SPY"</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_normalize_ticker_rejects_unsafe_characters():</span>
+<span class="code-line">    <span class="syntax-purple">with</span> pytest.raises(<span class="syntax-yellow">ValueError</span>, match=<span class="syntax-green">"ticker"</span>):</span>
+<span class="code-line">        normalize_ticker(<span class="syntax-green">"SPY;DROP"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_demo_research_is_deterministic_and_labeled():</span>
+<span class="code-line">    provider = <span class="syntax-yellow">DemoResearchProvider</span>()</span>
+<span class="code-line">    first = provider.research(<span class="syntax-green">"AAPL"</span>)</span>
+<span class="code-line">    second = provider.research(<span class="syntax-green">"AAPL"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first == second</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"demo"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-cyan">0</span> &lt;= first[<span class="syntax-green">"composite_score"</span>] &lt;= <span class="syntax-cyan">100</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> set(first[<span class="syntax-green">"metrics"</span>]) &gt;= {<span class="syntax-green">"momentum"</span>, <span class="syntax-green">"rsi"</span>, <span class="syntax-green">"realized_vol"</span>, <span class="syntax-green">"beta"</span>}</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_demo_without_key(monkeypatch):</span>
+<span class="code-line">    monkeypatch.delenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, raising=<span class="syntax-purple">False</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">DemoResearchProvider</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_factorweave_with_key(monkeypatch):</span>
+<span class="code-line">    monkeypatch.setenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, <span class="syntax-green">"fw_live_test_only"</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">FactorWeaveResearchProvider</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_factorweave_provider_maps_live_payload_without_exposing_key():</span>
+<span class="code-line">    <span class="syntax-purple">class</span> <span class="syntax-yellow">FakeClient</span>:</span>
+<span class="code-line">        <span class="syntax-purple">def</span> features(self, ticker):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"ticker"</span>: ticker, <span class="syntax-green">"comp_score"</span>: <span class="syntax-cyan">0.61</span>, <span class="syntax-green">"mom"</span>: <span class="syntax-cyan">0.12</span>, <span class="syntax-green">"rsi"</span>: <span class="syntax-cyan">58</span>, <span class="syntax-green">"vol_real_20d"</span>: <span class="syntax-cyan">0.24</span>, <span class="syntax-green">"beta_spy"</span>: <span class="syntax-cyan">1.08</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">        <span class="syntax-purple">def</span> market_context(self):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"regime"</span>: <span class="syntax-green">"risk_on"</span>, <span class="syntax-green">"vix"</span>: <span class="syntax-cyan">17.5</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">        <span class="syntax-purple">def</span> similar(self, ticker, limit=<span class="syntax-cyan">4</span>):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"results"</span>: [{<span class="syntax-green">"ticker"</span>: <span class="syntax-green">"MSFT"</span>}, {<span class="syntax-green">"ticker"</span>: <span class="syntax-green">"NVDA"</span>}]}</span>
+<span class="code-line"></span>
+<span class="code-line">    result = <span class="syntax-yellow">FactorWeaveResearchProvider</span>(<span class="syntax-yellow">FakeClient</span>()).research(<span class="syntax-green">"aapl"</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"factorweave"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"composite_score"</span>] == <span class="syntax-cyan">61</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"comparables"</span>] == [<span class="syntax-green">"MSFT"</span>, <span class="syntax-green">"NVDA"</span>]</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-green">"api_key"</span> <span class="syntax-purple">not</span> <span class="syntax-purple">in</span> str(result).lower()</span></code></pre>
             </div>
             <div class="code-window-bottom">
-              <span><i class="code-status-dot"></i> Deterministic output · provider routing</span>
+              <span><i class="code-status-dot"></i> Validation · demo · live provider</span>
               <span id="test-copy-status" role="status" aria-live="polite"></span>
               <button class="code-copy" type="button" data-copy-target="test-snippet" data-copy-status="test-copy-status" aria-label="Copy the visible pytest example">Copy <span>⧉</span></button>
             </div>
