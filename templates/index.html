@@ -93,7 +93,7 @@
           <span class="kicker">Under the hood</span>
           <h2>Demo first.<br><em>Provider ready.</em></h2>
         </div>
-        <p>See the demo snapshot builder in full: it normalizes a ticker, computes deterministic factor values, and returns the research fields. The demo works without a key; provider credentials stay on the server.</p>
+        <p>See the demo snapshot builder in full: it normalizes a ticker, computes deterministic factor values, and returns the research fields. The demo works without a key; provider credentials stay on the server. Tiny lab-coat rule: pretend numbers wear a demo label, and live data has to show where it came from.</p>
       </div>
       <div class="code-showcase">
         <div class="code-window">
@@ -116,15 +116,115 @@
             <div class="code-window-top">
               <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
               <div class="code-file"><span class="test-mark">✓</span><span>tests / test_research.py</span></div>
-              <span class="code-live"><i></i> PYTEST</span>
+              <span class="code-live"><i></i> FULL TEST FILE · 58 LINES</span>
             </div>
-            <div class="code-body test-code-body" role="region" tabindex="0" aria-label="Pytest example for demo research and provider selection">
-              <pre><code id="test-snippet"><span class="code-line"><span class="syntax-purple">def</span> test_demo_research_is_deterministic_and_labeled():</span><span class="code-line">    provider = <span class="syntax-yellow">DemoResearchProvider</span>()</span><span class="code-line">    first = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line">    second = provider.research(<span class="syntax-green">"AAPL"</span>)</span><span class="code-line"></span><span class="code-line">    <span class="syntax-purple">assert</span> first == second</span><span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span><span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"demo"</span></span><span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-cyan">0</span> &lt;= first[<span class="syntax-green">"composite_score"</span>] &lt;= <span class="syntax-cyan">100</span></span><span class="code-line">    <span class="syntax-purple">assert</span> set(first[<span class="syntax-green">"metrics"</span>]) &gt;= {<span class="syntax-green">"momentum"</span>, <span class="syntax-green">"rsi"</span>, <span class="syntax-green">"realized_vol"</span>, <span class="syntax-green">"beta"</span>}</span><span class="code-line"></span><span class="code-line"></span><span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_demo_without_key(monkeypatch):</span><span class="code-line">    monkeypatch.delenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, raising=<span class="syntax-purple">False</span>)</span><span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">DemoResearchProvider</span>)</span></code></pre>
+            <div class="code-body test-code-body" role="region" tabindex="0" aria-label="Full pytest source file with all research tests">
+              <pre><code id="test-snippet"><span class="code-line"><span class="syntax-purple">import</span> pytest</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">from</span> src.research <span class="syntax-purple">import</span> (</span>
+<span class="code-line">    <span class="syntax-yellow">DemoResearchProvider</span>,</span>
+<span class="code-line">    <span class="syntax-yellow">FactorWeaveResearchProvider</span>,</span>
+<span class="code-line">    get_research_provider,</span>
+<span class="code-line">    normalize_ticker,</span>
+<span class="code-line">)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_normalize_ticker_trims_and_uppercases():</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> normalize_ticker(<span class="syntax-green">" spy "</span>) == <span class="syntax-green">"SPY"</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_normalize_ticker_rejects_unsafe_characters():</span>
+<span class="code-line">    <span class="syntax-purple">with</span> pytest.raises(<span class="syntax-yellow">ValueError</span>, match=<span class="syntax-green">"ticker"</span>):</span>
+<span class="code-line">        normalize_ticker(<span class="syntax-green">"SPY;DROP"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_demo_research_is_deterministic_and_labeled():</span>
+<span class="code-line">    provider = <span class="syntax-yellow">DemoResearchProvider</span>()</span>
+<span class="code-line">    first = provider.research(<span class="syntax-green">"AAPL"</span>)</span>
+<span class="code-line">    second = provider.research(<span class="syntax-green">"AAPL"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first == second</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> first[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"demo"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-cyan">0</span> &lt;= first[<span class="syntax-green">"composite_score"</span>] &lt;= <span class="syntax-cyan">100</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> set(first[<span class="syntax-green">"metrics"</span>]) &gt;= {<span class="syntax-green">"momentum"</span>, <span class="syntax-green">"rsi"</span>, <span class="syntax-green">"realized_vol"</span>, <span class="syntax-green">"beta"</span>}</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_demo_without_key(monkeypatch):</span>
+<span class="code-line">    monkeypatch.delenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, raising=<span class="syntax-purple">False</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">DemoResearchProvider</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_provider_selection_uses_factorweave_with_key(monkeypatch):</span>
+<span class="code-line">    monkeypatch.setenv(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>, <span class="syntax-green">"fw_live&#95;test_only"</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> isinstance(get_research_provider(), <span class="syntax-yellow">FactorWeaveResearchProvider</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="syntax-purple">def</span> test_factorweave_provider_maps_live_payload_without_exposing_key():</span>
+<span class="code-line">    <span class="syntax-purple">class</span> <span class="syntax-yellow">FakeClient</span>:</span>
+<span class="code-line">        <span class="syntax-purple">def</span> features(self, ticker):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"ticker"</span>: ticker, <span class="syntax-green">"comp_score"</span>: <span class="syntax-cyan">0.61</span>, <span class="syntax-green">"mom"</span>: <span class="syntax-cyan">0.12</span>, <span class="syntax-green">"rsi"</span>: <span class="syntax-cyan">58</span>, <span class="syntax-green">"vol_real_20d"</span>: <span class="syntax-cyan">0.24</span>, <span class="syntax-green">"beta_spy"</span>: <span class="syntax-cyan">1.08</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">        <span class="syntax-purple">def</span> market_context(self):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"regime"</span>: <span class="syntax-green">"risk_on"</span>, <span class="syntax-green">"vix"</span>: <span class="syntax-cyan">17.5</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">        <span class="syntax-purple">def</span> similar(self, ticker, limit=<span class="syntax-cyan">4</span>):</span>
+<span class="code-line">            <span class="syntax-purple">return</span> {<span class="syntax-green">"results"</span>: [{<span class="syntax-green">"ticker"</span>: <span class="syntax-green">"MSFT"</span>}, {<span class="syntax-green">"ticker"</span>: <span class="syntax-green">"NVDA"</span>}]}</span>
+<span class="code-line"></span>
+<span class="code-line">    result = <span class="syntax-yellow">FactorWeaveResearchProvider</span>(<span class="syntax-yellow">FakeClient</span>()).research(<span class="syntax-green">"aapl"</span>)</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"ticker"</span>] == <span class="syntax-green">"AAPL"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"source"</span>] == <span class="syntax-green">"factorweave"</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"composite_score"</span>] == <span class="syntax-cyan">61</span></span>
+<span class="code-line">    <span class="syntax-purple">assert</span> result[<span class="syntax-green">"comparables"</span>] == [<span class="syntax-green">"MSFT"</span>, <span class="syntax-green">"NVDA"</span>]</span>
+<span class="code-line">    <span class="syntax-purple">assert</span> <span class="syntax-green">"api_key"</span> <span class="syntax-purple">not</span> <span class="syntax-purple">in</span> str(result).lower()</span></code></pre>
             </div>
             <div class="code-window-bottom">
-              <span><i class="code-status-dot"></i> Deterministic output · provider routing</span>
+              <span><i class="code-status-dot"></i> Validation · demo · live provider</span>
               <span id="test-copy-status" role="status" aria-live="polite"></span>
               <button class="code-copy" type="button" data-copy-target="test-snippet" data-copy-status="test-copy-status" aria-label="Copy the visible pytest example">Copy <span>⧉</span></button>
+            </div>
+          </div>
+          <div class="code-window prompt-window">
+            <div class="code-window-top">
+              <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="code-file"><span class="gpt-mark">GPT</span><span>prompts / code-walkthrough.txt</span></div>
+              <span class="code-live"><i></i> READY TO COPY</span>
+            </div>
+            <div class="code-body test-code-body prompt-code-body" role="region" tabindex="0" aria-label="Copyable GPT prompt for understanding the research source and tests">
+              <pre><code id="gpt-prompt-snippet">You are a patient senior Python engineer helping a beginner understand this project.
+
+I will paste two files:
+1. src/research.py — ticker validation, the ResearchProvider interface, deterministic demo data, and the optional Factor Weave adapter.
+2. tests/test_research.py — the automated checks for those behaviors.
+
+Explain the code so I can follow how a request moves through it. Use this structure:
+
+1. BIG PICTURE
+Describe the job of each file and how they connect, in plain language.
+
+2. WALK THROUGH THE SOURCE
+Explain the important functions, classes, inputs, outputs, and decisions in the order the program uses them. Define Python terms briefly when they first appear.
+
+3. CONNECT THE TESTS
+For each test, state what behavior it protects and what would fail if that behavior broke.
+
+4. TRACE ONE EXAMPLE
+Walk through a sample ticker such as AAPL from input validation to the returned research object. Clearly label synthetic demo values.
+
+5. REVIEW
+Point out concrete bugs, confusing names, missing edge cases, or mismatches between implementation and tests. Separate verified problems from suggestions; do not invent findings.
+
+Keep the explanation organized and specific to the pasted code. Do not claim that demo values are live market data. Do not give personalized investment advice, predictions, or trading instructions. If something cannot be determined from these files, say what additional file or context is needed.
+
+--- Paste src/research.py here ---
+
+--- Paste tests/test_research.py here ---</code></pre>
+            </div>
+            <div class="code-window-bottom">
+              <span><i class="code-status-dot"></i> Explain · trace · review</span>
+              <span id="gpt-copy-status" role="status" aria-live="polite"></span>
+              <button class="code-copy" type="button" data-copy-target="gpt-prompt-snippet" data-copy-status="gpt-copy-status" aria-label="Copy the GPT code walkthrough prompt">Copy GPT prompt <span>⧉</span></button>
+              <button class="code-copy code-copy-package" type="button" data-copy-package="true" data-copy-status="gpt-copy-status" aria-label="Copy the GPT prompt, research source, and tests together">Copy full GPT package <span>↗</span></button>
             </div>
           </div>
           <p class="code-companion-caption"><strong>Implementation + proof.</strong> The left panel shows the research module; this panel shows how key behavior is checked with pytest.</p>

@@ -299,16 +299,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.querySelectorAll(".code-copy").forEach((button) => {
   button.addEventListener("click", async () => {
-    const snippet = $(button.dataset.copyTarget);
     const copyStatus = $(button.dataset.copyStatus);
-    if (!snippet || !copyStatus) return;
+    const isPackage = button.dataset.copyPackage === "true";
+    const snippetIds = isPackage
+      ? ["gpt-prompt-snippet", "provider-snippet", "test-snippet"]
+      : [button.dataset.copyTarget];
+    const snippets = snippetIds.map((id) => $(id));
+    if (!copyStatus || snippets.some((snippet) => !snippet)) return;
 
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard access is unavailable.");
-      await navigator.clipboard.writeText(snippet.innerText.trim());
-      copyStatus.textContent = "Copied to clipboard.";
+      const [prompt, source, tests] = snippets.map((snippet) => snippet.innerText.trim());
+      const copyText = isPackage
+        ? [
+          prompt
+            .replace("--- Paste src/research.py here ---", "### src/research.py")
+            .replace("--- Paste tests/test_research.py here ---", "### tests/test_research.py"),
+          "```python\n" + source + "\n```",
+          "```python\n" + tests + "\n```",
+        ].join("\n\n")
+        : prompt;
+      await navigator.clipboard.writeText(copyText);
+      copyStatus.textContent = isPackage
+        ? `Copied the complete GPT package: prompt, research source (${source.split("\n").length} lines), and tests (${tests.split("\n").length} lines).`
+        : "Copied to clipboard.";
     } catch (_) {
-      copyStatus.textContent = "Copy unavailable. Select the visible code to copy it.";
+      copyStatus.textContent = "Copy unavailable. Select the visible prompt and code panels to copy them manually.";
     }
   });
 });
