@@ -15,7 +15,7 @@ py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Run the app with ` .\.venv\Scripts\python.exe app.py ` (remove the spaces inside the inline command) or use your activated virtual environment with `python app.py`.
+Activate the virtual environment, then start the app with `python app.py`.
 
 ## Checks
 
