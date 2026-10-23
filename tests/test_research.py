@@ -56,3 +56,25 @@ def test_factorweave_provider_maps_live_payload_without_exposing_key():
     assert result["composite_score"] == 61
     assert result["comparables"] == ["MSFT", "NVDA"]
     assert "api_key" not in str(result).lower()
+
+@pytest.mark.parametrize(
+    "similar_payload, expected",
+    [
+        ({"results": None}, []),
+        ({"results": None, "rows": [{"ticker": "MSFT"}]}, ["MSFT"]),
+        ({"results": "unavailable"}, []),
+    ],
+)
+def test_factorweave_provider_tolerates_missing_comparables(similar_payload, expected):
+    class FakeClient:
+        def features(self, ticker):
+            return {"ticker": ticker, "comp_score": 0.61}
+
+        def market_context(self):
+            return {"regime": "balanced"}
+
+        def similar(self, ticker, limit=4):
+            return similar_payload
+
+    result = FactorWeaveResearchProvider(FakeClient()).research("AAPL")
+    assert result["comparables"] == expected
