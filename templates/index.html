@@ -127,6 +127,48 @@
               <button class="code-copy" type="button" data-copy-target="test-snippet" data-copy-status="test-copy-status" aria-label="Copy the visible pytest example">Copy <span>⧉</span></button>
             </div>
           </div>
+          <div class="code-window prompt-window">
+            <div class="code-window-top">
+              <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="code-file"><span class="gpt-mark">GPT</span><span>prompts / code-walkthrough.txt</span></div>
+              <span class="code-live"><i></i> READY TO COPY</span>
+            </div>
+            <div class="code-body test-code-body prompt-code-body" role="region" tabindex="0" aria-label="Copyable GPT prompt for understanding the research source and tests">
+              <pre><code id="gpt-prompt-snippet">You are a patient senior Python engineer helping a beginner understand this project.
+
+I will paste two files:
+1. src/research.py — ticker validation, the ResearchProvider interface, deterministic demo data, and the optional Factor Weave adapter.
+2. tests/test_research.py — the automated checks for those behaviors.
+
+Explain the code so I can follow how a request moves through it. Use this structure:
+
+1. BIG PICTURE
+Describe the job of each file and how they connect, in plain language.
+
+2. WALK THROUGH THE SOURCE
+Explain the important functions, classes, inputs, outputs, and decisions in the order the program uses them. Define Python terms briefly when they first appear.
+
+3. CONNECT THE TESTS
+For each test, state what behavior it protects and what would fail if that behavior broke.
+
+4. TRACE ONE EXAMPLE
+Walk through a sample ticker such as AAPL from input validation to the returned research object. Clearly label synthetic demo values.
+
+5. REVIEW
+Point out concrete bugs, confusing names, missing edge cases, or mismatches between implementation and tests. Separate verified problems from suggestions; do not invent findings.
+
+Keep the explanation organized and specific to the pasted code. Do not claim that demo values are live market data. Do not give personalized investment advice, predictions, or trading instructions. If something cannot be determined from these files, say what additional file or context is needed.
+
+--- Paste src/research.py here ---
+
+--- Paste tests/test_research.py here ---</code></pre>
+            </div>
+            <div class="code-window-bottom">
+              <span><i class="code-status-dot"></i> Explain · trace · review</span>
+              <span id="gpt-copy-status" role="status" aria-live="polite"></span>
+              <button class="code-copy" type="button" data-copy-target="gpt-prompt-snippet" data-copy-status="gpt-copy-status" aria-label="Copy the GPT code walkthrough prompt">Copy GPT prompt <span>⧉</span></button>
+            </div>
+          </div>
           <p class="code-companion-caption"><strong>Implementation + proof.</strong> The left panel shows the research module; this panel shows how key behavior is checked with pytest.</p>
           <a class="code-source-link" href="https://github.com/windingsky9-droid/Ssushhii/blob/main/tests/test_research.py" target="_blank" rel="noopener">View test file on GitHub <span>↗</span></a>
         </aside>
