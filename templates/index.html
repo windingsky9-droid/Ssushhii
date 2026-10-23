@@ -16,7 +16,7 @@
     <a class="brand" href="#top" aria-label="Market Observatory home">
       <span class="brand-mark">MO</span><span>Market Observatory</span>
     </a>
-    <nav><a href="#research">Research</a><a href="#offer">Services</a><a href="#pricing">Pricing</a><a href="#method">Method</a></nav>
+    <nav><a href="#research">Research</a><a href="#code">Code</a><a href="#offer">Services</a><a href="#pricing">Pricing</a><a href="#method">Method</a></nav>
     <a class="ghost-btn" href="https://github.com/windingsky9-droid/Ssushhii/issues/new?template=early-access.yml" target="_blank" rel="noopener">Request early access</a>
   </header>
 
@@ -84,6 +84,38 @@
           <span class="panel-label">Comparable profiles</span>
           <div id="comparables" class="chips"><span>—</span></div>
         </article>
+      </div>
+    </section>
+
+    <section id="code" class="shell code-section">
+      <div class="code-heading">
+        <div>
+          <span class="kicker">Under the hood</span>
+          <h2>Demo first.<br><em>Provider ready.</em></h2>
+        </div>
+        <p>The app picks its research provider on the server. No API key? The demo still works. Add a key later and the same research flow can use Factor Weave.</p>
+      </div>
+      <div class="code-showcase">
+        <div class="code-window">
+          <div class="code-window-top">
+            <div class="window-lights" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="code-file"><span class="python-mark">Py</span><span>src / research.py</span></div>
+            <span class="code-live"><i></i> ALWAYS VISIBLE</span>
+          </div>
+          <div class="code-body" role="region" aria-label="Python provider selection code">
+            <pre><code id="provider-snippet"><span class="code-line"><span class="syntax-purple">def</span> <span class="syntax-blue">get_research_provider</span>() -&gt; <span class="syntax-yellow">ResearchProvider</span>:</span><span class="code-line">    <span class="syntax-purple">if</span> <span class="syntax-blue">os</span>.<span class="syntax-blue">getenv</span>(<span class="syntax-green">"FACTORWEAVE_API_KEY"</span>):</span><span class="code-line">        <span class="syntax-purple">return</span> <span class="syntax-yellow">FactorWeaveResearchProvider</span>()</span><span class="code-line">    <span class="syntax-purple">return</span> <span class="syntax-yellow">DemoResearchProvider</span>()</span></code></pre>
+          </div>
+          <div class="code-window-bottom">
+            <span><i class="code-status-dot"></i> Python · server-side provider switch</span>
+            <button id="copy-snippet" type="button" aria-label="Copy the visible Python code snippet">Copy snippet <span>⧉</span></button>
+          </div>
+        </div>
+        <div class="code-notes">
+          <article><span class="code-note-index">01</span><div><strong>Visible by default</strong><p>The code is right here on the page—no expand button or separate code view.</p></div></article>
+          <article><span class="code-note-index">02</span><div><strong>Demo stays ready</strong><p>Without a provider key, the dashboard returns deterministic demo research.</p></div></article>
+          <article><span class="code-note-index">03</span><div><strong>Secrets stay server-side</strong><p>The browser never needs to see the provider credential.</p></div></article>
+          <a class="code-source-link" href="https://github.com/windingsky9-droid/Ssushhii/blob/main/src/research.py" target="_blank" rel="noopener">View full source on GitHub <span>↗</span></a>
+        </div>
       </div>
     </section>
 
