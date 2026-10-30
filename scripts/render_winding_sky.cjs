@@ -6,6 +6,7 @@
 // Setup (once):  npm install --no-save playwright && npx playwright install chromium
 // Stills:        node scripts/render_winding_sky.cjs
 // With loops:    node scripts/render_winding_sky.cjs --loops [--no-stills] [--workers=N]
+// One file:      node scripts/render_winding_sky.cjs --loops --only=hero.webp
 //
 // Requires ffmpeg on PATH and network access (three.js from jsDelivr, fonts from Google Fonts).
 // Rendering uses SwiftShader, so no GPU is needed; it already uses every CPU core, so extra
@@ -37,14 +38,16 @@ const LOOPS = [
     codec: ['-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart'],
   },
   {
-    file: 'sushir-winding-sky-hero.webp', variant: 'hero', size: [1200, 450], fps: 20, grain: 0,
-    codec: ['-c:v', 'libwebp_anim', '-quality', '74', '-compression_level', '6', '-loop', '0'],
+    file: 'sushir-winding-sky-hero.webp', variant: 'hero', size: [1200, 450], fps: 15, grain: 0,
+    codec: ['-c:v', 'libwebp_anim', '-quality', '60', '-compression_level', '6', '-loop', '0'],
   },
 ];
 
 const args = process.argv.slice(2);
 const withLoops = args.includes('--loops');
 const withStills = !args.includes('--no-stills');
+const only = (args.find((a) => a.startsWith('--only=')) || '').slice('--only='.length);
+const selected = (spec) => !only || spec.file.includes(only);
 const workers = Math.max(1, parseInt((args.find((a) => a.startsWith('--workers=')) || '--workers=1').split('=')[1], 10) || 1);
 
 function ffmpeg(ffArgs, input) {
@@ -121,11 +124,11 @@ async function renderLoop(base, spec) {
   try {
     if (withStills) {
       console.log('Stills');
-      for (const spec of STILLS) await renderStill(base, spec);
+      for (const spec of STILLS.filter(selected)) await renderStill(base, spec);
     }
     if (withLoops) {
       console.log(`Loops (${workers} workers)`);
-      for (const spec of LOOPS) await renderLoop(base, spec);
+      for (const spec of LOOPS.filter(selected)) await renderLoop(base, spec);
     }
   } finally {
     server.close();
