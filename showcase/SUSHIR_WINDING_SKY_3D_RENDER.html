@@ -1,0 +1,1401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sushir · Winding Sky — Real-time 3D Render</title>
+<meta name="description" content="Sushir / WindingSky: a cinematic real-time Three.js render of an API core, glass integration panels, and a winding aurora sky.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#eef3ff;--muted:#97a3c2;--cyan:#7fe9ff;--violet:#b29dff;--pink:#ff86c2;--bg:#04050b;--line:rgba(160,185,255,.22)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;font-family:"Space Grotesk",system-ui,sans-serif}
+canvas#scene{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none;touch-action:none;cursor:grab}
+canvas#scene:active{cursor:grabbing}
+
+/* Typographic lockup used by the hero, social, and loop renders. Sized in vh so it scales with the capture. */
+.overlay{position:fixed;inset:0;pointer-events:none;display:none}
+body[data-variant="hero"] .overlay,body[data-variant="social"] .overlay,body[data-variant="loop"] .overlay{display:block}
+.scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,4,10,.78) 0%,rgba(3,4,10,.42) 30%,rgba(3,4,10,0) 52%)}
+.lockup{position:absolute;left:6vw;top:50%;transform:translateY(-50%);max-width:46vw;text-shadow:0 0 3vh rgba(3,4,10,.85)}
+.eyebrow{display:flex;align-items:center;gap:1.4vh;font:600 2.05vh/1 "JetBrains Mono",monospace;letter-spacing:.42em;color:var(--cyan);text-transform:uppercase}
+.eyebrow::before{content:"";width:5.5vh;height:1px;background:linear-gradient(90deg,var(--cyan),rgba(127,233,255,0))}
+.eyebrow i{font-style:normal;color:rgba(200,214,255,.5)}
+.headline{margin:2.6vh 0 0;font:700 7.3vh/1.03 "Space Grotesk",sans-serif;letter-spacing:-.035em}
+.headline span{display:block}
+.headline .grad{background:linear-gradient(92deg,#bba5ff 0%,#86e9ff 55%,#ffffff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.stack{margin-top:3.1vh;font:500 1.85vh/1.5 "JetBrains Mono",monospace;color:var(--muted);letter-spacing:.06em}
+.corner{position:absolute;font:600 1.4vh/1 "JetBrains Mono",monospace;letter-spacing:.24em;color:rgba(200,214,255,.45);text-transform:uppercase}
+.corner.tl{left:2.6vw;top:4.6vh}.corner.tr{right:2.6vw;top:4.6vh}.corner.br{right:2.6vw;bottom:4.6vh}
+body[data-variant="social"] .headline{font-size:6.6vh}
+body[data-variant="loop"] .scrim{background:linear-gradient(0deg,rgba(3,4,10,.72) 0%,rgba(3,4,10,0) 38%),linear-gradient(90deg,rgba(3,4,10,.5) 0%,rgba(3,4,10,0) 40%)}
+body[data-variant="loop"] .lockup{top:auto;bottom:5.2vh;transform:none;max-width:none}
+body[data-variant="loop"] .headline{font-size:3.5vh;margin-top:1.6vh}
+body[data-variant="loop"] .headline span{display:inline}
+body[data-variant="loop"] .headline span+span{margin-left:.55em}
+body[data-variant="loop"] .eyebrow{font-size:1.5vh}
+body[data-variant="loop"] .stack{font-size:1.45vh;margin-top:1.4vh}
+
+/* Interactive viewer chrome. */
+.hud{position:fixed;left:18px;right:18px;top:16px;display:none;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;pointer-events:none}
+body[data-variant="interactive"] .hud,body[data-variant="interactive"] .hint{display:flex}
+body.ui-hidden .hud,body.ui-hidden .hint{display:none!important}
+.brand{display:flex;flex-direction:column;gap:4px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(6,9,20,.62);backdrop-filter:blur(10px);pointer-events:auto}
+.brand b{font:700 12px "JetBrains Mono",monospace;letter-spacing:.32em;color:var(--cyan)}
+.brand span{font-size:13px;color:#d9e2fb}
+.brand a{color:var(--muted);font:500 11px "JetBrains Mono",monospace;text-decoration:none}
+.brand a:hover{color:var(--ink)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;pointer-events:auto}
+.actions button{font:600 12px "JetBrains Mono",monospace;letter-spacing:.04em;color:var(--ink);background:rgba(8,12,26,.7);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer;backdrop-filter:blur(10px)}
+.actions button:hover{border-color:rgba(127,233,255,.6)}
+.actions button[aria-pressed="true"]{border-color:rgba(178,157,255,.8);background:rgba(40,28,90,.55)}
+.actions button:disabled{opacity:.6;cursor:wait}
+.hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:none;gap:6px;align-items:center;font:500 12px "JetBrains Mono",monospace;color:var(--muted);padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(6,9,20,.55);backdrop-filter:blur(10px);white-space:nowrap;pointer-events:none}
+.hint kbd{font:inherit;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.fallback{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted);font:500 14px "JetBrains Mono",monospace}
+@media (max-width:720px){.hint{display:none!important}.brand{padding:8px 11px}.brand span{font-size:12px}.brand a{display:none}.actions button{padding:7px 11px;font-size:11px}}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body data-variant="interactive">
+<canvas id="scene" aria-label="Real-time 3D render: a glowing API core crystal on a pedestal, ringed by glass panels showing Flask routes, test results, a dashboard, a tactical replay, and a workflow, under a winding aurora sky." role="img"></canvas>
+
+<div class="overlay" aria-hidden="true">
+  <div class="scrim"></div>
+  <div class="lockup">
+    <div class="eyebrow">Sushir <i>/</i> WindingSky</div>
+    <h1 class="headline"><span>APIs that connect.</span><span>Dashboards that explain.</span><span class="grad">3D that moves.</span></h1>
+    <div class="stack">Python · Flask · REST/JSON · pytest · Three.js</div>
+  </div>
+  <div class="corner tl">Render 01 — API Core</div>
+  <div class="corner tr">Three.js r180 · WebGL2 · Real-time</div>
+  <div class="corner br">github.com/windingsky9-droid</div>
+</div>
+
+<header class="hud">
+  <div class="brand">
+    <b>SUSHIR</b>
+    <span>Winding Sky · real-time API Core render</span>
+    <a href="https://github.com/windingsky9-droid/Ssushhii">github.com/windingsky9-droid/Ssushhii</a>
+  </div>
+  <div class="actions">
+    <button id="btnCam" type="button" aria-pressed="true">Cinematic camera</button>
+    <button id="btnPause" type="button" aria-pressed="false">Pause</button>
+    <button id="btnShot" type="button">Save 4K still</button>
+  </div>
+</header>
+<div class="hint">Drag to orbit · Scroll to zoom · <kbd>H</kbd> hides the interface</div>
+<noscript><div class="fallback">This render needs JavaScript and WebGL2.</div></noscript>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { Reflector } from 'three/addons/objects/Reflector.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+// ---------------------------------------------------------------------------
+// Modes. ?capture renders frames on demand for the offline render script;
+// ?variant picks the framing (interactive | hero | clean | social | loop).
+// ---------------------------------------------------------------------------
+const params = new URLSearchParams(location.search);
+const CAPTURE = params.has('capture');
+const VARIANTS = ['interactive', 'hero', 'clean', 'social', 'loop'];
+const VARIANT = VARIANTS.includes(params.get('variant')) ? params.get('variant') : 'interactive';
+document.body.dataset.variant = VARIANT;
+
+const LOOP = 10;            // seconds; every motion in the scene repeats exactly once per LOOP
+const TAU = Math.PI * 2;
+const CORE = new THREE.Vector3(0, 2.45, 0);
+
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(20261030);
+
+// Seeded Perlin noise for the procedural rocks.
+const perm = new Uint8Array(512);
+{
+  const p = Array.from({ length: 256 }, (_, i) => i);
+  for (let i = 255; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
+  for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
+}
+const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+const mix = (a, b, t) => a + (b - a) * t;
+function grad(h, x, y, z) {
+  const u = h < 8 ? x : y;
+  const v = h < 4 ? y : (h === 12 || h === 14 ? x : z);
+  return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+}
+function noise3(x, y, z) {
+  const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
+  x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+  const u = fade(x), v = fade(y), w = fade(z);
+  const A = perm[X] + Y, AA = perm[A] + Z, AB = perm[A + 1] + Z;
+  const B = perm[X + 1] + Y, BA = perm[B] + Z, BB = perm[B + 1] + Z;
+  return mix(
+    mix(mix(grad(perm[AA] & 15, x, y, z), grad(perm[BA] & 15, x - 1, y, z), u),
+        mix(grad(perm[AB] & 15, x, y - 1, z), grad(perm[BB] & 15, x - 1, y - 1, z), u), v),
+    mix(mix(grad(perm[AA + 1] & 15, x, y, z - 1), grad(perm[BA + 1] & 15, x - 1, y, z - 1), u),
+        mix(grad(perm[AB + 1] & 15, x, y - 1, z - 1), grad(perm[BB + 1] & 15, x - 1, y - 1, z - 1), u), v), w);
+}
+function fbm(x, y, z, octaves = 5) {
+  let sum = 0, amp = 0.5, freq = 1;
+  for (let i = 0; i < octaves; i++) { sum += amp * noise3(x * freq, y * freq, z * freq); freq *= 2.03; amp *= 0.5; }
+  return sum;
+}
+
+// Simplex noise (Ashima Arts / Stefan Gustavson, MIT) for the shaders.
+const NOISE = /* glsl */`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+10.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0);
+  const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy));
+  vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz);
+  vec3 l=1.0-g;
+  vec3 i1=min(g.xyz,l.zxy);
+  vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx;
+  vec3 x2=x0-i2+C.yyy;
+  vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857;
+  vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z);
+  vec4 x_=floor(j*ns.z);
+  vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy;
+  vec4 y=y_*ns.x+ns.yyyy;
+  vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy);
+  vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0;
+  vec4 s1=floor(b1)*2.0+1.0;
+  vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+  vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x);
+  vec3 p1=vec3(a0.zw,h.y);
+  vec3 p2=vec3(a1.xy,h.z);
+  vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+  vec4 m=max(0.5-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);
+  m=m*m;
+  return 105.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}`;
+
+// ---------------------------------------------------------------------------
+// Renderer, scene, camera.
+// ---------------------------------------------------------------------------
+const canvas = document.getElementById('scene');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: CAPTURE });
+} catch (err) {
+  document.body.insertAdjacentHTML('beforeend', '<div class="fallback">WebGL2 is not available in this browser, so the real-time render cannot start.</div>');
+  throw err;
+}
+let pixelRatio = CAPTURE ? (parseFloat(params.get('pr')) || window.devicePixelRatio || 1) : Math.min(window.devicePixelRatio || 1, 2);
+renderer.setPixelRatio(pixelRatio);
+renderer.setSize(innerWidth, innerHeight, false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.04;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+const FOG_COLOR = new THREE.Color('#05070f');
+const FOG_DENSITY = 0.024;
+scene.fog = new THREE.FogExp2(FOG_COLOR, FOG_DENSITY);
+
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.1, 500);
+
+// Framing per variant. `film` shifts the lens horizontally so the hero leaves room for type.
+const FRAMING = {
+  interactive: { pos: [-1.3, 2.25, 12.2], target: [0.15, 2.2, 0], fov: 32, film: 0 },
+  hero:        { pos: [-1.1, 2.05, 12.4], target: [0.25, 2.3, 0], fov: 27, film: -7.4 },
+  social:      { pos: [-1.1, 2.1, 12.0], target: [0.25, 2.25, 0], fov: 31, film: -6.2 },
+  clean:       { pos: [-1.1, 2.1, 12.2], target: [0.15, 2.3, 0], fov: 28.5, film: 0 },
+  loop:        { pos: [-1.2, 2.2, 12.0], target: [0.2, 2.3, 0], fov: 32, film: -2.2 },
+};
+const frame = FRAMING[VARIANT];
+const baseCamPos = new THREE.Vector3(...frame.pos);
+const baseTarget = new THREE.Vector3(...frame.target);
+camera.fov = frame.fov;
+camera.filmOffset = frame.film;
+camera.position.copy(baseCamPos);
+camera.lookAt(baseTarget);
+camera.updateProjectionMatrix();
+
+// Shared animation phase: 0..2π over one LOOP. Integer multiples keep every motion seamless.
+const phaseU = { value: 0 };
+const prU = { value: pixelRatio };
+
+// ---------------------------------------------------------------------------
+// Image-based lighting: a small studio of colored softboxes, prefiltered once.
+// ---------------------------------------------------------------------------
+function buildEnvironment() {
+  const env = new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `varying vec3 vDir; void main(){
+      float y = normalize(vDir).y;
+      vec3 c = mix(vec3(0.010, 0.012, 0.030), vec3(0.090, 0.045, 0.180), smoothstep(-0.35, 0.04, y));
+      c = mix(c, vec3(0.012, 0.016, 0.045), smoothstep(0.08, 0.9, y));
+      gl_FragColor = vec4(c, 1.0);
+    }`,
+  })));
+  const softbox = (hex, intensity, w, h, x, y, z) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(intensity), side: THREE.DoubleSide }));
+    m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m);
+  };
+  softbox('#5fe3ff', 7, 16, 9, 24, 7, -9);
+  softbox('#8b6cff', 7, 16, 9, -24, 6, -7);
+  softbox('#ffffff', 5, 14, 3, 0, 27, 5);
+  softbox('#ff5fae', 3.2, 28, 2.4, 0, -2, 25);
+  softbox('#6f8fff', 2.2, 34, 7, 0, 9, -30);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const texture = pmrem.fromScene(env, 0.035).texture;
+  pmrem.dispose();
+  return texture;
+}
+scene.environment = buildEnvironment();
+scene.environmentIntensity = 0.85;
+
+// ---------------------------------------------------------------------------
+// Sky: horizon glow, faint nebula, stars.
+// ---------------------------------------------------------------------------
+const sky = new THREE.Mesh(new THREE.SphereGeometry(200, 64, 32), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, depthTest: false, fog: false,
+  vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: NOISE + `
+    varying vec3 vDir;
+    void main(){
+      vec3 d = normalize(vDir);
+      float y = d.y;
+      vec3 col = mix(vec3(0.020, 0.012, 0.048), vec3(0.002, 0.003, 0.010), smoothstep(-0.02, 0.45, y));
+      col += vec3(0.060, 0.030, 0.120) * exp(-abs(y - 0.01) * 22.0);
+      col += vec3(0.006, 0.050, 0.075) * exp(-abs(y) * 12.0) * smoothstep(0.1, 1.0, d.x);
+      col += vec3(0.040, 0.012, 0.060) * exp(-abs(y) * 10.0) * smoothstep(0.1, 1.0, -d.x);
+      float n = snoise(d * 2.1 + vec3(0.0, 0.0, 1.7)) * 0.5 + 0.5;
+      float n2 = snoise(d * 5.3 + vec3(3.1, 1.2, 0.0)) * 0.5 + 0.5;
+      float neb = pow(max(n * n2, 0.0), 2.6) * smoothstep(0.02, 0.3, y) * (1.0 - smoothstep(0.45, 0.95, y));
+      col += neb * mix(vec3(0.20, 0.08, 0.40), vec3(0.03, 0.24, 0.34), n2) * 0.35;
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+}));
+sky.renderOrder = -1000;
+sky.frustumCulled = false;
+scene.add(sky);
+
+function pointsMaterial(vertexShader, fragmentShader, uniforms = {}) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uPhase: phaseU, uPR: prU, ...uniforms },
+    vertexShader, fragmentShader,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+  });
+}
+const SOFT_DOT = `
+  varying vec3 vColor; varying float vAlpha;
+  void main(){
+    float d = length(gl_PointCoord - 0.5);
+    float a = smoothstep(0.5, 0.0, d);
+    gl_FragColor = vec4(vColor, a * a * vAlpha);
+  }`;
+
+{
+  const count = 2600;
+  const pos = new Float32Array(count * 3), col = new Float32Array(count * 3), meta = new Float32Array(count * 2);
+  const c = new THREE.Color();
+  for (let i = 0; i < count; i++) {
+    const y = 0.03 + Math.pow(rand(), 0.8) * 0.95;
+    const th = rand() * TAU, r = Math.sqrt(1 - y * y), R = 160;
+    pos.set([Math.cos(th) * r * R, y * R, Math.sin(th) * r * R], i * 3);
+    const big = Math.pow(rand(), 7);
+    c.setHSL(0.56 + (rand() - 0.5) * 0.22, 0.55, 0.78).multiplyScalar(0.7 + big * 2.6);
+    col.set([c.r, c.g, c.b], i * 3);
+    meta.set([0.8 + big * 3.4, rand()], i * 2);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  g.setAttribute('aMeta', new THREE.BufferAttribute(meta, 2));
+  const stars = new THREE.Points(g, pointsMaterial(`
+    attribute vec3 aColor; attribute vec2 aMeta; uniform float uPhase; uniform float uPR;
+    varying vec3 vColor; varying float vAlpha;
+    void main(){
+      vColor = aColor;
+      float k = 1.0 + floor(aMeta.y * 3.0);
+      vAlpha = 0.6 + 0.4 * sin(uPhase * k + aMeta.y * 40.0);
+      gl_PointSize = aMeta.x * uPR;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`, SOFT_DOT));
+  stars.renderOrder = -900;
+  stars.frustumCulled = false;
+  scene.add(stars);
+}
+
+// ---------------------------------------------------------------------------
+// Obsidian floor: planar reflection, ripple distortion, fading grid.
+// ---------------------------------------------------------------------------
+const floorShader = {
+  name: 'ObsidianFloor',
+  uniforms: {
+    color: { value: null },
+    tDiffuse: { value: null },
+    textureMatrix: { value: null },
+    uFogColor: { value: FOG_COLOR.clone() },
+    uFogDensity: { value: FOG_DENSITY },
+  },
+  vertexShader: `
+    uniform mat4 textureMatrix;
+    varying vec4 vUvProj; varying vec3 vWorld;
+    void main(){
+      vUvProj = textureMatrix * vec4(position, 1.0);
+      vec4 w = modelMatrix * vec4(position, 1.0);
+      vWorld = w.xyz;
+      gl_Position = projectionMatrix * viewMatrix * w;
+    }`,
+  fragmentShader: NOISE + `
+    uniform vec3 color; uniform sampler2D tDiffuse; uniform vec3 uFogColor; uniform float uFogDensity;
+    varying vec4 vUvProj; varying vec3 vWorld;
+    float gridLine(vec2 p, float spacing){
+      vec2 g = abs(fract(p / spacing - 0.5) - 0.5) * spacing;
+      vec2 fw = fwidth(p) * 1.2;
+      vec2 l = 1.0 - smoothstep(vec2(0.0), fw, g);
+      return max(l.x, l.y);
+    }
+    void main(){
+      vec2 p = vWorld.xz;
+      float dist = length(p);
+      vec4 uvp = vUvProj;
+      float n1 = snoise(vec3(p * 0.9, 0.0));
+      float n2 = snoise(vec3(p * 2.2, 3.0));
+      uvp.xy += vec2(n1 * 0.7 + n2 * 0.3, n2 * 0.7 - n1 * 0.3) * 0.012 * uvp.w;
+      vec3 refl = texture2DProj(tDiffuse, uvp).rgb;
+      vec3 base = color * (0.55 + 0.45 * (snoise(vec3(p * 0.28, 7.0)) * 0.5 + 0.5));
+      vec3 V = normalize(cameraPosition - vWorld);
+      float fres = pow(1.0 - clamp(V.y, 0.0, 1.0), 4.0);
+      vec3 col = base + refl * mix(0.24, 0.7, fres);
+      float grid = gridLine(p, 0.5) * 0.18 + gridLine(p, 2.5) * 0.55;
+      col += vec3(0.30, 0.55, 1.0) * grid * exp(-dist * 0.13) * 0.16;
+      float vd = length(cameraPosition - vWorld);
+      col = mix(col, uFogColor, 1.0 - exp(-uFogDensity * uFogDensity * vd * vd));
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+};
+const reflectScale = 0.55;
+const floor = new Reflector(new THREE.PlaneGeometry(160, 160), {
+  shader: floorShader,
+  color: 0x0b0e1c,
+  clipBias: 0.002,
+  textureWidth: Math.round(innerWidth * pixelRatio * reflectScale),
+  textureHeight: Math.round(innerHeight * pixelRatio * reflectScale),
+});
+floor.rotation.x = -Math.PI / 2;
+scene.add(floor);
+// The transmission pre-pass also triggers onBeforeRender; reflect once per frame.
+let frameId = 0, reflectedFrame = -1;
+const reflectOnce = floor.onBeforeRender;
+floor.onBeforeRender = function (...args) {
+  if (reflectedFrame === frameId) return;
+  reflectedFrame = frameId;
+  reflectOnce.apply(this, args);
+};
+
+// ---------------------------------------------------------------------------
+// Materials shared by the hardware.
+// ---------------------------------------------------------------------------
+const hexMetal = new THREE.MeshPhysicalMaterial({ color: '#0d1122', metalness: 0.85, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, flatShading: true });
+const roundMetal = new THREE.MeshPhysicalMaterial({ color: '#10152a', metalness: 0.9, roughness: 0.24, clearcoat: 1, clearcoatRoughness: 0.1 });
+const brightMetal = new THREE.MeshPhysicalMaterial({ color: '#c3cdf5', metalness: 1, roughness: 0.2, envMapIntensity: 1.5 });
+const glow = (hex, intensity, opacity = 1) => new THREE.MeshBasicMaterial({
+  color: new THREE.Color(hex).multiplyScalar(intensity),
+  transparent: opacity < 1, opacity, depthWrite: opacity >= 1,
+  blending: opacity < 1 ? THREE.AdditiveBlending : THREE.NormalBlending,
+});
+
+function polylineTube(points, radius, closed = true) {
+  const path = new THREE.CurvePath();
+  for (let i = 0; i < points.length - (closed ? 0 : 1); i++) path.add(new THREE.LineCurve3(points[i], points[(i + 1) % points.length]));
+  return new THREE.TubeGeometry(path, points.length * 24, radius, 6, closed);
+}
+function hexPoints(radius, y) {
+  // Matches CylinderGeometry with 6 radial segments: x = r sin θ, z = r cos θ.
+  return Array.from({ length: 6 }, (_, i) => new THREE.Vector3(Math.sin(i / 6 * TAU) * radius, y, Math.cos(i / 6 * TAU) * radius));
+}
+
+// ---------------------------------------------------------------------------
+// Pedestal.
+// ---------------------------------------------------------------------------
+const pedestal = new THREE.Group();
+scene.add(pedestal);
+{
+  const t1 = new THREE.Mesh(new THREE.CylinderGeometry(1.78, 1.95, 0.3, 6), hexMetal); t1.position.y = 0.15;
+  const t2 = new THREE.Mesh(new THREE.CylinderGeometry(1.32, 1.46, 0.22, 6), hexMetal); t2.position.y = 0.41;
+  const t3 = new THREE.Mesh(new THREE.CylinderGeometry(0.66, 0.84, 0.16, 64), roundMetal); t3.position.y = 0.6;
+  pedestal.add(t1, t2, t3);
+  pedestal.add(new THREE.Mesh(polylineTube(hexPoints(1.785, 0.302), 0.011), glow('#58e6ff', 3.2)));
+  pedestal.add(new THREE.Mesh(polylineTube(hexPoints(1.325, 0.522), 0.009), glow('#a68bff', 3.0)));
+  const lip = new THREE.Mesh(new THREE.TorusGeometry(0.67, 0.012, 8, 128), glow('#9ff4ff', 4.0));
+  lip.rotation.x = Math.PI / 2; lip.position.y = 0.682; pedestal.add(lip);
+  // Emitter lens on top of the pedestal.
+  const lens = new THREE.Mesh(new THREE.CircleGeometry(0.5, 64), glow('#7feaff', 2.2));
+  lens.rotation.x = -Math.PI / 2; lens.position.y = 0.684; pedestal.add(lens);
+
+  // Contact shadow so the pedestal sits on the reflection rather than floating over it.
+  const sc = document.createElement('canvas'); sc.width = sc.height = 256;
+  const sg = sc.getContext('2d');
+  const rg = sg.createRadialGradient(128, 128, 20, 128, 128, 128);
+  rg.addColorStop(0, 'rgba(0,0,0,0.85)'); rg.addColorStop(0.55, 'rgba(0,0,0,0.45)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+  sg.fillStyle = rg; sg.fillRect(0, 0, 256, 256);
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 6.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.004; shadow.renderOrder = 1;
+  scene.add(shadow);
+
+  // Floor outline and outward energy ripples.
+  scene.add(new THREE.Mesh(polylineTube(hexPoints(2.45, 0.012), 0.008), glow('#7a62ff', 2.2, 0.75)));
+  const ripple = new THREE.Mesh(new THREE.RingGeometry(1.9, 5.2, 192, 1), new THREE.ShaderMaterial({
+    uniforms: { uPhase: phaseU },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+    vertexShader: `varying vec2 vP; void main(){ vP = position.xy; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `uniform float uPhase; varying vec2 vP;
+      void main(){
+        float r = length(vP);
+        float w = fract(r * 0.75 - uPhase / 6.2831853 * 2.0);
+        float ring = smoothstep(0.0, 0.03, w) * smoothstep(0.16, 0.03, w);
+        float env = smoothstep(1.9, 2.4, r) * smoothstep(5.2, 3.2, r);
+        vec3 col = mix(vec3(0.35, 0.9, 1.1), vec3(0.62, 0.42, 1.1), smoothstep(2.0, 5.0, r));
+        gl_FragColor = vec4(col * 1.5, ring * env * 0.32);
+      }`,
+  }));
+  ripple.rotation.x = -Math.PI / 2; ripple.position.y = 0.008; ripple.renderOrder = 2;
+  scene.add(ripple);
+}
+
+// ---------------------------------------------------------------------------
+// The API core: plasma heart, faceted crystal shell, gyroscope rings.
+// ---------------------------------------------------------------------------
+const core = new THREE.Group();
+core.position.copy(CORE);
+scene.add(core);
+
+const plasma = new THREE.Mesh(new THREE.IcosahedronGeometry(0.36, 16), new THREE.ShaderMaterial({
+  uniforms: { uPhase: phaseU },
+  vertexShader: `
+    varying vec3 vN; varying vec3 vV; varying vec3 vP;
+    void main(){
+      vP = normalize(position);
+      vec4 w = modelMatrix * vec4(position, 1.0);
+      vN = normalize(mat3(modelMatrix) * normal);
+      vV = normalize(cameraPosition - w.xyz);
+      gl_Position = projectionMatrix * viewMatrix * w;
+    }`,
+  fragmentShader: NOISE + `
+    uniform float uPhase; varying vec3 vN; varying vec3 vV; varying vec3 vP;
+    void main(){
+      float f = clamp(dot(normalize(vN), normalize(vV)), 0.0, 1.0);
+      vec3 drift = vec3(cos(uPhase * 2.0), sin(uPhase * 2.0), 0.0) * 0.6;
+      float swirl = snoise(vP * 2.0 + drift) * 0.5 + 0.5;
+      float bands = 0.5 + 0.5 * sin(vP.y * 13.0 + swirl * 5.0 - uPhase * 3.0);
+      vec3 hot = vec3(2.0, 2.35, 2.55);
+      vec3 cyan = vec3(0.2, 1.4, 2.0);
+      vec3 violet = vec3(1.0, 0.4, 2.1);
+      vec3 col = mix(cyan, hot, pow(f, 1.4));
+      col += vec3(0.5, 1.1, 1.4) * bands * 0.3 * (1.0 - f);
+      col = mix(col, violet, pow(1.0 - f, 3.0) * 0.7);
+      gl_FragColor = vec4(col * (0.85 + swirl * 0.3), 1.0);
+    }`,
+}));
+core.add(plasma);
+{
+  const cc = document.createElement('canvas'); cc.width = cc.height = 256;
+  const cg = cc.getContext('2d');
+  const grd = cg.createRadialGradient(128, 128, 0, 128, 128, 128);
+  grd.addColorStop(0, 'rgba(255,255,255,1)'); grd.addColorStop(0.18, 'rgba(170,240,255,0.55)');
+  grd.addColorStop(0.45, 'rgba(120,140,255,0.16)'); grd.addColorStop(1, 'rgba(90,60,255,0)');
+  cg.fillStyle = grd; cg.fillRect(0, 0, 256, 256);
+  const corona = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cc), color: new THREE.Color(1.1, 1.25, 1.4), transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, opacity: 0.34 }));
+  corona.scale.setScalar(2.5);
+  corona.renderOrder = 10;
+  core.add(corona);
+  const sc2 = document.createElement('canvas'); sc2.width = 512; sc2.height = 32;
+  const sg2 = sc2.getContext('2d');
+  const hg = sg2.createLinearGradient(0, 0, 512, 0);
+  hg.addColorStop(0, 'rgba(120,200,255,0)'); hg.addColorStop(0.5, 'rgba(210,245,255,1)'); hg.addColorStop(1, 'rgba(120,200,255,0)');
+  sg2.fillStyle = hg; sg2.fillRect(0, 0, 512, 32);
+  const vg = sg2.createLinearGradient(0, 0, 0, 32);
+  vg.addColorStop(0, 'rgba(0,0,0,1)'); vg.addColorStop(0.5, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,1)');
+  sg2.globalCompositeOperation = 'destination-out'; sg2.fillStyle = vg; sg2.fillRect(0, 0, 512, 32);
+  const streak = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(sc2), color: new THREE.Color(0.9, 1.1, 1.3), transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, opacity: 0.3 }));
+  streak.scale.set(9, 0.07, 1);
+  streak.renderOrder = 11;
+  core.add(streak);
+}
+
+// Orient the icosahedron with a vertex straight up, so 2π/5 per loop is a seamless turn.
+const crystal = new THREE.Group();
+core.add(crystal);
+{
+  const geo = new THREE.IcosahedronGeometry(1.0, 0);
+  const tip = new THREE.Vector3(0, 1, (1 + Math.sqrt(5)) / 2).normalize();
+  const q = new THREE.Quaternion().setFromUnitVectors(tip, new THREE.Vector3(0, 1, 0));
+  geo.applyQuaternion(q);
+  const shell = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
+    color: '#dfe6ff', metalness: 0, roughness: 0.035, transmission: 1, thickness: 0.35, ior: 1.5,
+    dispersion: 0.9, iridescence: 0.45, iridescenceIOR: 1.3, clearcoat: 1, clearcoatRoughness: 0.03,
+    attenuationColor: new THREE.Color('#a796ff'), attenuationDistance: 3.6, specularIntensity: 1,
+    envMapIntensity: 1.1, flatShading: true,
+  }));
+  crystal.add(shell);
+
+  const edges = new THREE.EdgesGeometry(geo);
+  const ep = edges.attributes.position;
+  const parts = [];
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  for (let i = 0; i < ep.count; i += 2) {
+    a.fromBufferAttribute(ep, i).multiplyScalar(1.004);
+    b.fromBufferAttribute(ep, i + 1).multiplyScalar(1.004);
+    const len = a.distanceTo(b);
+    const cyl = new THREE.CylinderGeometry(0.0065, 0.0065, len, 6, 1, true);
+    cyl.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(up, b.clone().sub(a).normalize()));
+    cyl.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+    parts.push(cyl);
+  }
+  crystal.add(new THREE.Mesh(mergeGeometries(parts), glow('#8ff1ff', 2.2, 0.6)));
+  const vp = geo.attributes.position;
+  const seen = new Set();
+  const nodeGeo = new THREE.SphereGeometry(0.024, 12, 8);
+  for (let i = 0; i < vp.count; i++) {
+    a.fromBufferAttribute(vp, i);
+    const key = a.toArray().map((v) => v.toFixed(3)).join(',');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const node = new THREE.Mesh(nodeGeo, glow('#e6fbff', 3.2));
+    node.position.copy(a).multiplyScalar(1.004);
+    crystal.add(node);
+  }
+}
+
+function dashMaterial(hex, count, speed, comet) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uPhase: phaseU, uColor: { value: new THREE.Color(hex) }, uCount: { value: count }, uSpeed: { value: speed }, uComet: { value: comet } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `uniform float uPhase; uniform vec3 uColor; uniform float uCount; uniform float uSpeed; uniform float uComet; varying vec2 vUv;
+      void main(){
+        float t = uPhase / 6.2831853;
+        float d = fract(vUv.x * uCount - t * uSpeed);
+        float dash = smoothstep(0.0, 0.1, d) * smoothstep(0.5, 0.38, d);
+        float c = fract(vUv.x - t * uComet);
+        float comet = pow(smoothstep(0.8, 1.0, c), 3.0);
+        float a = dash * 0.3 + comet * 0.8;
+        gl_FragColor = vec4(uColor * (1.25 + comet * 1.1), a);
+      }`,
+  });
+}
+const rings = [];
+[
+  { r: 1.42, tube: 0.021, hex: '#7fe9ff', count: 48, speed: 2, comet: 1 },
+  { r: 1.72, tube: 0.016, hex: '#b29dff', count: 64, speed: -2, comet: -1 },
+  { r: 2.02, tube: 0.012, hex: '#ff86c2', count: 80, speed: 3, comet: 2 },
+].forEach((spec, i) => {
+  const group = new THREE.Group();
+  const metal = new THREE.Mesh(new THREE.TorusGeometry(spec.r, spec.tube, 16, 256), brightMetal);
+  const dashes = new THREE.Mesh(new THREE.TorusGeometry(spec.r, spec.tube * 1.45, 8, 256), dashMaterial(spec.hex, spec.count, spec.speed, spec.comet));
+  const rider = new THREE.Mesh(new THREE.SphereGeometry(0.03 - i * 0.005, 16, 12), glow(spec.hex, 2.6));
+  group.add(metal, dashes, rider);
+  core.add(group);
+  rings.push({ group, rider, spec });
+});
+
+{
+  // Particles orbiting the core on tilted paths.
+  const count = 760;
+  const orbit = new Float32Array(count * 4), meta = new Float32Array(count * 2), col = new Float32Array(count * 3);
+  const palette = ['#7fe9ff', '#b29dff', '#ffffff', '#ff86c2'].map((h) => new THREE.Color(h));
+  for (let i = 0; i < count; i++) {
+    orbit.set([1.15 + Math.pow(rand(), 1.6) * 1.6, (rand() - 0.5) * 1.3, rand() * TAU, rand() * TAU], i * 4);
+    meta.set([(rand() < 0.5 ? -1 : 1) * (1 + Math.floor(rand() * 2)), 0.6 + rand() * 1.6], i * 2);
+    const c = palette[Math.floor(rand() * palette.length)].clone().multiplyScalar(1.2 + rand() * 1.4);
+    col.set([c.r, c.g, c.b], i * 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  g.setAttribute('aOrbit', new THREE.BufferAttribute(orbit, 4));
+  g.setAttribute('aMeta', new THREE.BufferAttribute(meta, 2));
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  const swarm = new THREE.Points(g, pointsMaterial(`
+    attribute vec4 aOrbit; attribute vec2 aMeta; attribute vec3 aColor;
+    uniform float uPhase; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){
+      float a = aOrbit.w + uPhase * aMeta.x;
+      vec3 p = vec3(cos(a) * aOrbit.x, 0.0, sin(a) * aOrbit.x);
+      float ci = cos(aOrbit.y), si = sin(aOrbit.y);
+      p = vec3(p.x, p.y * ci - p.z * si, p.y * si + p.z * ci);
+      float cn = cos(aOrbit.z), sn = sin(aOrbit.z);
+      p = vec3(p.x * cn + p.z * sn, p.y, -p.x * sn + p.z * cn);
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      gl_PointSize = aMeta.y * uPR * (9.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+      vColor = aColor;
+      vAlpha = 0.55 + 0.45 * sin(uPhase * 3.0 + aOrbit.w * 5.0);
+    }`, SOFT_DOT));
+  swarm.frustumCulled = false;
+  core.add(swarm);
+}
+
+// Uplink beam from the pedestal through the core into the sky, with rising sparks.
+{
+  const beam = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 14, 1, 64), new THREE.ShaderMaterial({
+    uniforms: { uPhase: phaseU },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false, side: THREE.DoubleSide,
+    vertexShader: `varying vec2 vUv; varying float vY; void main(){ vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vY = w.y; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `uniform float uPhase; varying vec2 vUv; varying float vY;
+      void main(){
+        float across = (vUv.x - 0.5) * 2.0;
+        float width = mix(0.55, 0.22, smoothstep(0.7, 6.0, vY));
+        float k = across / width;
+        float shaft = exp(-k * k * 2.2);
+        float bottom = smoothstep(0.68, 0.8, vY);
+        float profile = (vY < 3.3 ? 1.0 : exp(-(vY - 3.3) * 1.25)) * (1.0 - smoothstep(4.6, 6.2, vY));
+        float streak = 0.78 + 0.22 * sin(vY * 2.6 - uPhase * 6.0);
+        gl_FragColor = vec4(vec3(0.55, 1.0, 1.25) * 1.35, shaft * bottom * profile * streak * 0.34);
+      }`,
+  }));
+  beam.position.set(0, 0.68 + 7, 0);
+  beam.name = 'beam';
+  beam.onBeforeRender = (r, sc, cam) => { beam.rotation.set(0, Math.atan2(cam.position.x - beam.position.x, cam.position.z - beam.position.z), 0); beam.updateMatrixWorld(); };
+  scene.add(beam);
+
+  const count = 140;
+  const seed = new Float32Array(count * 4);
+  for (let i = 0; i < count; i++) seed.set([rand(), (rand() - 0.5) * 0.5, (rand() - 0.5) * 0.5, 1 + Math.floor(rand() * 2)], i * 4);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 4));
+  const sparks = new THREE.Points(g, pointsMaterial(`
+    attribute vec4 aSeed; uniform float uPhase; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){
+      float u = fract(aSeed.x + uPhase / 6.2831853 * aSeed.w);
+      vec3 p = vec3(aSeed.y * (1.0 - u * 0.6), 0.75 + u * 16.0, aSeed.z * (1.0 - u * 0.6));
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      gl_PointSize = (1.2 + aSeed.x * 1.6) * uPR * (9.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+      vColor = mix(vec3(1.2, 2.2, 2.6), vec3(1.6, 1.1, 2.6), u);
+      vAlpha = smoothstep(0.0, 0.08, u) * (1.0 - u);
+    }`, SOFT_DOT));
+  sparks.frustumCulled = false;
+  sparks.name = 'sparks';
+  scene.add(sparks);
+}
+
+// ---------------------------------------------------------------------------
+// Glass panels. Every label shows something real from this repository:
+// routes from app.py, the actual pytest result, and clearly marked demo/modeled visuals.
+// ---------------------------------------------------------------------------
+const FONT_MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
+const FONT_SANS = '"Space Grotesk", system-ui, sans-serif';
+const COLORS = { cyan: '#7fe9ff', violet: '#b9a6ff', pink: '#ff8cc6', green: '#86ffc6', amber: '#ffd27a', red: '#ff8193', ink: '#eef3ff', muted: 'rgba(205,216,255,0.66)', faint: 'rgba(170,190,255,0.2)' };
+
+function roundRectPath(g, x, y, w, h, r) {
+  g.beginPath();
+  g.moveTo(x + r, y);
+  g.arcTo(x + w, y, x + w, y + h, r);
+  g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r);
+  g.arcTo(x, y, x + w, y, r);
+  g.closePath();
+}
+function smoothPath(g, pts) {
+  g.beginPath();
+  g.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+    g.quadraticCurveTo(pts[i][0], pts[i][1], mx, my);
+  }
+  const last = pts[pts.length - 1];
+  g.lineTo(last[0], last[1]);
+}
+
+function panelTexture(title, chip, chipColor, body) {
+  const W = 1024, H = 640;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const fill = g.createLinearGradient(0, 0, W, H);
+  fill.addColorStop(0, 'rgba(110,150,255,0.12)'); fill.addColorStop(1, 'rgba(150,90,255,0.05)');
+  roundRectPath(g, 8, 8, W - 16, H - 16, 30); g.fillStyle = fill; g.fill();
+  g.lineWidth = 3; g.strokeStyle = 'rgba(165,195,255,0.5)'; g.stroke();
+  const hl = g.createLinearGradient(60, 0, W - 60, 0);
+  hl.addColorStop(0, 'rgba(127,233,255,0)'); hl.addColorStop(0.5, 'rgba(127,233,255,0.95)'); hl.addColorStop(1, 'rgba(127,233,255,0)');
+  g.fillStyle = hl; g.fillRect(60, 8, W - 120, 3);
+  ['#ff8193', '#ffd27a', '#86ffc6'].forEach((col, i) => { g.beginPath(); g.arc(54 + i * 30, 60, 9, 0, TAU); g.fillStyle = col; g.fill(); });
+  g.textBaseline = 'middle';
+  g.font = `600 30px ${FONT_MONO}`; g.fillStyle = COLORS.ink; g.fillText(title, 152, 61);
+  g.font = `700 21px ${FONT_MONO}`;
+  const label = chip.toUpperCase();
+  const tw = g.measureText(label).width;
+  const cx = W - 46 - tw - 36;
+  roundRectPath(g, cx, 39, tw + 36, 44, 22);
+  g.fillStyle = chipColor; g.globalAlpha = 0.14; g.fill(); g.globalAlpha = 1;
+  g.lineWidth = 2; g.strokeStyle = chipColor; g.stroke();
+  g.fillStyle = chipColor; g.fillText(label, cx + 18, 62);
+  g.fillStyle = COLORS.faint; g.fillRect(40, 104, W - 80, 2);
+  body(g, W, H);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = maxAniso;
+  return tex;
+}
+
+const PANEL_ART = {
+  api: () => panelTexture('app.py · flask routes', 'pytest-verified', COLORS.green, (g, W) => {
+    const rows = [
+      ['/health', '200', COLORS.green],
+      ['/api/config', '200', COLORS.green],
+      ['/api/research?ticker=spy', '200', COLORS.green],
+      ['/api/research?ticker=$$$', '400', COLORS.amber],
+      ['/api/research · provider down', '503', COLORS.red],
+    ];
+    rows.forEach(([path, code, col], i) => {
+      const y = 160 + i * 82;
+      roundRectPath(g, 44, y - 24, 86, 48, 12); g.fillStyle = 'rgba(127,233,255,0.15)'; g.fill();
+      g.font = `700 23px ${FONT_MONO}`; g.fillStyle = COLORS.cyan; g.fillText('GET', 63, y + 1);
+      g.font = `500 30px ${FONT_MONO}`; g.fillStyle = COLORS.ink; g.fillText(path, 154, y + 1);
+      g.beginPath(); g.arc(W - 132, y, 8, 0, TAU); g.fillStyle = col; g.fill();
+      g.font = `700 32px ${FONT_MONO}`; g.fillStyle = col; g.textAlign = 'right'; g.fillText(code, W - 54, y + 1); g.textAlign = 'left';
+      if (i < rows.length - 1) { g.fillStyle = 'rgba(170,190,255,0.09)'; g.fillRect(44, y + 41, W - 88, 2); }
+    });
+    g.font = `500 24px ${FONT_MONO}`; g.fillStyle = COLORS.muted;
+    g.fillText('return jsonify({"status": "ok"})', 46, 586);
+  }),
+
+  tests: () => panelTexture('tests · market observatory', 'passing', COLORS.green, (g, W) => {
+    g.font = `500 30px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.fillText('$ pytest -q', 52, 162);
+    g.font = `700 38px ${FONT_MONO}`; g.fillStyle = COLORS.green; g.fillText('...............', 52, 222);
+    g.font = `500 26px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.textAlign = 'right'; g.fillText('[100%]', W - 54, 222); g.textAlign = 'left';
+    g.font = `700 96px ${FONT_SANS}`; g.fillStyle = COLORS.green; g.fillText('15 passed', 48, 336);
+    g.font = `500 30px ${FONT_MONO}`; g.fillStyle = COLORS.ink; g.fillText('in 0.31s', 560, 352);
+    const files = [['tests/test_app.py', '8'], ['tests/test_research.py', '6'], ['tests/test_public_demo.py', '1']];
+    files.forEach(([name, n], i) => {
+      const y = 448 + i * 52;
+      g.font = `700 26px ${FONT_MONO}`; g.fillStyle = COLORS.green; g.fillText('✓', 54, y);
+      g.font = `500 26px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.fillText(name, 96, y);
+      g.fillStyle = COLORS.ink; g.textAlign = 'right'; g.fillText(n, W - 54, y); g.textAlign = 'left';
+    });
+  }),
+
+  chart: () => panelTexture('research dashboard', 'demo data', COLORS.amber, (g, W) => {
+    g.font = `700 44px ${FONT_SANS}`; g.fillStyle = COLORS.ink; g.fillText('SPY', 52, 160);
+    g.font = `500 23px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.fillText('composite profile · factor lens', 160, 163);
+    const x0 = 52, x1 = W - 52, y0 = 205, y1 = 455;
+    g.fillStyle = 'rgba(170,190,255,0.08)';
+    for (let i = 0; i <= 4; i++) g.fillRect(x0, y0 + (y1 - y0) * i / 4, x1 - x0, 2);
+    const rr = mulberry32(42);
+    const raw = []; let v = 0.42;
+    for (let i = 0; i < 72; i++) { v += (rr() - 0.44) * 0.07; v = Math.min(0.9, Math.max(0.15, v)); raw.push(v); }
+    const vals = raw.map((_, i) => { let s = 0, n = 0; for (let k = -3; k <= 3; k++) { const j = i + k; if (j >= 0 && j < raw.length) { s += raw[j]; n++; } } return s / n; });
+    const pts = vals.map((p, i) => [x0 + i / (vals.length - 1) * (x1 - x0), y1 - p * (y1 - y0)]);
+    smoothPath(g, pts); g.lineTo(x1, y1); g.lineTo(x0, y1); g.closePath();
+    const area = g.createLinearGradient(0, y0, 0, y1);
+    area.addColorStop(0, 'rgba(127,233,255,0.42)'); area.addColorStop(1, 'rgba(127,233,255,0)');
+    g.fillStyle = area; g.fill();
+    smoothPath(g, pts); g.lineWidth = 14; g.strokeStyle = 'rgba(127,233,255,0.16)'; g.stroke();
+    smoothPath(g, pts); g.lineWidth = 4.5; g.strokeStyle = COLORS.cyan; g.stroke();
+    const end = pts[pts.length - 1];
+    g.beginPath(); g.arc(end[0], end[1], 10, 0, TAU); g.fillStyle = '#ffffff'; g.fill();
+    g.beginPath(); g.arc(end[0], end[1], 22, 0, TAU); g.lineWidth = 3; g.strokeStyle = 'rgba(127,233,255,0.6)'; g.stroke();
+    const factors = [['value', 0.62, COLORS.cyan], ['momentum', 0.78, COLORS.violet], ['quality', 0.54, COLORS.pink]];
+    factors.forEach(([name, val, col], i) => {
+      const y = 502 + i * 40;
+      g.font = `500 22px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.fillText(name, x0, y);
+      const bx = x0 + 180, bw = x1 - bx;
+      roundRectPath(g, bx, y - 7, bw, 14, 7); g.fillStyle = 'rgba(170,190,255,0.12)'; g.fill();
+      roundRectPath(g, bx, y - 7, bw * val, 14, 7); g.fillStyle = col; g.fill();
+    });
+  }),
+
+  tactical: () => panelTexture('tactical replay · 3D', 'modeled', COLORS.amber, (g, W, H) => {
+    const x0 = 46, y0 = 128, x1 = W - 46, y1 = H - 40;
+    roundRectPath(g, x0, y0, x1 - x0, y1 - y0, 18); g.lineWidth = 2; g.strokeStyle = 'rgba(165,195,255,0.35)'; g.stroke();
+    g.save(); roundRectPath(g, x0, y0, x1 - x0, y1 - y0, 18); g.clip();
+    g.fillStyle = 'rgba(165,195,255,0.07)';
+    for (let x = x0; x < x1; x += 46) g.fillRect(x, y0, 2, y1 - y0);
+    for (let y = y0; y < y1; y += 46) g.fillRect(x0, y, x1 - x0, 2);
+    const wedge = g.createRadialGradient(610, 420, 10, 610, 420, 260);
+    wedge.addColorStop(0, 'rgba(178,157,255,0.34)'); wedge.addColorStop(1, 'rgba(178,157,255,0)');
+    g.beginPath(); g.moveTo(610, 420); g.arc(610, 420, 260, -2.55, -1.62); g.closePath(); g.fillStyle = wedge; g.fill();
+    [[190, 214, 96, 58], [410, 300, 72, 126], [636, 186, 116, 50], [742, 400, 86, 72], [282, 460, 132, 42]].forEach(([x, y, w, h]) => {
+      roundRectPath(g, x, y, w, h, 8); g.fillStyle = 'rgba(160,180,255,0.15)'; g.fill(); g.lineWidth = 2; g.strokeStyle = 'rgba(160,180,255,0.38)'; g.stroke();
+    });
+    g.restore();
+    g.setLineDash([16, 13]); g.lineCap = 'round';
+    smoothPath(g, [[108, 532], [228, 476], [330, 392], [470, 282], [604, 262]]); g.lineWidth = 5; g.strokeStyle = COLORS.pink; g.stroke();
+    g.setLineDash([]);
+    const rec = [[108, 532], [262, 548], [430, 520], [566, 436], [650, 328], [790, 288]];
+    smoothPath(g, rec); g.lineWidth = 16; g.strokeStyle = 'rgba(127,233,255,0.18)'; g.stroke();
+    smoothPath(g, rec); g.lineWidth = 5; g.strokeStyle = COLORS.cyan; g.stroke();
+    const [ex, ey] = rec[rec.length - 1];
+    const ang = Math.atan2(ey - 328, ex - 650);
+    g.beginPath(); g.moveTo(ex + Math.cos(ang) * 18, ey + Math.sin(ang) * 18);
+    g.lineTo(ex + Math.cos(ang + 2.5) * 18, ey + Math.sin(ang + 2.5) * 18);
+    g.lineTo(ex + Math.cos(ang - 2.5) * 18, ey + Math.sin(ang - 2.5) * 18);
+    g.closePath(); g.fillStyle = COLORS.cyan; g.fill();
+    const unit = (x, y, col, ring) => {
+      g.beginPath(); g.arc(x, y, 11, 0, TAU); g.fillStyle = col; g.fill();
+      if (ring) { g.beginPath(); g.arc(x, y, 24, 0, TAU); g.lineWidth = 3; g.strokeStyle = col; g.globalAlpha = 0.55; g.stroke(); g.globalAlpha = 1; }
+    };
+    unit(108, 532, COLORS.green, true); unit(604, 262, COLORS.pink, false); unit(848, 252, COLORS.red, true); unit(812, 214, COLORS.red, false);
+    g.font = `600 21px ${FONT_MONO}`;
+    g.fillStyle = COLORS.pink; g.fillText('— actual', 690, 160);
+    g.fillStyle = COLORS.cyan; g.fillText('— recommended', 690, 192);
+  }),
+
+  flow: () => panelTexture('workflow automation', 'webhooks → APIs', COLORS.violet, (g, W) => {
+    const nodes = [['Webhook', 'POST /hook', COLORS.violet], ['Validate', 'schema check', COLORS.cyan], ['REST API', 'GET /api/…', COLORS.cyan], ['Notify', 'email · chat', COLORS.pink]];
+    const bw = 196, bh = 156, gap = 40, y = 214;
+    const total = nodes.length * bw + (nodes.length - 1) * gap;
+    const xs = nodes.map((_, i) => (W - total) / 2 + i * (bw + gap));
+    for (let i = 0; i < nodes.length - 1; i++) {
+      const ax = xs[i] + bw, bx = xs[i + 1], cy = y + bh / 2;
+      const lg = g.createLinearGradient(ax, 0, bx, 0); lg.addColorStop(0, nodes[i][2]); lg.addColorStop(1, nodes[i + 1][2]);
+      g.fillStyle = lg; g.fillRect(ax, cy - 2, bx - ax - 6, 4);
+      g.beginPath(); g.moveTo(bx, cy); g.lineTo(bx - 12, cy - 9); g.lineTo(bx - 12, cy + 9); g.closePath(); g.fillStyle = nodes[i + 1][2]; g.fill();
+    }
+    nodes.forEach(([name, sub, col], i) => {
+      const x = xs[i];
+      roundRectPath(g, x, y, bw, bh, 18);
+      g.fillStyle = col; g.globalAlpha = 0.12; g.fill(); g.globalAlpha = 1;
+      g.lineWidth = 2.5; g.strokeStyle = col; g.stroke();
+      g.beginPath(); g.arc(x + 32, y + 36, 11, 0, TAU); g.fillStyle = col; g.fill();
+      g.font = `700 32px ${FONT_SANS}`; g.fillStyle = COLORS.ink; g.fillText(name, x + 22, y + 88);
+      g.font = `500 19px ${FONT_MONO}`; g.fillStyle = COLORS.muted; g.fillText(sub, x + 22, y + 126);
+    });
+    g.font = `500 23px ${FONT_MONO}`; g.fillStyle = COLORS.muted;
+    g.fillText('retries · timeouts · clear error responses', 52, 474);
+    g.fillStyle = 'rgba(170,190,255,0.09)'; g.fillRect(52, 512, W - 104, 2);
+    g.font = `600 23px ${FONT_MONO}`; g.fillStyle = COLORS.green; g.fillText('● 4 steps', 52, 560);
+    g.fillStyle = COLORS.muted; g.fillText('documented API calls · logged failures', 236, 560);
+  }),
+};
+
+const glass = new THREE.MeshPhysicalMaterial({
+  color: '#cdd7ff', metalness: 0, roughness: 0.18, transmission: 1, thickness: 0.3, ior: 1.45,
+  clearcoat: 1, clearcoatRoughness: 0.06, specularIntensity: 1, envMapIntensity: 1.2,
+  attenuationColor: new THREE.Color('#8573ff'), attenuationDistance: 1.4,
+});
+const PANELS = [
+  { art: 'api',      w: 2.3,  h: 1.44, pos: [-3.45, 3.15, -1.25], yaw: 0.38, pitch: 0.03, roll: 0.025 },
+  { art: 'tests',    w: 1.8,  h: 1.13, pos: [-2.7, 1.3, 1.25],   yaw: 0.5,  pitch: -0.05, roll: -0.02 },
+  { art: 'chart',    w: 2.45, h: 1.53, pos: [3.7, 3.2, -1.05],   yaw: -0.4, pitch: 0.03, roll: -0.025 },
+  { art: 'tactical', w: 1.95, h: 1.22, pos: [3.1, 1.32, 1.35],   yaw: -0.55, pitch: -0.05, roll: 0.02 },
+  { art: 'flow',     w: 2.05, h: 1.28, pos: [-1.45, 4.85, -2.7], yaw: 0.14, pitch: 0.16, roll: -0.01 },
+];
+const panelGroups = [];
+const streams = [];
+function buildPanels() {
+  PANELS.forEach((spec, i) => {
+    const group = new THREE.Group();
+    group.position.set(...spec.pos);
+    group.rotation.set(spec.pitch, spec.yaw, spec.roll, 'YXZ');
+    const slab = new THREE.Mesh(new RoundedBoxGeometry(spec.w, spec.h, 0.07, 4, 0.06), glass);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(spec.w * 0.97, spec.h * 0.95), new THREE.MeshBasicMaterial({
+      map: PANEL_ART[spec.art](), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      color: new THREE.Color(1.35, 1.35, 1.35),
+    }));
+    screen.position.z = 0.042;
+    group.add(slab, screen);
+    scene.add(group);
+    panelGroups.push(group);
+
+    // Data stream from the panel edge nearest the core into the crystal.
+    group.updateMatrixWorld(true);
+    const side = Math.sign(-spec.pos[0]) || 0;
+    const local = new THREE.Vector3(side * spec.w * 0.5, side === 0 ? -spec.h * 0.5 : -spec.h * 0.18, 0);
+    const start = local.applyMatrix4(group.matrixWorld);
+    const end = CORE.clone().add(start.clone().sub(CORE).normalize().multiplyScalar(1.05));
+    const mid = start.clone().lerp(end, 0.5).add(new THREE.Vector3(0, 0.55 + i * 0.08, 0.35));
+    const curve = new THREE.CatmullRomCurve3([start, mid, end]);
+    const colorHex = ['#7fe9ff', '#86ffc6', '#b29dff', '#ff8cc6', '#7fe9ff'][i];
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 96, 0.0085, 6, false), new THREE.ShaderMaterial({
+      uniforms: { uPhase: phaseU, uColor: { value: new THREE.Color(colorHex) }, uOffset: { value: i * 0.21 } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+      fragmentShader: `uniform float uPhase; uniform vec3 uColor; uniform float uOffset; varying vec2 vUv;
+        void main(){
+          float s = vUv.x;
+          float p = fract(s * 2.0 - uPhase / 6.2831853 * 3.0 + uOffset);
+          float pulse = pow(smoothstep(0.7, 1.0, p), 4.0);
+          float ends = smoothstep(0.0, 0.06, s) * smoothstep(1.0, 0.9, s);
+          gl_FragColor = vec4(uColor * 1.9, (0.22 + 1.7 * pulse) * ends);
+        }`,
+    }));
+    scene.add(tube);
+    streams.push({ curve, color: new THREE.Color(colorHex), offset: i * 0.21 });
+  });
+
+  // Bright packets riding each stream.
+  const perStream = 5;
+  const count = streams.length * perStream;
+  const g = new THREE.BufferGeometry();
+  const col = new Float32Array(count * 3);
+  streams.forEach((s, i) => { for (let k = 0; k < perStream; k++) col.set([s.color.r * 2.4, s.color.g * 2.4, s.color.b * 2.4], (i * perStream + k) * 3); });
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  const packets = new THREE.Points(g, pointsMaterial(`
+    attribute vec3 aColor; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){
+      vColor = aColor; vAlpha = 1.0;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = 2.6 * uPR * (9.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+    }`, SOFT_DOT));
+  packets.frustumCulled = false;
+  scene.add(packets);
+  return { packets, perStream };
+}
+
+// ---------------------------------------------------------------------------
+// The winding sky: twisting aurora ribbons with sparks running along them.
+// ---------------------------------------------------------------------------
+function ribbonGeometry(curve, { segments = 700, width = 4, twist = 1.2, wobble = 0.35 } = {}) {
+  const pos = new Float32Array((segments + 1) * 6), uv = new Float32Array((segments + 1) * 4), idx = [];
+  const up = new THREE.Vector3(0, 1, 0), side = new THREE.Vector3(), n = new THREE.Vector3(), dir = new THREE.Vector3();
+  for (let i = 0; i <= segments; i++) {
+    const s = i / segments;
+    const p = curve.getPointAt(s), t = curve.getTangentAt(s);
+    side.crossVectors(t, up).normalize();
+    n.crossVectors(side, t).normalize();
+    const ang = s * twist * TAU + Math.sin(s * 9.0) * wobble;
+    dir.copy(n).multiplyScalar(Math.cos(ang)).addScaledVector(side, Math.sin(ang));
+    const w = width * Math.pow(Math.sin(Math.PI * s), 0.55) * (1 + 0.28 * Math.sin(s * 13.0 + 1.3));
+    pos.set([p.x - dir.x * w / 2, p.y - dir.y * w / 2, p.z - dir.z * w / 2, p.x + dir.x * w / 2, p.y + dir.y * w / 2, p.z + dir.z * w / 2], i * 6);
+    uv.set([s, 0, s, 1], i * 4);
+    if (i < segments) { const k = i * 2; idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  return g;
+}
+function ribbonMaterial(a, b, c, intensity, speed) {
+  return new THREE.ShaderMaterial({
+    uniforms: { uPhase: phaseU, uA: { value: new THREE.Color(a) }, uB: { value: new THREE.Color(b) }, uC: { value: new THREE.Color(c) }, uIntensity: { value: intensity }, uSpeed: { value: speed } },
+    transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, fog: false,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: NOISE + `
+      uniform float uPhase; uniform vec3 uA; uniform vec3 uB; uniform vec3 uC; uniform float uIntensity; uniform float uSpeed;
+      varying vec2 vUv;
+      void main(){
+        float across = vUv.y;
+        float edge = pow(smoothstep(0.0, 0.5, across) * smoothstep(1.0, 0.5, across), 1.25);
+        float ends = smoothstep(0.0, 0.1, vUv.x) * smoothstep(1.0, 0.88, vUv.x);
+        float t = uPhase / 6.2831853 * uSpeed;
+        float warp = snoise(vec3(vUv.x * 4.0, across * 0.8, 1.0)) * 0.12;
+        float strands = 0.55 + 0.45 * sin((across + warp) * 6.2831853 * 7.0);
+        float dc = (across - 0.5 - warp * 0.6) * 9.0;
+        float core = exp(-dc * dc);
+        float pulse = pow(0.5 + 0.5 * sin((vUv.x - t) * 6.2831853 * 3.0), 3.0);
+        vec3 col = mix(uA, uB, smoothstep(0.05, 0.55, vUv.x));
+        col = mix(col, uC, smoothstep(0.55, 1.0, vUv.x));
+        float a = (edge * (0.25 + 0.45 * strands) + core * 0.9) * ends * (0.35 + 0.95 * pulse) * uIntensity;
+        gl_FragColor = vec4(col * 1.25 + vec3(core * pulse * 0.35), a);
+      }`,
+  });
+}
+const RIBBONS = [
+  { pts: [[-58, 2.5, -40], [-34, 7.5, -32], [-14, 13.5, -38], [2, 10.5, -30], [18, 15.0, -42], [36, 8.0, -33], [60, 3.5, -42]], width: 3.4, twist: 1.0, colors: ['#5fe7ff', '#9b7bff', '#ff74b6'], intensity: 0.62, speed: 1 },
+  { pts: [[-56, 5.5, -44], [-30, 4.5, -36], [-8, 9.0, -33], [10, 6.5, -36], [30, 11.5, -40], [58, 6.0, -46]], width: 1.7, twist: 1.6, colors: ['#b49bff', '#6fe9ff', '#9b7bff'], intensity: 0.45, speed: 2 },
+  { pts: [[-60, 9.0, -52], [-28, 16.0, -48], [4, 18.5, -55], [34, 14.0, -50], [62, 8.0, -56]], width: 7.0, twist: 0.5, colors: ['#ff74b6', '#7d5cff', '#4fd9ff'], intensity: 0.16, speed: 1 },
+];
+const ribbonCurves = [];
+RIBBONS.forEach((spec) => {
+  const curve = new THREE.CatmullRomCurve3(spec.pts.map((p) => new THREE.Vector3(...p)), false, 'centripetal');
+  const mesh = new THREE.Mesh(ribbonGeometry(curve, spec), ribbonMaterial(...spec.colors, spec.intensity, spec.speed));
+  mesh.renderOrder = -500;
+  mesh.frustumCulled = false;
+  scene.add(mesh);
+  ribbonCurves.push({ curve, spec });
+});
+const ribbonSparks = (() => {
+  const count = 320;
+  const seeds = [];
+  for (let i = 0; i < count; i++) seeds.push({ r: i % 2, u: rand(), across: (rand() - 0.5) * 0.8, k: 1 + Math.floor(rand() * 2) });
+  const g = new THREE.BufferGeometry();
+  const col = new Float32Array(count * 3);
+  seeds.forEach((s, i) => { const c = new THREE.Color(s.r ? '#c9b8ff' : '#aef4ff').multiplyScalar(2.2); col.set([c.r, c.g, c.b], i * 3); });
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  const pts = new THREE.Points(g, pointsMaterial(`
+    attribute vec3 aColor; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){ vColor = aColor; vAlpha = 0.9; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_PointSize = 3.2 * uPR * (30.0 / -mv.z); gl_Position = projectionMatrix * mv; }`, SOFT_DOT));
+  pts.frustumCulled = false;
+  pts.renderOrder = -400;
+  scene.add(pts);
+  return { pts, seeds };
+})();
+
+// ---------------------------------------------------------------------------
+// Procedural obsidian rocks, distant mesas, embedded crystals.
+// ---------------------------------------------------------------------------
+const rockMat = new THREE.MeshPhysicalMaterial({ color: '#07080f', metalness: 0.2, roughness: 0.58, clearcoat: 0.25, clearcoatRoughness: 0.45, flatShading: true, envMapIntensity: 0.65 });
+const farRockMat = new THREE.MeshStandardMaterial({ color: '#0a0c16', metalness: 0.05, roughness: 0.9, flatShading: true });
+function rockGeometry(seed, detail, squash, rough = 1) {
+  const g = new THREE.IcosahedronGeometry(1, detail);
+  const p = g.attributes.position;
+  const v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i).normalize();
+    let d = fbm(v.x * 1.25 + seed, v.y * 1.25 + seed * 0.7, v.z * 1.25 - seed, 5) * 0.62 * rough;
+    d += (1 - Math.abs(noise3(v.x * 2.8 + seed * 3.1, v.y * 2.8, v.z * 2.8))) * 0.2 * rough;
+    v.multiplyScalar(1 + d);
+    v.y *= squash;
+    p.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+function addRock(seed, scale, pos, rotY, squash, mat = rockMat, detail = 6) {
+  const m = new THREE.Mesh(rockGeometry(seed, detail, squash), mat);
+  m.scale.setScalar(scale);
+  m.position.set(...pos);
+  m.rotation.y = rotY;
+  scene.add(m);
+  return m;
+}
+addRock(1.3, 1.05, [-2.2, 0.05, -1.3], 0.4, 0.75);
+addRock(4.7, 0.8, [2.15, 0.0, -1.5], 1.1, 0.85);
+addRock(7.1, 0.55, [1.95, 0.0, 1.6], 2.2, 0.7);
+addRock(9.9, 0.42, [-1.85, 0.0, 1.9], 0.8, 0.9);
+addRock(12.4, 2.2, [-7.6, -0.35, 4.2], 0.2, 0.62);
+addRock(15.8, 1.35, [7.2, -0.25, 4.6], 1.7, 0.7);
+addRock(18.2, 0.7, [5.5, -0.05, 6.0], 0.6, 0.8);
+addRock(21.6, 1.6, [-9.5, -0.3, -4.0], 0.9, 0.85);
+[[-34, -44, 8.5, 0.55], [-14, -52, 11, 0.42], [12, -48, 9.5, 0.5], [32, -56, 13, 0.4], [-52, -60, 12, 0.5], [50, -46, 9, 0.6]].forEach(([x, z, s, sq], i) => {
+  addRock(30 + i * 3.3, s, [x, -s * sq * 0.35, z], i * 0.7, sq, farRockMat, 5);
+});
+{
+  const shardGeo = new THREE.OctahedronGeometry(1, 0);
+  const shards = [[-1.6, 0.55, -1.0, 0.11, '#b29dff'], [-2.55, 0.45, -1.05, 0.08, '#7fe9ff'], [2.4, 0.5, -1.2, 0.09, '#7fe9ff'], [1.75, 0.32, 1.45, 0.07, '#ff8cc6'], [-6.5, 0.9, 3.6, 0.16, '#b29dff'], [6.6, 0.75, 4.1, 0.12, '#7fe9ff']];
+  shards.forEach(([x, y, z, s, hex], i) => {
+    const m = new THREE.Mesh(shardGeo, glow(hex, 3.2));
+    m.position.set(x, y, z); m.scale.set(s * 0.6, s * 1.6, s * 0.6); m.rotation.set(0.3 * i, i, 0.2);
+    scene.add(m);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Atmosphere: drifting dust and out-of-focus foreground bokeh.
+// ---------------------------------------------------------------------------
+{
+  const count = 1400;
+  const pos = new Float32Array(count * 3), seed = new Float32Array(count * 2), col = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    pos.set([(rand() - 0.5) * 28, rand() * 9, (rand() - 0.5) * 22 - 3], i * 3);
+    seed.set([rand() * TAU, 0.6 + rand() * 1.4], i * 2);
+    const c = new THREE.Color(rand() < 0.5 ? '#9fdcff' : '#c2b2ff').multiplyScalar(0.5 + rand() * 0.9);
+    col.set([c.r, c.g, c.b], i * 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 2));
+  g.setAttribute('aColor', new THREE.BufferAttribute(col, 3));
+  const dust = new THREE.Points(g, pointsMaterial(`
+    attribute vec2 aSeed; attribute vec3 aColor; uniform float uPhase; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){
+      vec3 p = position + vec3(sin(uPhase + aSeed.x) * 0.22, sin(uPhase * 2.0 + aSeed.x * 1.7) * 0.12, cos(uPhase + aSeed.x * 0.6) * 0.22);
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      gl_PointSize = aSeed.y * uPR * (6.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+      vColor = aColor;
+      vAlpha = 0.45 * (0.6 + 0.4 * sin(uPhase * 2.0 + aSeed.x * 3.0));
+    }`, SOFT_DOT));
+  dust.frustumCulled = false;
+  scene.add(dust);
+
+  const bcount = 6;
+  const bpos = new Float32Array(bcount * 3), bseed = new Float32Array(bcount * 2), bcol = new Float32Array(bcount * 3);
+  for (let i = 0; i < bcount; i++) {
+    bpos.set([(rand() - 0.5) * 10, 0.2 + rand() * 1.8, 6.6 + rand() * 2.4], i * 3);
+    bseed.set([rand() * TAU, 0.5 + rand()], i * 2);
+    const c = new THREE.Color(['#5fe7ff', '#9b7bff'][i % 2]).multiplyScalar(0.5);
+    bcol.set([c.r, c.g, c.b], i * 3);
+  }
+  const bg = new THREE.BufferGeometry();
+  bg.setAttribute('position', new THREE.BufferAttribute(bpos, 3));
+  bg.setAttribute('aSeed', new THREE.BufferAttribute(bseed, 2));
+  bg.setAttribute('aColor', new THREE.BufferAttribute(bcol, 3));
+  const bokeh = new THREE.Points(bg, pointsMaterial(`
+    attribute vec2 aSeed; attribute vec3 aColor; uniform float uPhase; uniform float uPR; varying vec3 vColor; varying float vAlpha;
+    void main(){
+      vec3 p = position + vec3(sin(uPhase + aSeed.x) * 0.15, cos(uPhase + aSeed.x) * 0.1, 0.0);
+      vec4 mv = modelViewMatrix * vec4(p, 1.0);
+      gl_PointSize = aSeed.y * 60.0 * uPR * (4.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+      vColor = aColor; vAlpha = 0.08;
+    }`, `
+    varying vec3 vColor; varying float vAlpha;
+    void main(){
+      float d = length(gl_PointCoord - 0.5);
+      float disc = smoothstep(0.5, 0.44, d);
+      float rim = 0.65 + 0.35 * smoothstep(0.28, 0.47, d);
+      gl_FragColor = vec4(vColor, disc * rim * vAlpha);
+    }`));
+  bokeh.frustumCulled = false;
+  scene.add(bokeh);
+}
+
+// ---------------------------------------------------------------------------
+// Lights.
+// ---------------------------------------------------------------------------
+scene.add(new THREE.HemisphereLight('#26305e', '#05060b', 0.45));
+const key = new THREE.SpotLight('#dfe9ff', 320, 0, 0.55, 0.9, 2);
+key.position.set(-5, 9.5, 7.5); key.target.position.set(0, 1.2, 0);
+scene.add(key, key.target);
+const rimViolet = new THREE.PointLight('#8a5cff', 150, 0, 2); rimViolet.position.set(-7, 3.4, -4.5);
+const rimCyan = new THREE.PointLight('#36e3ff', 150, 0, 2); rimCyan.position.set(7.5, 3.0, -3.8);
+const fillPink = new THREE.PointLight('#ff4fa8', 22, 0, 2); fillPink.position.set(3.2, 0.35, 2.9);
+const coreLight = new THREE.PointLight('#8ff0ff', 18, 0, 2); coreLight.position.copy(CORE);
+scene.add(rimViolet, rimCyan, fillPink, coreLight);
+
+// ---------------------------------------------------------------------------
+// Post-processing: bloom → tone map → lens (chromatic edge, vignette, grain).
+// ---------------------------------------------------------------------------
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 }));
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.62, 0.42, 0.92);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+const lens = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uRes: { value: new THREE.Vector2(1, 1) }, uSeed: { value: 0 }, uGrain: { value: 0.022 }, uVignette: { value: 0.5 }, uCA: { value: 0.0016 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uSeed; uniform float uGrain; uniform float uVignette; uniform float uCA;
+    varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    void main(){
+      vec2 c = vUv - 0.5;
+      vec2 ca = c * vec2(uRes.x / uRes.y, 1.0);
+      float r2 = min(dot(ca, ca), 0.6);
+      vec2 off = c * uCA * r2;
+      vec3 col = vec3(texture2D(tDiffuse, vUv + off).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - off).b);
+      float v = smoothstep(1.05, 0.2, length(c * vec2(1.0, 0.9)) * 1.45);
+      col *= mix(1.0 - uVignette, 1.0, v);
+      col += (hash(gl_FragCoord.xy + uSeed * 97.0) - 0.5) * uGrain;
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+});
+composer.addPass(lens);
+if (VARIANT === 'loop') lens.uniforms.uGrain.value = 0.012;
+if (params.has('grain')) lens.uniforms.uGrain.value = Math.max(0, parseFloat(params.get('grain')) || 0);
+
+function setRenderSize(w, h, pr) {
+  pixelRatio = pr;
+  prU.value = pr;
+  renderer.setPixelRatio(pr);
+  renderer.setSize(w, h, false);
+  composer.setPixelRatio(pr);
+  composer.setSize(w, h);
+  lens.uniforms.uRes.value.set(w * pr, h * pr);
+  floor.getRenderTarget().setSize(Math.round(w * pr * reflectScale), Math.round(h * pr * reflectScale));
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+setRenderSize(innerWidth, innerHeight, pixelRatio);
+
+// ---------------------------------------------------------------------------
+// Animation. Everything is a function of `time`, so any frame can be re-rendered exactly.
+// ---------------------------------------------------------------------------
+const { packets, perStream } = buildPanels();
+const tmp = new THREE.Vector3();
+let cinematic = true;
+const controls = CAPTURE ? null : new OrbitControls(camera, canvas);
+if (controls) {
+  controls.target.copy(baseTarget);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.minDistance = 5.5;
+  controls.maxDistance = 22;
+  controls.minPolarAngle = 0.55;
+  controls.maxPolarAngle = 1.53;
+  controls.enabled = false;
+}
+
+function update(time) {
+  const phase = ((time % LOOP) + LOOP) % LOOP / LOOP * TAU;
+  phaseU.value = phase;
+
+  crystal.rotation.y = phase / 5;
+  plasma.rotation.y = -phase;
+  core.position.y = CORE.y + Math.sin(phase) * 0.05;
+
+  const [a, b, c] = rings;
+  a.group.rotation.set(1.18 + 0.16 * Math.sin(phase), phase, 0.12, 'YXZ');
+  b.group.rotation.set(0.42 + 0.14 * Math.sin(phase + 1.4), -phase, 0.95, 'XZY');
+  c.group.rotation.set(1.62 + 0.1 * Math.sin(2 * phase), 0.4, phase, 'XYZ');
+  rings.forEach(({ rider, spec }, i) => {
+    const ang = phase * (i + 1) * (i % 2 ? -1 : 1) + i;
+    rider.position.set(Math.cos(ang) * spec.r, Math.sin(ang) * spec.r, 0);
+  });
+  coreLight.intensity = 18 + Math.sin(phase * 3) * 2;
+
+  const pp = packets.geometry.attributes.position;
+  streams.forEach((s, i) => {
+    for (let k = 0; k < perStream; k++) {
+      const u = (k / perStream + phase / TAU * 3 * 0.5 + s.offset * 0.5) % 1;
+      s.curve.getPointAt(u, tmp);
+      pp.setXYZ(i * perStream + k, tmp.x, tmp.y, tmp.z);
+    }
+  });
+  pp.needsUpdate = true;
+
+  const rp = ribbonSparks.pts.geometry.attributes.position;
+  ribbonSparks.seeds.forEach((s, i) => {
+    const { curve, spec } = ribbonCurves[s.r];
+    const u = (s.u + phase / TAU * s.k * 0.5) % 1;
+    curve.getPointAt(0.02 + u * 0.96, tmp);
+    tmp.y += s.across * spec.width * Math.pow(Math.sin(Math.PI * u), 0.55);
+    rp.setXYZ(i, tmp.x, tmp.y, tmp.z);
+  });
+  rp.needsUpdate = true;
+
+  if (cinematic || CAPTURE) {
+    const yaw = Math.sin(phase) * 0.075;
+    const lift = Math.sin(phase * 2 + 0.6) * 0.1;
+    const dolly = Math.cos(phase) * 0.35;
+    tmp.copy(baseCamPos).sub(baseTarget);
+    tmp.applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+    tmp.multiplyScalar(1 + dolly / tmp.length());
+    camera.position.copy(baseTarget).add(tmp);
+    camera.position.y += lift;
+    camera.lookAt(baseTarget);
+  }
+}
+
+function renderFrame(time) {
+  frameId++;
+  update(time);
+  lens.uniforms.uSeed.value = (time * 7.31) % 1;
+  composer.render();
+}
+
+// ---------------------------------------------------------------------------
+// Boot: wait for fonts (panel textures use them) and expose the capture hooks.
+// ---------------------------------------------------------------------------
+async function fontsReady() {
+  try {
+    await Promise.all([
+      document.fonts.load(`600 30px "JetBrains Mono"`),
+      document.fonts.load(`700 30px "JetBrains Mono"`),
+      document.fonts.load(`500 30px "JetBrains Mono"`),
+      document.fonts.load(`700 40px "Space Grotesk"`),
+      document.fonts.load(`500 20px "Space Grotesk"`),
+    ]);
+    await document.fonts.ready;
+  } catch (_) { /* fall back to system fonts */ }
+}
+
+window.__sceneReady = (async () => {
+  await fontsReady();
+  // Panel art is drawn after fonts load; refresh the textures now that the fonts are available.
+  panelGroups.forEach((group, i) => {
+    const screen = group.children[1];
+    screen.material.map.dispose();
+    screen.material.map = PANEL_ART[PANELS[i].art]();
+    screen.material.needsUpdate = true;
+  });
+  renderFrame(parseFloat(params.get('t')) || 0);
+  return true;
+})();
+window.renderAt = (time) => renderFrame(time);
+window.LOOP_SECONDS = LOOP;
+
+if (!CAPTURE) {
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let paused = reduceMotion;
+  let time = 3.2;
+  let last = performance.now();
+  const btnPause = document.getElementById('btnPause');
+  const btnCam = document.getElementById('btnCam');
+  const btnShot = document.getElementById('btnShot');
+  const setPaused = (v) => { paused = v; btnPause.textContent = v ? 'Play' : 'Pause'; btnPause.setAttribute('aria-pressed', String(v)); };
+  const setCinematic = (v) => {
+    cinematic = v;
+    controls.enabled = !v;
+    btnCam.setAttribute('aria-pressed', String(v));
+    if (!v) controls.target.copy(baseTarget);
+  };
+  setPaused(paused);
+  btnPause.addEventListener('click', () => setPaused(!paused));
+  btnCam.addEventListener('click', () => setCinematic(!cinematic));
+  canvas.addEventListener('pointerdown', () => { if (cinematic) setCinematic(false); });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'h' || e.key === 'H') document.body.classList.toggle('ui-hidden');
+    if (e.key === ' ') { e.preventDefault(); setPaused(!paused); }
+  });
+  btnShot?.addEventListener('click', () => {
+    btnShot.disabled = true;
+    btnShot.textContent = 'Rendering…';
+    // Let the label paint before the (synchronous) high-resolution frame.
+    requestAnimationFrame(() => setTimeout(() => {
+      const w = innerWidth, h = innerHeight, prev = pixelRatio;
+      const longEdge = Math.max(w, h);
+      try {
+        setRenderSize(w, h, Math.min(3840, renderer.capabilities.maxTextureSize) / longEdge);
+        renderFrame(time);
+        const link = document.createElement('a');
+        link.download = `sushir-winding-sky-${Math.round(time * 100)}.png`;
+        link.href = renderer.domElement.toDataURL('image/png');
+        link.click();
+      } finally {
+        setRenderSize(w, h, prev);
+        btnShot.disabled = false;
+        btnShot.textContent = 'Save 4K still';
+      }
+    }, 30));
+  });
+  addEventListener('resize', () => setRenderSize(innerWidth, innerHeight, Math.min(window.devicePixelRatio || 1, 2)));
+
+  window.__sceneReady.then(() => {
+    const tick = (now) => {
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      if (!paused) time += dt;
+      if (controls.enabled) controls.update();
+      renderFrame(time);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+</script>
+</body>
+</html>
