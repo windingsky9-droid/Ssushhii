@@ -1,3 +1,4 @@
+import re
 import importlib.util
 from pathlib import Path
 
@@ -21,3 +22,21 @@ def test_support_links_stay_owner_configured():
     assert "supportLinks" in config
     index = (ROOT / "portfolio" / "index.html").read_text(encoding="utf-8")
     assert '<section id="support" class="section support" hidden>' in index
+
+
+def test_shop_stays_owner_configured():
+    index = (ROOT / "portfolio" / "index.html").read_text(encoding="utf-8")
+    assert '<section id="shop" class="section shop" hidden>' in index
+    assert '<a href="#shop" id="shopNav" hidden>' in index
+    config = (ROOT / "portfolio" / "site-config.js").read_text(encoding="utf-8")
+    assert "shopItems" in config
+    # the packs ship without checkout links: the owner adds links to store pages they own
+    assert re.findall(r"url:\s*'([^']*)'", config.split("shopItems", 1)[1]) == ["", ""]
+
+
+def test_shop_images_exist():
+    config = (ROOT / "portfolio" / "site-config.js").read_text(encoding="utf-8")
+    images = re.findall(r"image:\s*'([^']+)'", config)
+    assert images
+    for image in images:
+        assert (ROOT / "portfolio" / image).is_file(), image

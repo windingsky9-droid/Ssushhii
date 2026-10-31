@@ -34,6 +34,8 @@ python scripts/check_portfolio.py
 | `media/sky-wheel-card.jpg` | Work card still: the Sky Wheel for an evening in Los Angeles. |
 | `media/celestial-observatory-v14-wheel.jpg` | The full HUD: target sign, aspect reading, chart wheel and ingress log. |
 | `media/celestial-observatory-v15-sky.jpg` | The V15 real-sky shot: Leo and Cancer drawn from catalogue stars behind the ♌ tile. |
+| `media/shop-wallpapers.jpg` | Shop image for the observatory wallpaper pack. |
+| `media/shop-zodiac-prints.jpg` | Shop image for the zodiac star-map prints, in Midnight and Ivory. |
 | `demos/archive/celestial-observatory-v14.html` | V14 frozen as it shipped, for comparison. |
 | `media/archive/` | Earlier stills (V11 showpiece, V13 hero, black hole and pulsar), kept for reference. |
 | `RENDERING_PLAYBOOK.md` | The nineteen techniques behind the observatory and how to reuse them. |
@@ -85,7 +87,15 @@ The full parameter list is at the end of `RENDERING_PLAYBOOK.md`.
 - the Moon's phase, and the next 45 days of sign changes, stations and
   lunations
 - a slider and Play button that move time, so you can watch a retrograde
-- a 1080×1350 chart card to save and share
+- a 1080×1350 chart card to save and share, and a 2400×3200 print poster
+  (8×10.7 in at 300 dpi, or 12×16 in at 200 dpi)
+- Compare: a second moment drawn as an outer ring just inside the sign
+  band, with the aspects between the two charts, the outer planets'
+  positions and houses in the ephemeris, and a Swap button. The slide rule
+  and Play move the outer ring while the inner chart holds still, so today's
+  sky can travel across a birthday chart. Aspects between the rings use 70%
+  of the usual orbs, plus a degree for the Sun or Moon, and "exact in"
+  counts the outer ring moving forward
 - the real sky behind the wheel: 3,232 stars to magnitude 5.6, the
   constellation figures and the Milky Way, placed against the signs by
   ecliptic longitude and latitude, with the bright stars near the zodiac
@@ -103,7 +113,9 @@ point on the eastern horizon (within 0.006°). Everything runs in the browser.
 Star, constellation and Milky Way data come from d3-celestial, © 2015 Olaf
 Frohn, used under the BSD 3-Clause license.
 When the page is hosted, Copy link shares a moment through `?d=`, `tz=` and
-`place=` parameters.
+`place=` parameters. Compare adds `cmp=1`, `d2=`, `tz2=`, `place2=` (or
+`lat2=` and `lon2=`) and the optional names `n1=` and `n2=`; leaving out `d2`
+keeps the outer ring on the present moment.
 
 ## Taking payments and donations
 
@@ -115,6 +127,13 @@ is public once hosted.
    Sponsors, a Stripe Payment Link or a Fiverr gig.
 2. Paste its `https://` link into `supportLinks` in `site-config.js`.
 3. Reload the page. The support section and its nav link appear.
+
+To sell the digital packs, list each one on a store page that pays out to
+you (Gumroad, itch.io, Ko-fi Shop, Lemon Squeezy or a Stripe Payment Link),
+then paste its `https://` checkout link into the matching `url` in
+`shopItems` in `site-config.js`. The Shop section shows only the items that
+have a link, and stays hidden until at least one does. The listing copy,
+prices and payout steps are in `docs/LAUNCH_KIT_3D.md`.
 
 For client work, the service cards and the contact form route briefs to
 email and to the GitHub issue template, so you confirm scope before any

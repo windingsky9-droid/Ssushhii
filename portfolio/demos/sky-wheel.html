@@ -16,7 +16,7 @@
   --brass:#8f5406; --brass-2:#b87414; --brass-soft:rgba(143,84,6,.10);
   --harm:#1d7466; --tense:#b0271f; --fuse:#8f5406; --adjust:#6b4fa3;
   --fire:rgba(206,76,40,.13); --earth:rgba(88,122,52,.14); --air:rgba(196,150,30,.15); --water:rgba(40,100,168,.13);
-  --moon-lit:#fdfdf9; --moon-dark:#3b475e;
+  --moon-lit:#fdfdf9; --moon-dark:#3b475e; --outer:#b02e6a; --outer-soft:rgba(176,46,106,.075);
   --sun:#b86f05; --moon:#5d6a80; --mercury:#2f7f86; --venus:#3f8a4e; --mars:#b8341f; --jupiter:#b0641f; --saturn:#6f5a3c; --uranus:#1d88a8; --neptune:#2b56b0; --pluto:#7a3d86;
   --f-display:"Marcellus","Cinzel","Trajan Pro",Georgia,serif;
   --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -29,7 +29,7 @@
   --brass:#f0b44f; --brass-2:#ffcd78; --brass-soft:rgba(240,180,79,.12);
   --harm:#5fd0b9; --tense:#ff7a6b; --fuse:#f0b44f; --adjust:#b69cff;
   --fire:rgba(255,110,72,.14); --earth:rgba(150,196,100,.12); --air:rgba(255,212,96,.12); --water:rgba(96,160,255,.14);
-  --moon-lit:#eef1f7; --moon-dark:#1a2234;
+  --moon-lit:#eef1f7; --moon-dark:#1a2234; --outer:#ff86b7; --outer-soft:rgba(255,134,183,.085);
   --sky-star:auto; --sky-line:rgba(150,178,230,.20); --sky-mw:rgba(150,175,235,.075); --sky-veil:rgba(13,19,34,.74); --sky-veil0:rgba(13,19,34,0); --sky-label:rgba(190,205,235,.46); --backdrop-o:.34;
   --sun:#ffc453; --moon:#d7deea; --mercury:#6fd6dd; --venus:#8fe0a0; --mars:#ff7a5c; --jupiter:#ffb070; --saturn:#d8c196; --uranus:#6fdcff; --neptune:#8fb0ff; --pluto:#d99be6;
   color-scheme:dark}}
@@ -38,7 +38,7 @@
   --brass:#f0b44f; --brass-2:#ffcd78; --brass-soft:rgba(240,180,79,.12);
   --harm:#5fd0b9; --tense:#ff7a6b; --fuse:#f0b44f; --adjust:#b69cff;
   --fire:rgba(255,110,72,.14); --earth:rgba(150,196,100,.12); --air:rgba(255,212,96,.12); --water:rgba(96,160,255,.14);
-  --moon-lit:#eef1f7; --moon-dark:#1a2234;
+  --moon-lit:#eef1f7; --moon-dark:#1a2234; --outer:#ff86b7; --outer-soft:rgba(255,134,183,.085);
   --sky-star:auto; --sky-line:rgba(150,178,230,.20); --sky-mw:rgba(150,175,235,.075); --sky-veil:rgba(13,19,34,.74); --sky-veil0:rgba(13,19,34,0); --sky-label:rgba(190,205,235,.46); --backdrop-o:.34;
   --sun:#ffc453; --moon:#d7deea; --mercury:#6fd6dd; --venus:#8fe0a0; --mars:#ff7a5c; --jupiter:#ffb070; --saturn:#d8c196; --uranus:#6fdcff; --neptune:#8fb0ff; --pluto:#d99be6;
   color-scheme:dark}
@@ -74,6 +74,20 @@ button,input,select{font:inherit;color:inherit}
 .btn:hover{border-color:var(--brass)}
 .btn.primary{background:var(--brass);border-color:var(--brass);color:var(--paper);font-weight:600}
 .custom{display:flex;gap:12px;flex-wrap:wrap}
+.btn[aria-pressed="true"]{background:var(--brass-soft);border-color:var(--brass);color:var(--brass);font-weight:600}
+
+/* compare: a second moment drawn as an outer ring */
+.cmp{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:flex-end;margin:0 0 16px;padding:12px 14px;border:1px solid var(--rule);border-left:3px solid var(--outer);border-radius:12px;background:var(--plate)}
+.cmp-head{flex:1 0 100%;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;font-size:13px;color:var(--muted)}
+.cmp-head b{font:400 18px/1.2 var(--f-display);letter-spacing:.03em;color:var(--outer)}
+.field input[type="text"]{width:150px}
+.legend{display:grid;gap:3px;font:12px/1.45 var(--f-data);color:var(--muted)}
+.legend>span{display:flex;gap:8px;align-items:baseline;min-width:0}
+.legend b{color:var(--ink);font-weight:500}
+.legend i{flex:none;width:9px;height:9px;border-radius:50%;transform:translateY(1px)}
+.ledger .outer{color:var(--outer)}
+.ledger .outer .h{margin-left:6px;font:500 11px/1 var(--f-data);color:var(--muted)}
+.o{color:var(--outer)}
 
 /* main */
 .main{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:26px 34px;align-items:start}
@@ -174,11 +188,28 @@ table{width:100%;border-collapse:collapse}
     </div>
     <div class="field"><label for="tzSel">Time zone</label><select id="tzSel"></select></div>
     <button type="button" class="btn primary" id="nowBtn">Now</button>
+    <button type="button" class="btn" id="cmpBtn" aria-pressed="false" aria-controls="cmpBox">Compare</button>
+  </form>
+
+  <form class="cmp" id="cmpBox" autocomplete="off" aria-label="Outer ring: a second moment" hidden>
+    <div class="cmp-head"><b>Outer ring</b><span>A second moment around the chart above, with the aspects between the two. Try today's sky against a birthday.</span></div>
+    <div class="field"><label for="when2">Date and time</label><input id="when2" type="datetime-local" min="1800-01-01T00:00" max="2050-12-31T23:59" step="60"></div>
+    <div class="field"><label for="place2">Place</label><select id="place2"></select></div>
+    <div class="custom" id="customBox2" hidden>
+      <div class="field"><label for="lat2">Latitude</label><input id="lat2" type="number" min="-66" max="66" step="0.0001" placeholder="51.51"></div>
+      <div class="field"><label for="lon2">Longitude</label><input id="lon2" type="number" min="-180" max="180" step="0.0001" placeholder="-0.13"></div>
+    </div>
+    <div class="field"><label for="tzSel2">Time zone</label><select id="tzSel2"></select></div>
+    <div class="field"><label for="name1">Inner name</label><input id="name1" type="text" maxlength="24" placeholder="Inner chart"></div>
+    <div class="field"><label for="name2">Outer name</label><input id="name2" type="text" maxlength="24" placeholder="Outer ring"></div>
+    <button type="button" class="btn" id="nowBtn2">Now</button>
+    <button type="button" class="btn" id="swapBtn">Swap rings</button>
   </form>
 
   <main class="main">
     <section class="plate-col" aria-label="Chart wheel">
       <div class="plate"><canvas id="wheel" role="img" aria-label="Chart wheel"></canvas></div>
+      <div class="legend" id="legend" hidden></div>
       <div class="rule-bar">
         <div class="rule-top">
           <span class="data" id="offsetText"><b>On the chosen moment</b></span>
@@ -208,11 +239,11 @@ table{width:100%;border-collapse:collapse}
 
       <div>
         <h2>Ephemeris <em id="retroCount"></em></h2>
-        <div class="scroll"><table class="ledger"><thead><tr><th></th><th>Body</th><th>Position</th><th id="houseHead">House</th><th style="text-align:right">Motion</th></tr></thead><tbody id="ledger"></tbody></table></div>
+        <div class="scroll"><table class="ledger"><thead><tr><th></th><th>Body</th><th>Position</th><th id="houseHead">House</th><th id="outerHead" hidden>Outer</th><th id="motionHead" style="text-align:right">Motion</th></tr></thead><tbody id="ledger"></tbody></table></div>
       </div>
 
       <div>
-        <h2>Aspects <em id="aspCount"></em></h2>
+        <h2><span id="aspTitle">Aspects</span> <em id="aspCount"></em></h2>
         <ul class="asp" id="aspects"></ul>
       </div>
 
@@ -223,20 +254,21 @@ table{width:100%;border-collapse:collapse}
 
       <div class="duo">
         <div>
-          <h2>Moon</h2>
+          <h2>Moon <em id="moonFor"></em></h2>
           <div class="moon"><canvas id="moonDisc" width="168" height="168" role="img" aria-label="Moon phase"></canvas><div><strong id="moonName">—</strong><span id="moonIllum">—</span><span id="moonNext">—</span></div></div>
         </div>
         <div>
-          <h2>Coming up <em>next 45 days</em></h2>
+          <h2>Coming up <em id="evFor">next 45 days</em></h2>
           <ul class="events" id="events"></ul>
         </div>
       </div>
 
       <div class="tools">
         <button type="button" class="btn" id="saveBtn">Save chart card</button>
+        <button type="button" class="btn" id="posterBtn">Save print poster</button>
         <button type="button" class="btn" id="linkBtn" hidden>Copy link</button>
       </div>
-      <p class="note">Positions come from orbital elements checked against the PyEphem library: within a quarter of a degree from 1800 to 2050, and within a tenth for the Sun, Moon and inner planets. Houses are whole-sign houses from the rising sign. The stars behind the wheel are the real sky, placed against the signs by ecliptic longitude and latitude. The signs have drifted about 24° from the constellations of the same names since they were fixed. The meanings are traditional, for curiosity and reflection. Nothing you enter leaves this page.</p>
+      <p class="note">Positions come from orbital elements checked against the PyEphem library: within a quarter of a degree from 1800 to 2050, and within a tenth for the Sun, Moon and inner planets. Houses are whole-sign houses from the rising sign. The stars behind the wheel are the real sky, placed against the signs by ecliptic longitude and latitude. The signs have drifted about 24° from the constellations of the same names since they were fixed. Compare draws a second moment as an outer ring; aspects between the two rings use orbs 70% as wide as aspects within one chart, plus a degree when the Sun or Moon is involved, and "exact in" counts the outer ring moving forward. The print poster is 2400×3200 pixels, which prints at 8×10.7 in at 300 dpi or 12×16 in at 200 dpi. The meanings are traditional, for curiosity and reflection. Nothing you enter leaves this page.</p>
     </section>
   </main>
 
@@ -434,6 +466,8 @@ function tzLabel(tz, ms){ const off = tzOffsetMin(ms, tz), s = off < 0 ? '−' :
 
 // ---------- state ----------
 const S = { live: true, base: null, tz: browserTz, place: null, placeName: '', offset: 0, playing: false, speed: 7, sel: null };
+// Compare mode: a second moment drawn as an outer ring. In Compare the slide rule moves the outer ring.
+S.cmp = { on: false, live: true, base: null, tz: browserTz, place: null, placeName: '' };
 const params = new URLSearchParams(location.search);
 
 // ---------- controls ----------
@@ -444,23 +478,36 @@ placeSel.append(new Option('Other place…', 'custom'));
 const zones = (() => { try { return Intl.supportedValuesOf('timeZone'); } catch { return []; } })();
 const zoneList = [...new Set(['UTC', browserTz, ...CITIES.map((c) => c[3]), ...zones])];
 zoneList.forEach((z) => tzSel.append(new Option(z.replace(/_/g, ' '), z)));
+const placeSel2 = $('place2'), tzSel2 = $('tzSel2');
+for (const o of placeSel.options) placeSel2.append(new Option(o.text, o.value));
+zoneList.forEach((z) => tzSel2.append(new Option(z.replace(/_/g, ' '), z)));
 
-function applyPlaceSelection(){
-  const v = placeSel.value;
-  $('customBox').hidden = v !== 'custom';
-  if (v === '') { S.place = null; S.placeName = ''; }
+// st is S (the chart) or S.cmp (the outer ring)
+function readPlace(sel, st, box, latId, lonId, tzEl){
+  const v = sel.value;
+  $(box).hidden = v !== 'custom';
+  if (v === '') { st.place = null; st.placeName = ''; }
   else if (v === 'custom') {
-    const la = parseFloat($('lat').value), lo = parseFloat($('lon').value);
-    S.place = Number.isFinite(la) && Number.isFinite(lo) ? { lat: Math.max(-66, Math.min(66, la)), lon: Math.max(-180, Math.min(180, lo)) } : null;
-    S.placeName = S.place ? `${Math.abs(S.place.lat).toFixed(2)}°${S.place.lat >= 0 ? 'N' : 'S'} ${Math.abs(S.place.lon).toFixed(2)}°${S.place.lon >= 0 ? 'E' : 'W'}` : '';
+    const la = parseFloat($(latId).value), lo = parseFloat($(lonId).value);
+    st.place = Number.isFinite(la) && Number.isFinite(lo) ? { lat: Math.max(-66, Math.min(66, la)), lon: Math.max(-180, Math.min(180, lo)) } : null;
+    st.placeName = st.place ? `${Math.abs(st.place.lat).toFixed(2)}°${st.place.lat >= 0 ? 'N' : 'S'} ${Math.abs(st.place.lon).toFixed(2)}°${st.place.lon >= 0 ? 'E' : 'W'}` : '';
   } else {
-    const c = CITIES[+v]; S.place = { lat: c[1], lon: c[2] }; S.placeName = c[0]; S.tz = c[3]; tzSel.value = c[3];
+    const c = CITIES[+v]; st.place = { lat: c[1], lon: c[2] }; st.placeName = c[0]; st.tz = c[3]; tzEl.value = c[3];
   }
 }
+const applyPlaceSelection = () => readPlace(placeSel, S, 'customBox', 'lat', 'lon', tzSel);
+const applyPlaceSelection2 = () => readPlace(placeSel2, S.cmp, 'customBox2', 'lat2', 'lon2', tzSel2);
 function baseMs(){ return S.live ? Date.now() : zonedToUtc(S.base, S.tz); }
-function momentMs(){ return baseMs() + S.offset * 86400000; }
+function baseMsB(){ return S.cmp.live ? Date.now() : zonedToUtc(S.cmp.base, S.cmp.tz); }
+function momentMs(){ return baseMs() + (S.cmp.on ? 0 : S.offset * 86400000); }
+function momentMsB(){ return baseMsB() + S.offset * 86400000; }
+const movingMs = () => (S.cmp.on ? momentMsB() : momentMs());
+const movingTz = () => (S.cmp.on ? S.cmp.tz : S.tz);
+const nameA = () => $('name1').value.trim(), nameB = () => $('name2').value.trim();
+const esc = (s) => String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 
 function syncInput(){ $('when').value = toInput(wallParts(baseMs(), S.tz)); }
+function syncInput2(){ $('when2').value = toInput(wallParts(baseMsB(), S.cmp.tz)); }
 $('when').addEventListener('change', () => { const w = fromInput($('when').value); if (!w) return; S.live = false; S.base = w; S.offset = 0; scheduleEvents(); render(); });
 placeSel.addEventListener('change', () => { const w = wallParts(baseMs(), S.tz); applyPlaceSelection(); if (!S.live) S.base = w; syncInput(); scheduleEvents(); render(); });
 for (const id of ['lat', 'lon']) $(id).addEventListener('input', () => { applyPlaceSelection(); render(); });
@@ -468,18 +515,45 @@ tzSel.addEventListener('change', () => { const w = wallParts(baseMs(), S.tz); S.
 $('nowBtn').addEventListener('click', () => { S.live = true; S.offset = 0; stop(); syncInput(); scheduleEvents(); render(); });
 $('controls').addEventListener('submit', (e) => e.preventDefault());
 
+// ---------- compare: the outer ring ----------
+$('when2').addEventListener('change', () => { const w = fromInput($('when2').value); if (!w) return; S.cmp.live = false; S.cmp.base = w; S.offset = 0; scheduleEvents(); render(); });
+placeSel2.addEventListener('change', () => { const w = wallParts(baseMsB(), S.cmp.tz); applyPlaceSelection2(); if (!S.cmp.live) S.cmp.base = w; syncInput2(); scheduleEvents(); render(); });
+for (const id of ['lat2', 'lon2']) $(id).addEventListener('input', () => { applyPlaceSelection2(); render(); });
+tzSel2.addEventListener('change', () => { const w = wallParts(baseMsB(), S.cmp.tz); S.cmp.tz = tzSel2.value; if (!S.cmp.live) S.cmp.base = w; syncInput2(); scheduleEvents(); render(); });
+$('nowBtn2').addEventListener('click', () => { S.cmp.live = true; S.offset = 0; stop(); syncInput2(); scheduleEvents(); render(); });
+for (const id of ['name1', 'name2']) $(id).addEventListener('input', () => render());
+$('cmpBox').addEventListener('submit', (e) => e.preventDefault());
+function setCompare(on){
+  stop(); S.offset = 0; S.sel = null; S.cmp.on = on;
+  $('cmpBox').hidden = !on; $('cmpBtn').setAttribute('aria-pressed', String(on));
+  syncInput(); syncInput2(); scheduleEvents(); render();
+}
+$('cmpBtn').addEventListener('click', () => setCompare(!S.cmp.on));
+// swap the two moments, places and names; the slide rule's offset folds into the outer moment first
+$('swapBtn').addEventListener('click', () => {
+  stop();
+  const a = { w: wallParts(baseMs(), S.tz), live: S.live, tz: S.tz, pv: placeSel.value, la: $('lat').value, lo: $('lon').value, n: $('name1').value };
+  const b = { w: wallParts(momentMsB(), S.cmp.tz), live: S.cmp.live && S.offset === 0, tz: S.cmp.tz, pv: placeSel2.value, la: $('lat2').value, lo: $('lon2').value, n: $('name2').value };
+  S.offset = 0;
+  placeSel.value = b.pv; $('lat').value = b.la; $('lon').value = b.lo; applyPlaceSelection(); S.tz = b.tz; tzSel.value = b.tz; S.live = b.live; S.base = b.w; $('name1').value = b.n;
+  placeSel2.value = a.pv; $('lat2').value = a.la; $('lon2').value = a.lo; applyPlaceSelection2(); S.cmp.tz = a.tz; tzSel2.value = a.tz; S.cmp.live = a.live; S.cmp.base = a.w; $('name2').value = a.n;
+  syncInput(); syncInput2(); scheduleEvents(); render();
+});
+
 // ---------- slide rule ----------
 const scrub = $('scrub');
-scrub.addEventListener('input', () => { S.offset = +scrub.value; if (S.live) freeze(); render(); scheduleEvents(); });
-document.querySelectorAll('[data-step]').forEach((b) => b.addEventListener('click', () => { if (S.live) freeze(); S.offset = Math.max(-365, Math.min(365, S.offset + parseFloat(b.dataset.step))); render(); scheduleEvents(); }));
+scrub.addEventListener('input', () => { S.offset = +scrub.value; freezeMoving(); render(); scheduleEvents(); });
+document.querySelectorAll('[data-step]').forEach((b) => b.addEventListener('click', () => { freezeMoving(); S.offset = Math.max(-365, Math.min(365, S.offset + parseFloat(b.dataset.step))); render(); scheduleEvents(); }));
 document.querySelectorAll('[data-speed]').forEach((b) => b.addEventListener('click', () => { S.speed = +b.dataset.speed; document.querySelectorAll('[data-speed]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }));
 $('resetBtn').addEventListener('click', () => { S.offset = 0; stop(); render(); scheduleEvents(); });
 function freeze(){ S.base = wallParts(Date.now(), S.tz); S.live = false; }
+// the moment the slide rule moves: the chart, or the outer ring in Compare
+function freezeMoving(){ if (!S.cmp.on) { if (S.live) freeze(); } else if (S.cmp.live) { S.cmp.base = wallParts(Date.now(), S.cmp.tz); S.cmp.live = false; } }
 let raf = 0, lastT = 0;
 function stop(){ S.playing = false; $('playBtn').setAttribute('aria-pressed', 'false'); $('playBtn').textContent = 'Play'; cancelAnimationFrame(raf); }
 $('playBtn').addEventListener('click', () => {
   if (S.playing) { stop(); scheduleEvents(); return; }
-  if (S.live) freeze();
+  freezeMoving();
   if (S.offset >= 365) S.offset = -365;
   S.playing = true; $('playBtn').setAttribute('aria-pressed', 'true'); $('playBtn').textContent = 'Pause'; lastT = performance.now();
   const tick = (t) => {
@@ -496,9 +570,9 @@ $('playBtn').addEventListener('click', () => {
 const signOf = (lon) => SIGNS[Math.floor(norm(lon) / 30) % 12];
 function dm(lon){ const L = norm(lon), inSign = L % 30; let d = Math.floor(inSign), m = Math.round((inSign - d) * 60); if (m === 60) { d += 1; m = 0; } return { d, m, text: `${d}°${pad(m)}′` }; }
 function sepAngle(a, b){ let d = Math.abs(norm(a) - norm(b)); return d > 180 ? 360 - d : d; }
-function computeSky(ms){
+function computeSky(ms, place = S.place){
   const jd = E.jdFromDate(new Date(ms)), pos = E.positions(jd);
-  const ang = S.place ? E.angles(jd, S.place.lat, S.place.lon) : null;
+  const ang = place ? E.angles(jd, place.lat, place.lon) : null;
   const names = E.BODIES, asp = [];
   for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
     const A = pos[names[i]], B = pos[names[j]], sep = sepAngle(A.lon, B.lon);
@@ -514,6 +588,29 @@ function computeSky(ms){
   asp.sort((x, y) => x.orb - y.orb);
   return { jd, pos, ang, asp, moon: E.moonPhase(jd) };
 }
+// Aspects from the outer ring (B) to the inner chart (A). Orbs are 70% of the in-chart orbs, plus a
+// degree for the Sun or Moon. Only the outer ring moves, so "applying" follows B's motion alone.
+function crossAspects(A, B){
+  const out = [];
+  for (const a of E.BODIES) for (const b of E.BODIES) {
+    const pa = A.pos[a], pb = B.pos[b], sep = sepAngle(pa.lon, pb.lon);
+    const lum = a === 'sun' || a === 'moon' || b === 'sun' || b === 'moon' ? 1 : 0;
+    for (const t of ASP) {
+      const lim = t.orb * 0.7 + lum, orb = Math.abs(sep - t.a);
+      if (orb > lim) continue;
+      const later = sepAngle(pa.lon, pb.lon + pb.speed / 24), rate = (Math.abs(later - t.a) - orb) * 24;
+      out.push({ a, b, t, orb, lim, applying: rate < 0, days: rate < 0 ? orb / -rate : null });
+    }
+  }
+  return out.sort((x, y) => x.orb - y.orb);
+}
+const poss = (n, fallback) => (n ? `${n}'s` : fallback);
+function crossReading(x){
+  const kB = BODY[x.b].key, kA = BODY[x.a].key;
+  const s = `${poss(nameB(), "the outer ring's")} ${kB} ${PLURAL.has(kB) ? x.t.pl : x.t.verb} ${poss(nameA(), "the inner chart's")} ${kA}.`;
+  return s[0].toUpperCase() + s.slice(1);
+}
+const exactText = (x) => (x.applying ? (x.days < 1 ? 'exact within a day' : x.days < 60 ? `exact in ${Math.round(x.days)} day${Math.round(x.days) === 1 ? '' : 's'}` : 'applying') : 'separating');
 
 // ---------- drawing ----------
 const wheel = $('wheel'), wctx = wheel.getContext('2d');
@@ -555,9 +652,9 @@ function skyBase(size, jd, cache = skyCache, kStar = size / 1000){
   x.globalAlpha = 1; cache.key = key; cache.c = c; return c;
 }
 const ZODIAC_C = new Set(['Ari', 'Tau', 'Gem', 'Cnc', 'Leo', 'Vir', 'Lib', 'Sco', 'Sgr', 'Cap', 'Aqr', 'Psc', 'Oph', 'Ori', 'CMa', 'UMa', 'Cyg', 'Peg']);
-function drawSky(ctx, size, sky, rot){
+function drawSky(ctx, size, sky, rot, cache){
   if (!SK) return;
-  const C = css(), cx = size / 2, base = skyBase(size, sky.jd), pre = precessDeg(sky.jd);
+  const C = css(), cx = size / 2, base = skyBase(size, sky.jd, cache), pre = precessDeg(sky.jd);
   ctx.save(); ctx.translate(cx, cx); ctx.rotate(rot * D2R); ctx.drawImage(base, -base.width / 2, -base.width / 2); ctx.restore();
   // feather the square's edges so the sky melts into the page
   ctx.save(); ctx.globalCompositeOperation = 'destination-out'; const fe = size * 0.07;
@@ -602,23 +699,57 @@ function drawBackdrop(){
   x.clearRect(0, 0, w, h); x.drawImage(b, (w - b.width) / 2, (h - b.width) / 2 - h * 0.08);
 }
 
+// spread crowded glyphs apart around a ring; lons must be sorted, returns display longitudes
+function spread(lons, minSep){
+  const disp = lons.slice();
+  for (let it = 0; it < 80; it++) {
+    let moved = false;
+    for (let i = 0; i < disp.length; i++) {
+      const j = (i + 1) % disp.length; let gap = disp[j] - disp[i]; if (j === 0) gap += 360;
+      if (gap < minSep) { const push = (minSep - gap) / 2 + 0.01; disp[i] -= push; disp[j] += push; moved = true; }
+    }
+    if (!moved) break;
+  }
+  return disp;
+}
+// degree labels: each takes the shallowest lane where its box clears the ones already placed
+function laneLabels(ctx, list, disp, radii, P, pad2, halfH, text){
+  const boxes = [], lane = [];
+  list.forEach((p, i) => {
+    const w = ctx.measureText(text(p)).width / 2 + pad2;
+    let pick = radii.length - 1;
+    for (let L = 0; L < radii.length; L++) {
+      const [lx, ly] = P(disp[i], radii[L]);
+      if (!boxes.some((b) => Math.abs(b.x - lx) < b.w + w && Math.abs(b.y - ly) < b.h + halfH)) { pick = L; break; }
+    }
+    const [lx, ly] = P(disp[i], radii[pick]); boxes.push({ x: lx, y: ly, w, h: halfH }); lane[i] = pick;
+  });
+  return lane;
+}
 function drawWheel(ctx, size, sky, opts = {}){
   const C = css(), col = C.v, cx = size / 2, cy = size / 2;
-  const R0 = size * 0.455, R1 = size * 0.375, RH = size * 0.335, RP = S.place ? size * 0.29 : size * 0.315, RA = size * 0.158;
+  const out = opts.outer || null, cmp = !!out, hasH = !!sky.ang;
+  // Compare keeps the sign band and slides the outer moment into a ring just inside it;
+  // the inner chart's houses and planets move in to make room.
+  const R0 = size * 0.455, R1 = size * 0.375, RB = cmp ? size * 0.298 : R1;
+  const RH = cmp ? (hasH ? size * 0.27 : RB) : size * 0.335;
+  const RP = cmp ? (hasH ? size * 0.226 : size * 0.25) : hasH ? size * 0.29 : size * 0.315;
+  const RA = cmp ? size * 0.112 : size * 0.158;
   const rot = sky.ang ? sky.ang.asc : 0;
   const P = (lon, r) => { const t = Math.PI + (norm(lon) - rot) * D2R; return [cx + r * Math.cos(t), cy - r * Math.sin(t)]; };
   const glyph = col('--f-glyph'), data = col('--f-data');
   ctx.save(); ctx.clearRect(0, 0, size, size);
   if (opts.bg) { ctx.fillStyle = opts.bg; ctx.fillRect(0, 0, size, size); }
-  drawSky(ctx, size, sky, rot);
+  drawSky(ctx, size, sky, rot, opts.skyCache);
   // sign band with element tints
   for (let i = 0; i < 12; i++) {
     const s = SIGNS[i], a0 = Math.PI + (i * 30 - rot) * D2R, a1 = a0 + 30 * D2R;
     ctx.beginPath(); ctx.arc(cx, cy, R0, -a0, -a1, true); ctx.arc(cx, cy, R1, -a1, -a0, false); ctx.closePath();
     ctx.fillStyle = col('--' + s[3]); ctx.fill();
   }
+  if (cmp) { ctx.beginPath(); ctx.arc(cx, cy, R1, 0, Math.PI * 2); ctx.arc(cx, cy, RB, 0, Math.PI * 2, true); ctx.fillStyle = col('--outer-soft'); ctx.fill(); }
   ctx.strokeStyle = col('--rule'); ctx.lineWidth = Math.max(1, size / 700);
-  for (const r of [R0, R1, RA]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke(); }
+  for (const r of cmp ? [R0, R1, RB, RA] : [R0, R1, RA]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke(); }
   if (sky.ang) { ctx.beginPath(); ctx.arc(cx, cy, RH, 0, Math.PI * 2); ctx.stroke(); }
   for (let i = 0; i < 12; i++) {
     const [x0, y0] = P(i * 30, R1), [x1, y1] = P(i * 30, R0);
@@ -648,9 +779,9 @@ function drawWheel(ctx, size, sky, opts = {}){
   }
   // whole-sign houses and angles
   if (sky.ang) {
-    const first = Math.floor(sky.ang.asc / 30);
-    ctx.fillStyle = col('--muted'); ctx.font = `500 ${Math.round(size * 0.022)}px ${data}`;
-    for (let h = 0; h < 12; h++) { const [x, y] = P((first + h) * 30 + 15, (R1 + RH) / 2 - size * 0.006); ctx.fillText(String(h + 1), x, y); }
+    const first = Math.floor(sky.ang.asc / 30), rN = cmp ? (RB + RH) / 2 : (R1 + RH) / 2 - size * 0.006;
+    ctx.fillStyle = col('--muted'); ctx.font = `500 ${Math.round(size * (cmp ? 0.018 : 0.022))}px ${data}`;
+    for (let h = 0; h < 12; h++) { const [x, y] = P((first + h) * 30 + 15, rN); ctx.fillText(String(h + 1), x, y); }
     ctx.strokeStyle = col('--brass'); ctx.lineWidth = Math.max(1.4, size / 420);
     for (const [lon, a, b] of [[sky.ang.asc, 'AC', 'DC'], [sky.ang.mc, 'MC', 'IC']]) {
       const [x0, y0] = P(lon, R0 + size * 0.012), [x1, y1] = P(lon + 180, R0 + size * 0.012);
@@ -661,61 +792,76 @@ function drawWheel(ctx, size, sky, opts = {}){
       ctx.fillText(a, lx, ly); ctx.fillText(b, mx, my);
     }
   }
-  // aspects
+  // aspects: within the chart, or in Compare between the outer ring (o:body) and the chart
   const sel = 'sel' in opts ? opts.sel : S.sel, own = ctx === wctx;
-  for (const x of sky.asp) {
-    const on = !sel || x.a === sel || x.b === sel;
-    const [ax, ay] = P(sky.pos[x.a].lon, RA), [bx, by] = P(sky.pos[x.b].lon, RA);
-    ctx.save(); ctx.strokeStyle = col('--' + x.t.q); ctx.globalAlpha = on ? 0.35 + 0.6 * (1 - x.orb / x.t.orb) : 0.08;
+  const hits = (x) => x.a === sel || (cmp ? sel === 'o:' + x.b : x.b === sel);
+  const lines = cmp ? (opts.cross || []).filter((x, i) => i < 18 || (sel && hits(x))) : sky.asp;
+  for (const x of lines) {
+    const on = !sel || hits(x);
+    const [ax, ay] = P(sky.pos[x.a].lon, RA), [bx, by] = P((cmp ? out : sky).pos[x.b].lon, RA);
+    ctx.save(); ctx.strokeStyle = col('--' + x.t.q); ctx.globalAlpha = on ? 0.35 + 0.6 * (1 - x.orb / (x.lim || x.t.orb)) : 0.08;
     ctx.lineWidth = Math.max(1, size / 520) * (on && sel ? 1.8 : 1);
     if (x.t.q === 'adjust') ctx.setLineDash([size * 0.01, size * 0.008]);
     if (x.t.a === 0) { ctx.beginPath(); ctx.arc((ax + bx) / 2, (ay + by) / 2, size * 0.012, 0, Math.PI * 2); ctx.stroke(); }
     else { ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke(); }
+    if (cmp) {
+      // ends: a dot for the chart's body, a ring for the outer ring's
+      ctx.setLineDash([]); ctx.fillStyle = col('--' + x.a); ctx.beginPath(); ctx.arc(ax, ay, size * 0.0042, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = col('--outer'); ctx.lineWidth = Math.max(1, size / 650); ctx.beginPath(); ctx.arc(bx, by, size * 0.0046, 0, Math.PI * 2); ctx.stroke();
+    }
     ctx.restore();
   }
   // planets: spread crowded glyphs apart, keep a pointer to the true longitude
   const list = E.BODIES.map((b) => ({ b, lon: norm(sky.pos[b].lon) })).sort((p, q) => p.lon - q.lon);
-  const minSep = 9.6; // glyph width over the planet ring radius, in degrees
-  const disp = list.map((p) => p.lon);
-  for (let it = 0; it < 80; it++) {
-    let moved = false;
-    for (let i = 0; i < list.length; i++) {
-      const j = (i + 1) % list.length; let gap = disp[j] - disp[i]; if (j === 0) gap += 360;
-      if (gap < minSep) { const push = (minSep - gap) / 2 + 0.01; disp[i] -= push; disp[j] += push; moved = true; }
-    }
-    if (!moved) break;
-  }
-  // degree labels: each takes the shallowest lane where its box clears the ones already placed
-  const LANES = [0.052, 0.09, 0.128], boxes = [], lane = [];
-  ctx.font = `500 ${Math.round(size * 0.019)}px ${data}`;
-  list.forEach((p, i) => {
-    const q = dm(p.lon), w = ctx.measureText(`${q.d}°${pad(q.m)}℞`).width / 2 + size * 0.004, h = size * 0.013;
-    let pick = 0;
-    for (let L = 0; L < LANES.length; L++) {
-      const [lx, ly] = P(disp[i], RP - size * LANES[L]);
-      if (!boxes.some((b) => Math.abs(b.x - lx) < b.w + w && Math.abs(b.y - ly) < b.h + h)) { pick = L; break; }
-      pick = L;
-    }
-    const [lx, ly] = P(disp[i], RP - size * LANES[pick]); boxes.push({ x: lx, y: ly, w, h }); lane[i] = pick;
-  });
+  const disp = spread(list.map((p) => p.lon), cmp ? 10.4 : 9.6); // glyph width over the planet ring radius, in degrees
+  const gPx = Math.round(size * (cmp ? 0.04 : 0.046)), lPx = Math.round(size * (cmp ? 0.017 : 0.019));
+  const LANES = cmp ? [0.04, 0.066, 0.092] : [0.052, 0.09, 0.128];
+  ctx.font = `500 ${lPx}px ${data}`;
+  const lane = laneLabels(ctx, list, disp, LANES.map((f) => RP - size * f), P, size * 0.004, size * 0.013, (p) => { const q = dm(p.lon); return `${q.d}°${pad(q.m)}℞`; });
   if (own) hitList = [];
+  const tick0 = cmp ? RH : R1, tickLen = size * (cmp ? 0.012 : 0.028), lead = size * (cmp ? 0.024 : 0.03);
   list.forEach((p, i) => {
     const on = !sel || sel === p.b, c = col('--' + p.b);
-    const [t0x, t0y] = P(p.lon, R1), [t1x, t1y] = P(p.lon, R1 - size * 0.028), [gx, gy] = P(disp[i], RP);
+    const [t0x, t0y] = P(p.lon, tick0), [t1x, t1y] = P(p.lon, tick0 - tickLen), [gx, gy] = P(disp[i], RP);
     ctx.save(); ctx.globalAlpha = on ? 1 : 0.35;
     ctx.strokeStyle = c; ctx.lineWidth = Math.max(1.2, size / 450);
     ctx.beginPath(); ctx.moveTo(t0x, t0y); ctx.lineTo(t1x, t1y); ctx.stroke();
-    const [kx, ky] = P(disp[i], RP + size * 0.03);
+    const [kx, ky] = P(disp[i], RP + lead);
     ctx.globalAlpha *= 0.5; ctx.lineWidth = Math.max(0.8, size / 900); ctx.beginPath(); ctx.moveTo(t1x, t1y); ctx.lineTo(kx, ky); ctx.stroke(); ctx.globalAlpha = on ? 1 : 0.35;
-    if (sel === p.b) { ctx.fillStyle = col('--brass-soft'); ctx.beginPath(); ctx.arc(gx, gy, size * 0.034, 0, Math.PI * 2); ctx.fill(); }
-    ctx.fillStyle = c; ctx.font = `${Math.round(size * 0.046)}px ${glyph}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if (sel === p.b) { ctx.fillStyle = col('--brass-soft'); ctx.beginPath(); ctx.arc(gx, gy, size * (cmp ? 0.03 : 0.034), 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = c; ctx.font = `${gPx}px ${glyph}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(BODY[p.b].g + TXT, gx, gy);
     const [lx, ly] = P(disp[i], RP - size * LANES[lane[i]]), q = dm(p.lon);
-    ctx.fillStyle = col('--ink'); ctx.font = `500 ${Math.round(size * 0.019)}px ${data}`;
+    ctx.fillStyle = col('--ink'); ctx.font = `500 ${lPx}px ${data}`;
     ctx.fillText(`${q.d}°${pad(q.m)}${sky.pos[p.b].retro ? '℞' : ''}`, lx, ly);
     ctx.restore();
-    if (own) hitList.push({ b: p.b, x: gx, y: gy, r: size * 0.04 });
+    if (own) hitList.push({ b: p.b, x: gx, y: gy, r: size * (cmp ? 0.034 : 0.04) });
   });
+  // the outer ring's planets, in one colour so the two moments never mix
+  if (cmp) {
+    const listB = E.BODIES.map((b) => ({ b, lon: norm(out.pos[b].lon) })).sort((p, q) => p.lon - q.lon);
+    const dispB = spread(listB.map((p) => p.lon), 6.2), RG = size * 0.343, LB = [size * 0.316, size * 0.304];
+    const gB = Math.round(size * 0.031), lB = Math.round(size * 0.0145), oc = col('--outer');
+    const deg = (p) => `${Math.floor(norm(p.lon) % 30)}°`;
+    ctx.font = `500 ${lB}px ${data}`;
+    const laneB = laneLabels(ctx, listB, dispB, LB, P, size * 0.003, size * 0.0095, (p) => deg(p) + '℞');
+    listB.forEach((p, i) => {
+      const id = 'o:' + p.b, on = !sel || sel === id;
+      const [t0x, t0y] = P(p.lon, R1), [t1x, t1y] = P(p.lon, R1 - size * 0.01), [gx, gy] = P(dispB[i], RG), [kx, ky] = P(dispB[i], RG + size * 0.017);
+      ctx.save(); ctx.globalAlpha = on ? 1 : 0.35;
+      ctx.strokeStyle = oc; ctx.lineWidth = Math.max(1.2, size / 450);
+      ctx.beginPath(); ctx.moveTo(t0x, t0y); ctx.lineTo(t1x, t1y); ctx.stroke();
+      ctx.globalAlpha *= 0.5; ctx.lineWidth = Math.max(0.8, size / 900); ctx.beginPath(); ctx.moveTo(t1x, t1y); ctx.lineTo(kx, ky); ctx.stroke(); ctx.globalAlpha = on ? 1 : 0.35;
+      if (sel === id) { ctx.fillStyle = col('--brass-soft'); ctx.beginPath(); ctx.arc(gx, gy, size * 0.025, 0, Math.PI * 2); ctx.fill(); }
+      ctx.fillStyle = oc; ctx.font = `${gB}px ${glyph}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(BODY[p.b].g + TXT, gx, gy);
+      const [lx, ly] = P(dispB[i], LB[laneB[i]]);
+      ctx.font = `500 ${lB}px ${data}`;
+      ctx.fillText(deg(p) + (out.pos[p.b].retro ? '℞' : ''), lx, ly);
+      ctx.restore();
+      if (own) hitList.push({ b: id, x: gx, y: gy, r: size * 0.028 });
+    });
+  }
   // centre mark
   ctx.fillStyle = col('--brass'); ctx.beginPath(); ctx.arc(cx, cy, size * 0.006, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
@@ -743,61 +889,95 @@ const phaseName = (a) => a < 11.25 || a >= 348.75 ? 'New Moon' : a < 78.75 ? 'Wa
 // ---------- panels ----------
 const PLURAL = new Set(['feelings', 'dreams']);
 function readingOf(x){ const A = BODY[x.a].key, B = BODY[x.b].key; return A[0].toUpperCase() + A.slice(1) + ' ' + (PLURAL.has(A) ? x.t.pl : x.t.verb) + ' ' + B + '.'; }
+// the balance of elements and modes, weighted toward the Sun, Moon and rising sign
+function balanceOf(sky){
+  const el = { fire: 0, earth: 0, air: 0, water: 0 }, md = [0, 0, 0];
+  const add = (lon, w) => { const i = Math.floor(norm(lon) / 30) % 12; el[SIGNS[i][3]] += w; md[i % 3] += w; };
+  for (const b of E.BODIES) add(sky.pos[b].lon, WEIGHT[b]); if (sky.ang) add(sky.ang.asc, 2);
+  const tot = Object.values(el).reduce((a, v) => a + v, 0), maxE = Object.entries(el).sort((a, b) => b[1] - a[1]), maxM = md.map((v, i) => [i, v]).sort((a, b) => b[1] - a[1]);
+  const lowE = maxE[3][1] / tot < 0.08 ? ` Little ${maxE[3][0]}, so ${ELEM[maxE[3][0]].split(',')[0]} takes more effort.` : '';
+  return { el, md, tot, maxE, maxM, lowE, sum: `Mostly ${maxE[0][0]} and ${MODE[maxM[0][0]][0]}: a sky built for ${ELEM[maxE[0][0]]}, ${MODE[maxM[0][0]][1]}.` };
+}
+const selName = (id) => (id.startsWith('o:') ? `${BODY[id.slice(2)].name} (outer)` : BODY[id].name);
+const houseOf = (lon, ang) => ((Math.floor(norm(lon) / 30) - Math.floor(ang.asc / 30) + 12) % 12) + 1;
+const orbText = (v) => { let o = Math.floor(v), m = Math.round((v - o) * 60); if (m === 60) { o += 1; m = 0; } return `${o}°${pad(m)}′`; };
+const posCell = (lon, retro) => { const s = signOf(lon), q = dm(lon); return `${q.d}°<span class="g">${s[0]}${TXT}</span>${pad(q.m)}′${retro ? '<span class="rx" title="Retrograde">℞</span>' : ''}`; };
+let lastB = null, lastCross = null;
 function render(){
   sizeWheel();
   const ms = momentMs(), sky = computeSky(ms); lastSky = sky;
-  drawWheel(wctx, wheel.width, sky);
+  // two rings on the same minute would only show every planet meeting itself, so they get a hint instead
+  const msB = S.cmp.on ? momentMsB() : 0, skyB = S.cmp.on ? computeSky(msB, S.cmp.place) : null, same = !!skyB && Math.abs(ms - msB) < 60000;
+  const cross = skyB ? (same ? [] : crossAspects(sky, skyB)) : null;
+  lastB = skyB; lastCross = cross;
+  drawWheel(wctx, wheel.width, sky, skyB ? { outer: skyB, cross } : {});
   // masthead
   $('momentText').textContent = longFmt(S.tz).format(new Date(ms));
   $('placeText').textContent = `${S.placeName ? S.placeName + ' · ' : ''}${S.tz.replace(/_/g, ' ')} (${tzLabel(S.tz, ms)})`;
-  $('liveTag').hidden = !(S.live && S.offset === 0);
-  // slide rule
+  $('liveTag').hidden = !(S.live && (S.cmp.on || S.offset === 0));
+  // which moment is which, under the wheel in Compare
+  $('legend').hidden = !skyB;
+  if (skyB) $('legend').innerHTML = [[nameA() || 'Inner chart', 'var(--ink)', ms, S.tz, S.placeName, false], [nameB() || 'Outer ring', 'var(--outer)', msB, S.cmp.tz, S.cmp.placeName, S.cmp.live && S.offset === 0]]
+    .map(([n, c, t, tz, pl, live]) => `<span><i style="background:${c}"></i><span><b>${esc(n)}</b> · ${longFmt(tz).format(new Date(t))}${pl ? ' · ' + esc(pl) : ''}${live ? ' · live' : ''}</span></span>`).join('');
+  // slide rule: it moves the chart, or the outer ring in Compare
   scrub.value = String(Math.round(S.offset));
   const off = S.offset, absd = Math.abs(off);
-  $('offsetText').innerHTML = Math.abs(off) < 0.02 ? '<b>On the chosen moment</b>' : `<b>${absd >= 1 ? Math.floor(absd) + ' day' + (Math.floor(absd) === 1 ? '' : 's') : ''}${absd % 1 >= 0.02 ? (absd >= 1 ? ' ' : '') + Math.round((absd % 1) * 24) + ' h' : ''}</b> ${off < 0 ? 'before' : 'after'} · ${shortFmt(S.tz).format(new Date(ms))}`;
+  $('offsetText').innerHTML = (S.cmp.on ? 'Outer ring · ' : '') + (Math.abs(off) < 0.02 ? '<b>On the chosen moment</b>' : `<b>${absd >= 1 ? Math.floor(absd) + ' day' + (Math.floor(absd) === 1 ? '' : 's') : ''}${absd % 1 >= 0.02 ? (absd >= 1 ? ' ' : '') + Math.round((absd % 1) * 24) + ' h' : ''}</b> ${off < 0 ? 'before' : 'after'} · ${shortFmt(movingTz()).format(new Date(movingMs()))}`);
   // big three
   const sun = sky.pos.sun.lon, moon = sky.pos.moon.lon, s1 = signOf(sun), s2 = signOf(moon);
   const big = [['Sun', s1, dm(sun).text], ['Moon', s2, dm(moon).text]];
   if (sky.ang) big.push(['Rising', signOf(sky.ang.asc), dm(sky.ang.asc).text]);
   else big.push(['Rising', null, 'Pick a place to see it']);
   $('big3').innerHTML = big.map(([k, s, t]) => `<div><small>${k}</small><strong>${s ? `<span class="g" style="display:inline;font-size:18px;color:var(--brass)">${s[0]}${TXT}</span> ${s[1]}` : '—'}</strong><span>${s ? `${t} · ${s[2]}` : t}</span></div>`).join('');
-  // ledger
+  // ledger, with the outer ring's positions and the chart's houses they fall in, in Compare
   let retro = 0;
+  const hideSp = skyB ? ' hidden' : '';
   const rows = E.BODIES.map((b) => {
-    const p = sky.pos[b], s = signOf(p.lon), q = dm(p.lon); if (p.retro && b !== 'sun' && b !== 'moon') retro++;
-    const house = sky.ang ? ((Math.floor(norm(p.lon) / 30) - Math.floor(sky.ang.asc / 30) + 12) % 12) + 1 : '';
+    const p = sky.pos[b], lum = b === 'sun' || b === 'moon'; if (p.retro && !lum) retro++;
+    const house = sky.ang ? houseOf(p.lon, sky.ang) : '';
     const dg = dignity(b, p.lon), fx = starNear(p.lon);
     const tags = (dg ? `<span class="tag ${dg[0]}">${dg[1]}</span>` : '') + (fx ? `<span class="tag star" title="Within 1.5° of a bright fixed star">on ${fx}</span>` : '');
-    return `<tr data-b="${b}" aria-selected="${S.sel === b}" tabindex="0"><td class="gl" style="color:var(--${b})">${BODY[b].g}${TXT}</td><td>${BODY[b].name}${tags}</td><td class="pos">${q.d}°<span class="g">${s[0]}${TXT}</span>${pad(q.m)}′${p.retro && b !== 'sun' && b !== 'moon' ? '<span class="rx" title="Retrograde">℞</span>' : ''}</td><td class="data">${house}</td><td class="sp">${p.speed >= 0 ? '' : '−'}${Math.abs(p.speed).toFixed(2)}°/day</td></tr>`;
+    let outer = '';
+    if (skyB) { const o = skyB.pos[b], h = sky.ang ? houseOf(o.lon, sky.ang) : 0; outer = `<td class="pos outer">${posCell(o.lon, o.retro && !lum)}${h ? `<span class="h" title="In house ${h} of the inner chart">h${h}</span>` : ''}</td>`; }
+    return `<tr data-b="${b}" aria-selected="${S.sel === b}" tabindex="0"><td class="gl" style="color:var(--${b})">${BODY[b].g}${TXT}</td><td>${BODY[b].name}${tags}</td><td class="pos">${posCell(p.lon, p.retro && !lum)}</td><td class="data">${house}</td>${outer}<td class="sp"${hideSp}>${p.speed >= 0 ? '' : '−'}${Math.abs(p.speed).toFixed(2)}°/day</td></tr>`;
   });
-  if (sky.ang) for (const [k, lon] of [['Ascendant', sky.ang.asc], ['Midheaven', sky.ang.mc]]) { const s = signOf(lon), q = dm(lon); rows.push(`<tr class="axis"><td class="gl" style="color:var(--brass)">${k === 'Ascendant' ? 'AC' : 'MC'}</td><td>${k}</td><td class="pos">${q.d}°<span class="g">${s[0]}${TXT}</span>${pad(q.m)}′</td><td class="data">${k === 'Ascendant' ? 1 : ((Math.floor(lon / 30) - Math.floor(sky.ang.asc / 30) + 12) % 12) + 1}</td><td class="sp"></td></tr>`); }
+  if (sky.ang) for (const [k, lon, lonB] of [['Ascendant', sky.ang.asc, skyB && skyB.ang ? skyB.ang.asc : null], ['Midheaven', sky.ang.mc, skyB && skyB.ang ? skyB.ang.mc : null]]) {
+    const ob = skyB ? `<td class="pos outer">${lonB === null ? '' : posCell(lonB, false)}</td>` : '';
+    rows.push(`<tr class="axis"><td class="gl" style="color:var(--brass)">${k === 'Ascendant' ? 'AC' : 'MC'}</td><td>${k}</td><td class="pos">${posCell(lon, false)}</td><td class="data">${k === 'Ascendant' ? 1 : houseOf(lon, sky.ang)}</td>${ob}<td class="sp"${hideSp}></td></tr>`);
+  }
   $('ledger').innerHTML = rows.join('');
   $('houseHead').hidden = !sky.ang; document.querySelectorAll('.ledger td:nth-child(4)').forEach((td) => { td.hidden = !sky.ang; });
+  $('outerHead').hidden = !skyB; $('motionHead').hidden = !!skyB;
   $('retroCount').textContent = retro ? `${retro} retrograde` : 'all direct';
-  // aspects
-  const shown = (S.sel ? sky.asp.filter((x) => x.a === S.sel || x.b === S.sel) : sky.asp).slice(0, 9);
-  $('aspCount').textContent = S.sel ? `${BODY[S.sel].name} · ${shown.length}` : `${sky.asp.length} in orb`;
-  $('aspects').innerHTML = shown.map((x) => {
-    const o = Math.floor(x.orb), om = Math.round((x.orb - o) * 60);
-    const when = x.applying ? (x.days < 1 ? 'exact within a day' : x.days < 60 ? `exact in ${Math.round(x.days)} day${Math.round(x.days) === 1 ? '' : 's'}` : 'applying') : 'separating';
-    return `<li><span class="pair" style="color:var(--${x.a})">${BODY[x.a].g}${TXT}<i class="${x.t.q}">${x.t.g}${TXT}</i><span style="color:var(--${x.b})">${BODY[x.b].g}${TXT}</span></span><p>${BODY[x.a].name} ${x.t.n} ${BODY[x.b].name}<small>${readingOf(x)}</small></p><span class="orb">${o}°${pad(om)}′ · ${when}</span></li>`;
-  }).join('') || '<li><span></span><p>No major aspects are in orb at this moment.</p></li>';
+  // aspects: within the chart, or between the two rings in Compare
+  if (cross) {
+    const shown = (S.sel ? cross.filter((x) => x.a === S.sel || 'o:' + x.b === S.sel) : cross).slice(0, 12);
+    $('aspTitle').textContent = 'Between the rings';
+    $('aspCount').textContent = same ? 'same moment' : S.sel ? `${selName(S.sel)} · ${shown.length}` : `${cross.length} in orb`;
+    $('aspects').innerHTML = same ? '<li><span></span><p>Both rings show the same moment. Change the date at the top, for example to a birthday, to read it against this sky.</p></li>' : shown.map((x) => `<li><span class="pair"><span class="o">${BODY[x.b].g}${TXT}</span><i class="${x.t.q}">${x.t.g}${TXT}</i><span style="color:var(--${x.a})">${BODY[x.a].g}${TXT}</span></span><p><span class="o">${BODY[x.b].name}</span> ${x.t.n} ${BODY[x.a].name}<small>${esc(crossReading(x))}</small></p><span class="orb">${orbText(x.orb)} · ${exactText(x)}</span></li>`).join('')
+      || '<li><span></span><p>No aspects link the two rings at this moment.</p></li>';
+  } else {
+    const shown = (S.sel ? sky.asp.filter((x) => x.a === S.sel || x.b === S.sel) : sky.asp).slice(0, 9);
+    $('aspTitle').textContent = 'Aspects';
+    $('aspCount').textContent = S.sel ? `${selName(S.sel)} · ${shown.length}` : `${sky.asp.length} in orb`;
+    $('aspects').innerHTML = shown.map((x) => `<li><span class="pair" style="color:var(--${x.a})">${BODY[x.a].g}${TXT}<i class="${x.t.q}">${x.t.g}${TXT}</i><span style="color:var(--${x.b})">${BODY[x.b].g}${TXT}</span></span><p>${BODY[x.a].name} ${x.t.n} ${BODY[x.b].name}<small>${readingOf(x)}</small></p><span class="orb">${orbText(x.orb)} · ${exactText(x)}</span></li>`).join('')
+      || '<li><span></span><p>No major aspects are in orb at this moment.</p></li>';
+  }
   // balance of elements and modes
-  const el = { fire: 0, earth: 0, air: 0, water: 0 }, md = [0, 0, 0];
-  const add = (lon, w) => { const i = Math.floor(norm(lon) / 30) % 12; el[SIGNS[i][3]] += w; md[i % 3] += w; };
-  for (const b of E.BODIES) add(sky.pos[b].lon, WEIGHT[b]); if (sky.ang) add(sky.ang.asc, 2);
-  const tot = Object.values(el).reduce((a, v) => a + v, 0), maxE = Object.entries(el).sort((a, b) => b[1] - a[1]), maxM = md.map((v, i) => [i, v]).sort((a, b) => b[1] - a[1]);
+  const bal = balanceOf(sky), { el, md, tot } = bal;
   const tint = { fire: 'var(--mars)', earth: 'var(--venus)', air: 'var(--sun)', water: 'var(--neptune)' };
   const barRow = (label, v, c) => `<div class="row"><b>${label}</b><div class="bar"><i style="width:${Math.round(v / tot * 100)}%;background:${c}"></i></div><span class="n">${Math.round(v / tot * 100)}%</span></div>`;
-  const lowE = maxE[3][1] / tot < 0.08 ? ` Little ${maxE[3][0]}, so ${ELEM[maxE[3][0]].split(',')[0]} takes more effort.` : '';
   $('balance').innerHTML = `<div>${Object.keys(el).map((k) => barRow(k[0].toUpperCase() + k.slice(1), el[k], tint[k])).join('')}</div><div>${MODE.map(([n], i) => barRow(n[0].toUpperCase() + n.slice(1), md[i], 'var(--brass)')).join('')}</div>` +
-    `<p class="bal-sum">Mostly <b>${maxE[0][0]}</b> and <b>${MODE[maxM[0][0]][0]}</b>: a sky built for ${ELEM[maxE[0][0]]}, ${MODE[maxM[0][0]][1]}.${lowE}</p>`;
-  // moon
-  const ph = sky.moon; drawMoon(ph);
+    `<p class="bal-sum">Mostly <b>${bal.maxE[0][0]}</b> and <b>${MODE[bal.maxM[0][0]][0]}</b>: a sky built for ${ELEM[bal.maxE[0][0]]}, ${MODE[bal.maxM[0][0]][1]}.${bal.lowE}</p>`;
+  // moon: the moment that moves, so the outer ring's Moon in Compare
+  const mSky = skyB || sky, ph = mSky.moon; drawMoon(ph);
+  $('moonFor').textContent = skyB ? 'outer ring' : '';
+  $('evFor').textContent = skyB ? 'outer ring' : 'next 45 days';
   $('moonName').textContent = phaseName(ph.angle);
-  $('moonIllum').textContent = `${Math.round(ph.illum * 100)}% lit · in ${signOf(moon)[1]}`;
+  $('moonIllum').textContent = `${Math.round(ph.illum * 100)}% lit · in ${signOf(mSky.pos.moon.lon)[1]}`;
   // accessible summary of the wheel
-  wheel.setAttribute('aria-label', 'Chart wheel. ' + E.BODIES.map((b) => `${BODY[b].name} ${dm(sky.pos[b].lon).text} ${signOf(sky.pos[b].lon)[1]}${sky.pos[b].retro && b !== 'sun' && b !== 'moon' ? ' retrograde' : ''}`).join(', ') + (sky.ang ? `. Rising ${signOf(sky.ang.asc)[1]}.` : '.'));
+  const said = (k) => E.BODIES.map((b) => `${BODY[b].name} ${dm(k.pos[b].lon).text} ${signOf(k.pos[b].lon)[1]}${k.pos[b].retro && b !== 'sun' && b !== 'moon' ? ' retrograde' : ''}`).join(', ');
+  wheel.setAttribute('aria-label', 'Chart wheel. ' + said(sky) + (sky.ang ? `. Rising ${signOf(sky.ang.asc)[1]}.` : '.') + (skyB ? ` Outer ring: ${said(skyB)}. ${cross.length} aspects between the rings.` : ''));
 }
 $('ledger').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-b]'); if (!tr) return; S.sel = S.sel === tr.dataset.b ? null : tr.dataset.b; render(); });
 $('ledger').addEventListener('keydown', (e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const tr = e.target.closest('tr[data-b]'); if (!tr) return; e.preventDefault(); S.sel = S.sel === tr.dataset.b ? null : tr.dataset.b; render(); });
@@ -837,44 +1017,123 @@ let evTimer = 0;
 function scheduleEvents(){ clearTimeout(evTimer); evTimer = setTimeout(renderEvents, S.playing ? 400 : 60); }
 function renderEvents(){
   if (S.playing) return;
-  const ms = momentMs(), jd0 = E.jdFromDate(new Date(ms)), ev = upcoming(jd0);
+  const ms = movingMs(), tz = movingTz(), jd0 = E.jdFromDate(new Date(ms)), ev = upcoming(jd0);
   const toMs = (jd) => (jd - 2440587.5) * 86400000;
-  $('events').innerHTML = ev.slice(0, 9).map((e) => `<li><time>${shortFmt(S.tz).format(new Date(toMs(e.jd)))} ${timeFmt(S.tz).format(new Date(toMs(e.jd)))}</time><span>${e.lun ? `<span class="lun ${e.lun}" aria-hidden="true"></span>` : `<span class="g">${e.g}${TXT}</span>`} ${e.text}</span></li>`).join('') || '<li><time></time><span>Nothing changes sign in the next 45 days.</span></li>';
+  $('events').innerHTML = ev.slice(0, 9).map((e) => `<li><time>${shortFmt(tz).format(new Date(toMs(e.jd)))} ${timeFmt(tz).format(new Date(toMs(e.jd)))}</time><span>${e.lun ? `<span class="lun ${e.lun}" aria-hidden="true"></span>` : `<span class="g">${e.g}${TXT}</span>`} ${e.text}</span></li>`).join('') || '<li><time></time><span>Nothing changes sign in the next 45 days.</span></li>';
   const nm = ev.find((e) => /New Moon/.test(e.text)), fm = ev.find((e) => /Full Moon/.test(e.text));
-  const bits = []; if (fm) bits.push(`Full ${shortFmt(S.tz).format(new Date(toMs(fm.jd)))}`); if (nm) bits.push(`New ${shortFmt(S.tz).format(new Date(toMs(nm.jd)))}`);
+  const bits = []; if (fm) bits.push(`Full ${shortFmt(tz).format(new Date(toMs(fm.jd)))}`); if (nm) bits.push(`New ${shortFmt(tz).format(new Date(toMs(nm.jd)))}`);
   $('moonNext').textContent = bits.join(' · ');
 }
 
-// ---------- chart card and link ----------
+// ---------- chart card, print poster and link ----------
 function toast(t){ const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, 2400); }
 let viewerDownloads = null;
 if (window.claude && typeof window.claude.use === 'function') window.claude.use('downloads').then((d) => { viewerDownloads = d; }, () => {});
-$('saveBtn').addEventListener('click', () => {
-  const sky = lastSky || computeSky(momentMs()), W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
-  const x = c.getContext('2d'), C = css(), col = C.v;
+function deliver(c, name, type, quality, done){
+  c.toBlob((blob) => {
+    c.width = c.height = 0;
+    if (!blob) { toast('The image could not be made on this device'); return; }
+    if (viewerDownloads) { viewerDownloads.save({ filename: name, data: blob }).then(() => toast(done), (e) => { if (e && e.code !== 'declined') toast('Saving is not available here'); }); return; }
+    const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 4000); toast(done);
+  }, type, quality);
+}
+// set a font, shrinking it until the text fits the width
+function fitFont(x, text, maxW, px, family, weight = ''){ let s = px; for (;;) { x.font = `${weight}${Math.round(s)}px ${family}`; if (s <= 8 || x.measureText(text).width <= maxW) return; s *= 0.94; } }
+const stamp = () => toInput(wallParts(momentMs(), S.tz)).replace(/[:T]/g, '-');
+function current(){
+  const sky = lastSky || computeSky(momentMs()), skyB = S.cmp.on ? lastB || computeSky(momentMsB(), S.cmp.place) : null;
+  return { sky, skyB, cross: skyB ? lastCross || crossAspects(sky, skyB) : null };
+}
+// the foot of a card or poster: the big three, or in Compare the closest aspects between the rings
+function footItems(sky, cross){
+  if (cross) return cross.slice(0, 3).map((x) => ({ glyphs: [BODY[x.b].g + TXT, `${x.t.g}${TXT} ${BODY[x.a].g}${TXT}`], main: `${BODY[x.b].name} ${x.t.n} ${BODY[x.a].name}`, sub: `${orbText(x.orb)} · ${exactText(x)}` }));
+  const out = [['SUN', sky.pos.sun.lon], ['MOON', sky.pos.moon.lon]]; if (sky.ang) out.push(['RISING', sky.ang.asc]);
+  return out.map(([k, lon]) => { const s = signOf(lon); return { label: k, main: s[1], sub: `${dm(lon).text} · ${s[2]}` }; });
+}
+// glyph pairs: the outer ring's body in its own colour, then the aspect and the chart's body
+function glyphPair(x, g, left, y, px, col, align){
+  x.font = `${px}px ${col('--f-glyph')}`;
+  const w0 = x.measureText(g[0] + ' ').width, w = w0 + x.measureText(g[1]).width, x0 = align === 'center' ? left - w / 2 : left;
+  x.textAlign = 'left'; x.fillStyle = col('--outer'); x.fillText(g[0], x0, y); x.fillStyle = col('--muted'); x.fillText(g[1], x0 + w0, y); x.textAlign = align;
+}
+function chartCard(){
+  const { sky, skyB, cross } = current(), W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), col = css().v;
   x.fillStyle = col('--paper'); x.fillRect(0, 0, W, H);
   x.fillStyle = col('--ink'); x.textAlign = 'left'; x.textBaseline = 'alphabetic';
   x.font = `64px ${col('--f-display')}`; x.fillText('Sky', 70, 120); const w1 = x.measureText('Sky ').width; x.fillStyle = col('--brass'); x.fillText('Wheel', 70 + w1, 120);
-  x.fillStyle = col('--muted'); x.font = `500 26px ${col('--f-data')}`;
-  x.fillText(longFmt(S.tz).format(new Date(momentMs())), 72, 168);
-  x.fillText(S.placeName ? `${S.placeName} · ${tzLabel(S.tz, momentMs())}` : `${S.tz.replace(/_/g, ' ')} · ${tzLabel(S.tz, momentMs())}`, 72, 206);
-  const ws = 900, off = document.createElement('canvas'); off.width = ws; off.height = ws; drawWheel(off.getContext('2d'), ws, sky, { sel: null });
-  x.drawImage(off, (W - ws) / 2, 232);
-  const big = [['SUN', signOf(sky.pos.sun.lon)], ['MOON', signOf(sky.pos.moon.lon)]]; if (sky.ang) big.push(['RISING', signOf(sky.ang.asc)]);
-  const colW = (W - 140) / big.length;
-  big.forEach(([k, s], i) => {
-    const bx = 70 + i * colW; x.fillStyle = col('--brass'); x.fillRect(bx, 1160, colW - 20, 3);
-    x.fillStyle = col('--muted'); x.font = `500 20px ${col('--f-data')}`; x.fillText(k, bx, 1196);
-    x.fillStyle = col('--ink'); x.font = `40px ${col('--f-display')}`; x.fillText(s[1], bx, 1244);
-    x.fillStyle = col('--muted'); x.font = `22px ${col('--f-body')}`; x.fillText(s[2], bx, 1278);
+  let wy = 232;
+  if (skyB) {
+    const line = (dot, name, ms, tz, pl, y) => {
+      x.fillStyle = dot; x.beginPath(); x.arc(79, y - 8, 7, 0, Math.PI * 2); x.fill();
+      const t = `${name} · ${longFmt(tz).format(new Date(ms))}${pl ? ' · ' + pl : ''}`;
+      x.fillStyle = col('--muted'); fitFont(x, t, W - 170, 24, col('--f-data'), '500 '); x.fillText(t, 98, y);
+    };
+    line(col('--ink'), nameA() || 'Inner chart', momentMs(), S.tz, S.placeName, 168);
+    line(col('--outer'), nameB() || 'Outer ring', momentMsB(), S.cmp.tz, S.cmp.placeName, 204);
+    wy = 226;
+  } else {
+    x.fillStyle = col('--muted'); x.font = `500 26px ${col('--f-data')}`;
+    x.fillText(longFmt(S.tz).format(new Date(momentMs())), 72, 168);
+    x.fillText(S.placeName ? `${S.placeName} · ${tzLabel(S.tz, momentMs())}` : `${S.tz.replace(/_/g, ' ')} · ${tzLabel(S.tz, momentMs())}`, 72, 206);
+  }
+  const ws = 900, off = document.createElement('canvas'); off.width = off.height = ws;
+  drawWheel(off.getContext('2d'), ws, sky, skyB ? { sel: null, outer: skyB, cross } : { sel: null });
+  x.drawImage(off, (W - ws) / 2, wy); off.width = off.height = 0;
+  const items = footItems(sky, cross), colW = (W - 140) / items.length;
+  items.forEach((it, i) => {
+    const bx = 70 + i * colW, cw = colW - 20; x.fillStyle = col(skyB ? '--outer' : '--brass'); x.fillRect(bx, 1160, cw, 3);
+    if (it.glyphs) glyphPair(x, it.glyphs, bx, 1200, 26, col, 'left');
+    else { x.fillStyle = col('--muted'); x.font = `500 20px ${col('--f-data')}`; x.fillText(it.label, bx, 1196); }
+    x.fillStyle = col('--ink'); fitFont(x, it.main, cw, skyB ? 30 : 40, col('--f-display')); x.fillText(it.main, bx, 1244);
+    x.fillStyle = col('--muted'); fitFont(x, it.sub, cw, 22, col('--f-body')); x.fillText(it.sub, bx, 1278);
   });
   x.fillStyle = col('--faint'); x.font = `20px ${col('--f-body')}`; x.fillText('Sky Wheel · Sushir 3D Studio', 70, H - 30);
-  const name = `sky-wheel-${toInput(wallParts(momentMs(), S.tz)).replace(/[:T]/g, '-')}.png`;
-  c.toBlob((blob) => {
-    if (!blob) return;
-    if (viewerDownloads) { viewerDownloads.save({ filename: name, data: blob }).then(() => toast('Chart card saved'), (e) => { if (e && e.code !== 'declined') toast('Saving is not available here'); }); return; }
-    const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 4000); toast('Chart card saved');
-  }, 'image/png');
+  return c;
+}
+// a 2400×3200 print: 8×10.7 in at 300 dpi, or 12×16 in at 200 dpi
+function posterImage(){
+  const { sky, skyB, cross } = current(), W = 2400, H = 3200, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), col = css().v, disp = col('--f-display'), data = col('--f-data'), body = col('--f-body'), ms = momentMs();
+  x.fillStyle = col('--paper'); x.fillRect(0, 0, W, H);
+  x.strokeStyle = col('--brass'); x.globalAlpha = 0.55; x.lineWidth = 3; x.strokeRect(84, 84, W - 168, H - 168); x.lineWidth = 1.5; x.strokeRect(104, 104, W - 208, H - 208); x.globalAlpha = 1;
+  x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+  const dateFmt = (tz) => new Intl.DateTimeFormat(undefined, { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  // letter-spaced caps; the trailing space letterSpacing adds is split back so the line stays centred
+  const spaced = (t, y, px, color, cx = W / 2) => { x.fillStyle = color; x.font = `500 ${px}px ${data}`; const ls = 'letterSpacing' in x ? Math.round(px * 0.28) : 0; if (ls) x.letterSpacing = `${ls}px`; x.fillText(t, cx + ls / 2, y); if (ls) x.letterSpacing = '0px'; };
+  if (skyB) {
+    spaced('TWO MOMENTS, ONE SKY', 270, 38, col('--brass'));
+    const l1 = `${nameA() || 'Inner chart'} · ${dateFmt(S.tz).format(new Date(ms))}`, l2 = `${nameB() || 'Outer ring'} · ${dateFmt(S.cmp.tz).format(new Date(momentMsB()))}`;
+    x.fillStyle = col('--ink'); fitFont(x, l1, W - 400, 76, disp); x.fillText(l1, W / 2, 392);
+    x.fillStyle = col('--outer'); fitFont(x, l2, W - 400, 76, disp); x.fillText(l2, W / 2, 492);
+  } else {
+    spaced(S.placeName ? `THE SKY OVER ${S.placeName.toUpperCase()}` : 'THE SKY AT THIS MOMENT', 270, 38, col('--brass'));
+    const d = dateFmt(S.tz).format(new Date(ms)); x.fillStyle = col('--ink'); fitFont(x, d, W - 400, 112, disp); x.fillText(d, W / 2, 410);
+    const t = `${timeFmt(S.tz).format(new Date(ms))} · ${S.tz.replace(/_/g, ' ')} · ${tzLabel(S.tz, ms)}`; x.fillStyle = col('--muted'); fitFont(x, t, W - 440, 44, data, '500 '); x.fillText(t, W / 2, 492);
+  }
+  const ws = 2000, off = document.createElement('canvas'); off.width = off.height = ws;
+  const opts = { sel: null, skyCache: { key: '', c: null } }; if (skyB) { opts.outer = skyB; opts.cross = cross; }
+  drawWheel(off.getContext('2d'), ws, sky, opts);
+  x.drawImage(off, (W - ws) / 2, 570); off.width = off.height = 0; if (opts.skyCache.c) opts.skyCache.c.width = 0;
+  const items = footItems(sky, cross), colW = (W - 480) / items.length;
+  items.forEach((it, i) => {
+    const mid = 240 + colW * (i + 0.5), cw = colW - 60;
+    x.fillStyle = col(skyB ? '--outer' : '--brass'); x.fillRect(mid - cw / 2, 2640, cw, 4);
+    if (it.glyphs) glyphPair(x, it.glyphs, mid, 2738, 58, col, 'center');
+    else spaced(it.label, 2722, 34, col('--muted'), mid);
+    x.textAlign = 'center'; x.fillStyle = col('--ink'); fitFont(x, it.main, cw, skyB ? 64 : 92, disp); x.fillText(it.main, mid, 2836);
+    x.fillStyle = col('--muted'); fitFont(x, it.sub, cw, 38, body); x.fillText(it.sub, mid, 2900);
+  });
+  const pa = S.placeName, pb = S.cmp.placeName;
+  const note = !skyB ? balanceOf(sky).sum : pa && pa === pb ? `Both moments over ${pa}` : [pa && `${nameA() || 'Inner chart'}: ${pa}`, pb && `${nameB() || 'Outer ring'}: ${pb}`].filter(Boolean).join(' · ');
+  if (note) { x.fillStyle = col('--muted'); fitFont(x, note, W - 480, 40, body, 'italic '); x.fillText(note, W / 2, 2986); }
+  x.fillStyle = col('--faint'); fitFont(x, 'Tropical zodiac · geocentric · equinox of date · Sky Wheel by Sushir 3D Studio', W - 480, 28, data); x.fillText('Tropical zodiac · geocentric · equinox of date · Sky Wheel by Sushir 3D Studio', W / 2, 3052);
+  return c;
+}
+$('saveBtn').addEventListener('click', () => deliver(chartCard(), `sky-wheel-${stamp()}.png`, 'image/png', undefined, 'Chart card saved'));
+$('posterBtn').addEventListener('click', () => {
+  toast('Rendering the print poster…');
+  setTimeout(() => { try { deliver(posterImage(), `sky-wheel-poster-${stamp()}.jpg`, 'image/jpeg', 0.92, 'Print poster saved'); } catch { toast('The poster could not be made on this device'); } }, 40);
 });
 const canLink = !(window.claude && typeof window.claude.use === 'function') && /^https?:$/.test(location.protocol);
 $('linkBtn').hidden = !canLink;
@@ -883,8 +1142,18 @@ $('linkBtn').addEventListener('click', () => {
   u.searchParams.set('d', toInput(wallParts(momentMs(), S.tz))); u.searchParams.set('tz', S.tz);
   if (placeSel.value && placeSel.value !== 'custom') u.searchParams.set('place', CITIES[+placeSel.value][0]);
   else if (S.place) { u.searchParams.set('lat', S.place.lat.toFixed(4)); u.searchParams.set('lon', S.place.lon.toFixed(4)); }
+  if (S.cmp.on) {
+    // a live outer ring stays live in the link, so "today against a birthday" keeps meaning today
+    u.searchParams.set('cmp', '1');
+    if (!(S.cmp.live && S.offset === 0)) u.searchParams.set('d2', toInput(wallParts(momentMsB(), S.cmp.tz)));
+    u.searchParams.set('tz2', S.cmp.tz);
+    if (placeSel2.value === '') u.searchParams.set('place2', 'none');
+    else if (placeSel2.value !== 'custom') u.searchParams.set('place2', CITIES[+placeSel2.value][0]);
+    else if (S.cmp.place) { u.searchParams.set('lat2', S.cmp.place.lat.toFixed(4)); u.searchParams.set('lon2', S.cmp.place.lon.toFixed(4)); }
+    if (nameA()) u.searchParams.set('n1', nameA()); if (nameB()) u.searchParams.set('n2', nameB());
+  }
   const text = u.toString();
-  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast('Link copied. It includes the date, time and place.'), () => { toast('Copy the link from the address bar'); history.replaceState(null, '', text); });
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast(S.cmp.on ? 'Link copied. It includes both moments and places.' : 'Link copied. It includes the date, time and place.'), () => { toast('Copy the link from the address bar'); history.replaceState(null, '', text); });
 });
 
 // ---------- boot ----------
@@ -901,13 +1170,33 @@ $('linkBtn').addEventListener('click', () => {
   const d = params.get('d') && fromInput(params.get('d'));
   if (d) { S.live = false; S.base = d; }
   syncInput();
+  // compare: the outer ring from the link, else here and now: this browser's city and zone, live
+  const p2 = params.get('place2'), la2 = parseFloat(params.get('lat2')), lo2 = parseFloat(params.get('lon2'));
+  const i2 = p2 ? CITIES.findIndex((c) => c[0].toLowerCase() === p2.toLowerCase()) : -1;
+  if (i2 >= 0) placeSel2.value = String(i2);
+  else if (p2 === 'none') placeSel2.value = '';
+  else if (Number.isFinite(la2) && Number.isFinite(lo2)) { placeSel2.value = 'custom'; $('lat2').value = la2; $('lon2').value = lo2; }
+  else { const here = CITIES.findIndex((c) => c[3] === browserTz); placeSel2.value = here >= 0 ? String(here) : ''; }
+  applyPlaceSelection2();
+  const tz2 = params.get('tz2'), city2 = placeSel2.value && placeSel2.value !== 'custom' ? CITIES[+placeSel2.value][3] : null;
+  S.cmp.tz = tz2 && zoneList.includes(tz2) ? tz2 : city2 || (zoneList.includes(browserTz) ? browserTz : 'UTC'); tzSel2.value = S.cmp.tz;
+  const d2 = params.get('d2') && fromInput(params.get('d2'));
+  if (d2) { S.cmp.live = false; S.cmp.base = d2; }
+  $('name1').value = (params.get('n1') || '').slice(0, 24); $('name2').value = (params.get('n2') || '').slice(0, 24);
+  const cmpP = params.get('cmp');
+  if (cmpP !== null && cmpP !== '0') { S.cmp.on = true; $('cmpBox').hidden = false; $('cmpBtn').setAttribute('aria-pressed', 'true'); }
+  syncInput2();
   render(); renderEvents(); drawBackdrop();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());
   let bdT = 0; addEventListener('resize', () => { render(); clearTimeout(bdT); bdT = setTimeout(drawBackdrop, 200); });
   // redraw the canvases when the theme flips
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { render(); drawBackdrop(); });
   new MutationObserver(() => { render(); drawBackdrop(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  setInterval(() => { if (S.live && S.offset === 0 && !S.playing) { syncInput(); render(); } }, 60000);
+  setInterval(() => {
+    if (S.playing) return;
+    const a = S.live && (S.cmp.on || S.offset === 0), b = S.cmp.on && S.cmp.live && S.offset === 0;
+    if (a) syncInput(); if (b) syncInput2(); if (a || b) render();
+  }, 60000);
   window.__ready = true;
 })();
 })();

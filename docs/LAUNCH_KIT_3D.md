@@ -174,19 +174,21 @@ Discover marketplace pay a flat 30% instead.
 
 ### Celestial Observatory Wallpaper Pack
 
-A pack of stills rendered straight from the demo: eight desktop wallpapers
-at 2560×1440 and four phone wallpapers at 1179×2556.
+A pack of stills rendered straight from the demo: eight scenes, each as a
+4K desktop wallpaper (3840×2160) and a phone wallpaper (1290×2796), 16 files
+in all.
 
 **Title:** Celestial Observatory Wallpaper Pack
 
 **Price:** $5, or pay-what-you-want with a $5 minimum.
 
 **Description:**
-> Twelve renders from a real-time WebGL observatory: a black hole bending
-> its own accretion disk into an Einstein ring, a pulsar sweeping its beams
-> through a nebula, a ringed giant in its own shadow, a comet and more.
-> Eight desktop wallpapers (2560×1440) and four phone wallpapers
-> (1179×2556). For personal use on your own devices.
+> Eight scenes from a real-time WebGL observatory: a black hole bending its
+> own accretion disk into an Einstein ring, a pulsar sweeping its beams
+> through a nebula, a ringed giant in its own shadow, a comet, the real sky
+> behind the zodiac and more. Each one comes as a 4K desktop wallpaper
+> (3840×2160) and a phone wallpaper (1290×2796). For personal use on your
+> own devices.
 
 **License line:** Personal use only. No resale or redistribution.
 
@@ -199,12 +201,11 @@ magnitude 8, with each figure, its official border, a sky grid and the
 Milky Way where it crosses the field. Printable wall art is one of the most
 searched digital downloads, and a zodiac sign makes an easy gift.
 
-**What is in the ZIP (60 files, 23 MB):**
-- Midnight and Cream colorways for every sign
-- Print 4×5 at 2400×3000 (8×10 in at 300 dpi, 16×20 in)
-- A-sizes at 2480×3508 (A4 at 300 dpi, A3)
-- Twelve phone wallpapers at 1179×2556, with the top left clear for the
-  lock-screen clock
+**What is in the ZIP (24 prints and a README, 25 MB):**
+- Midnight and Ivory colorways for every sign
+- 3600×4800 pixels each: 12×16 in at 300 dpi, scaling cleanly down to
+  9×12 and 6×8 in, or up to 18×24 in at 200 dpi
+- A README with the license and the star-data credit
 
 **Price:** $12 for the full set. A single-sign listing at $4 can come
 later if buyers ask for one sign only.
@@ -222,8 +223,8 @@ digital print, celestial decor.
 **Credit line (keep it in the README inside the ZIP):** star data from
 d3-celestial, © 2015 Olaf Frohn, BSD 3-Clause license.
 
-**Posts that fit this pack:** the Midnight Scorpio next to the Cream
-Scorpio ("which one would you hang?"), a phone mockup of your own sign,
+**Posts that fit this pack:** the Midnight Scorpio next to the Ivory
+Scorpio ("which one would you hang?"), a framed mockup of your own sign,
 and a short clip scrolling through all twelve.
 
 ## How the money reaches you
