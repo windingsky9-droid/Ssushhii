@@ -69,6 +69,7 @@ Before ordering, send the API documentation and a short description of the resul
 
 ## Portfolio proof already available
 
+- Celestial Observatory V15: a real-time three.js scene with HDR light, a lensing black hole, a chart wheel and the real night sky (see `LAUNCH_KIT_3D.md` for a 3D gig).
 - Market Observatory Flask dashboard.
 - Factor Weave REST client and MCP probe.
 - Demo/live provider boundary.
