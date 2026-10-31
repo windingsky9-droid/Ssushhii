@@ -91,6 +91,23 @@ A separate public funnel now showcases the lead-intelligence and developer-servi
 
 The funnel is designed to turn traffic into technical questions or pilot requests, not to claim guaranteed revenue or ROI.
 
+## Real-time 3D render — Winding Sky
+
+[![Winding Sky: a real-time Three.js render of a glowing API core inside a faceted crystal, ringed by glass panels that show this repo's Flask routes, a passing pytest run, a dashboard, a tactical replay, and a workflow, under a winding aurora sky](showcase/media/sushir-winding-sky-hero.jpg)](showcase/SUSHIR_WINDING_SKY_3D_RENDER.html)
+
+**Open:** [Sushir Winding Sky — API Core render](showcase/SUSHIR_WINDING_SKY_3D_RENDER.html)
+
+A single-file Three.js scene rendered in real time: a glowing API core inside a faceted crystal, gyroscope rings, data streams, glass panels, and a winding aurora sky over an obsidian floor.
+
+- **real project facts on the panels:** the Flask routes and status codes from `app.py` (200, 400, and 503, each covered by a test) and the actual `pytest -q` result, 15 passed; the dashboard and tactical panels are labelled demo data and modeled
+- **rendering:** physically based glass with transmission and dispersion, image-based lighting, planar floor reflections, bloom, ACES tone mapping, and a lens pass with vignette and grain
+- **interactive viewer:** drag to orbit, scroll to zoom, cinematic camera, pause, and a "Save 4K still" export
+- **reproducible renders:** every motion repeats on a 10-second cycle, so the loop is seamless and any frame can be re-rendered exactly with [`scripts/render_winding_sky.cjs`](scripts/render_winding_sky.cjs)
+
+Media: [4K still](showcase/media/sushir-winding-sky-4k.jpg) · [social card](showcase/media/sushir-winding-sky-social.jpg) · [10-second loop (MP4)](showcase/media/sushir-winding-sky-loop.mp4) · [animated banner (WebP)](showcase/media/sushir-winding-sky-hero.webp)
+
+Low-key version: **the glowing panels are this repo's real routes and test run.**
+
 ## Interactive 3D tactical showcase
 
 **Latest:** [Sushir Halo Tactical Command Center V12 — Cinematic Operations](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V12_CINEMATIC_OPERATIONS.html)
