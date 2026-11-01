@@ -70,7 +70,12 @@ class FactorWeaveResearchProvider:
         if isinstance(score, (int, float)) and 0 <= score <= 1:
             score = round(score * 100)
         peers = []
-        for item in similar.get("results", similar.get("rows", [])) if isinstance(similar, dict) else []:
+        candidates = similar.get("results") if isinstance(similar, dict) else None
+        if not isinstance(candidates, list) and isinstance(similar, dict):
+            candidates = similar.get("rows")
+        if not isinstance(candidates, list):
+            candidates = []
+        for item in candidates:
             symbol = item.get("ticker") if isinstance(item, dict) else None
             if symbol and symbol != ticker:
                 peers.append(symbol)

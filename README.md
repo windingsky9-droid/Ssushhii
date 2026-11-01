@@ -111,3 +111,11 @@ A tested Three.js/WebGL tactical visualization presented as a cinematic operatio
 
 Low-key version: **I made the angles move, then made them explain themselves.**
 
+
+## VS Code + OMEN verification workflow
+
+Open the **local folder** in VS Code, rather than the GitHub webpage, to use the included terminal tasks. Press **Ctrl+Shift+B** to run **OMEN: Verify project (Python + JS)** and see every check in the integrated terminal. Use **Terminal > Run Task** for Python-only or JavaScript-only checks.
+
+The task runs `scripts/verify_omen.ps1`, which checks all pytest cases, compiles the Python source, and parses both browser JavaScript bundles. It selects the local `.venv` when present and can reuse the primary checkout's environment from a Git worktree. It does not download dependencies or read private keys.
+
+For Codex and other coding assistants, `AGENTS.md` documents the handoff contract: reproduce bugs with failing tests, make changes in a separate branch, run verification, then show the actual Git diff and CI status. GitHub Actions repeats Python and JavaScript checks for pull requests. A passing syntax check does **not** replace browser interaction testing.
