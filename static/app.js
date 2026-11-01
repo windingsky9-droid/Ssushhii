@@ -295,3 +295,20 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPricing();
   runResearch(input.value);
 });
+
+
+document.querySelectorAll(".code-copy").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const snippet = $(button.dataset.copyTarget);
+    const copyStatus = $(button.dataset.copyStatus);
+    if (!snippet || !copyStatus) return;
+
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard access is unavailable.");
+      await navigator.clipboard.writeText(snippet.innerText.trim());
+      copyStatus.textContent = "Copied to clipboard.";
+    } catch (_) {
+      copyStatus.textContent = "Copy unavailable. Select the visible code to copy it.";
+    }
+  });
+});
