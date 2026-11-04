@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Blender build-log renders (regenerate with blender/render_build_log.*)
+blender/renders/
+*.blend1

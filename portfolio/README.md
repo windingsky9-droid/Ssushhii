@@ -36,6 +36,10 @@ python scripts/check_portfolio.py
 | `media/celestial-observatory-v15-sky.jpg` | The V15 real-sky shot: Leo and Cancer drawn from catalogue stars behind the ♌ tile. |
 | `media/shop-wallpapers.jpg` | Shop image for the observatory wallpaper pack. |
 | `media/shop-zodiac-prints.jpg` | Shop image for the zodiac star-map prints, in Midnight and Ivory. |
+| `media/duo-display-hero.jpg` | Duo Display: the studio's first Blender Cycles render, 1920×1080. |
+| `media/duo-display-build-log.gif` | Duo Display timelapse: six build stages, from clay blockout to final grade. |
+| `media/duo-display-build-sheet.jpg` | The six stages side by side. |
+| `media/duo-display-before-after.jpg` | Blockout and final, split down the middle. |
 | `demos/archive/celestial-observatory-v14.html` | V14 frozen as it shipped, for comparison. |
 | `media/archive/` | Earlier stills (V11 showpiece, V13 hero, black hole and pulsar), kept for reference. |
 | `RENDERING_PLAYBOOK.md` | The nineteen techniques behind the observatory and how to reuse them. |
