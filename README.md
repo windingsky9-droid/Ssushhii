@@ -1,30 +1,57 @@
+<div align="center">
+
 # Market Observatory
 
-A zero-required-cost market research MVP built around a clean provider boundary. It runs immediately with deterministic demo data and switches to server-side Factor Weave research when `FACTORWEAVE_API_KEY` is configured.
+**A calmer way to turn a ticker into a structured research brief.**
 
-## Need a small Flask/API fix?
+Start instantly with deterministic demo data. Connect the optional Factor Weave provider when you are ready. The app presents context for human research; it does not trade or promise returns.
 
-**$40 USD for one agreed Flask/API issue.** I can review a reproducible Flask or REST endpoint issue and confirm whether it fits the fixed price before you commit. The agreed scope includes the change, a verification check, and a short handoff; timing and any paid services are agreed first.
+[Run locally](#run-locally) · [Explore the product](#what-you-can-explore) · [Read the docs](#project-guides) · [Request a small API fix](#work-with-the-project)
 
-[Open a developer service brief](https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml) with the expected behavior, error, stack, and relevant documentation. Keep passwords, API keys, and private customer data out of public issues.
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)
+[![CI](https://github.com/windingsky9-droid/Ssushhii/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/windingsky9-droid/Ssushhii/actions/workflows/ci.yml)
+[![Issues](https://img.shields.io/github/issues/windingsky9-droid/Ssushhii)](https://github.com/windingsky9-droid/Ssushhii/issues)
 
-[See the service details and one-page PDF](docs/services/flask-api-fix.md).
+</div>
 
-## Why this exists
+---
 
-The goal is to validate whether people will use and pay for a clearer research workflow before spending money on infrastructure. It is a research product, not an auto-trader and not a promise of investment returns.
+## The idea
 
-## Current MVP
+Market Observatory is a small, deployable research dashboard built around a clear provider boundary. It gives a visitor a useful first look without an account, paid data plan, or API key. When a Factor Weave key is configured on the server, research can use that provider instead.
 
-- Premium responsive ticker-research dashboard.
-- Deterministic demo mode with no account or API key required.
-- Optional Factor Weave REST provider on the server.
-- Composite profile, factor lens, market context, and comparable symbols.
-- Free / Pro / Creator pricing presentation.
-- Paid CTAs remain disabled until Stripe Payment Links are deliberately configured.
-- Health and JSON research endpoints for deployment checks.
+The experience is intended to make a research session easier to scan: a composite profile, factor lens, market context, and comparable symbols in one place.
 
-## Run locally — $0 path
+> **Research support, not financial advice.** The app is not an auto-trader, does not execute transactions, and does not guarantee investment outcomes. Demo data is illustrative.
+
+## What you can explore
+
+| Area | What it does |
+| --- | --- |
+| Research dashboard | Responsive ticker view with a SPY demo snapshot ready on first launch |
+| Provider boundary | Deterministic demo mode works without credentials; optional Factor Weave requests stay server-side |
+| Research summary | Composite profile, factor lens, market context, and comparable symbols |
+| Pricing presentation | Free, Pro, and Creator tiers; paid actions stay inactive until payment links are configured |
+| Operational endpoints | Health and JSON research endpoints for deployment checks |
+| Visual experiments | A separate 3D portfolio and tactical showcase, linked below |
+
+### A look at the system
+
+```mermaid
+flowchart LR
+    Browser[Browser dashboard] --> Flask[Flask app]
+    Flask --> Research[Research and provider boundary]
+    Research --> Demo[Deterministic demo data]
+    Research -->|Optional server credential| FactorWeave[Factor Weave API]
+    Flask --> Health[Health and JSON endpoints]
+```
+
+The browser does not receive the Factor Weave credential. Configure secrets in the local environment or your hosting provider.
+
+## Run locally
+
+The $0 path starts in demo mode and needs no API key.
 
 ```powershell
 py -m venv .venv
@@ -32,82 +59,89 @@ py -m venv .venv
 .\.venv\Scripts\python.exe app.py
 ```
 
-Open `http://127.0.0.1:5000`. The app automatically loads a SPY demo snapshot.
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). A SPY demo snapshot is loaded automatically.
 
-## Optional live Factor Weave mode
+### Optional: connect Factor Weave
 
 1. Copy `.env.example` to `.env`.
-2. Put a Factor Weave API key in `FACTORWEAVE_API_KEY`.
-3. Load that environment before starting the app.
-4. Keep `.env` local; it is ignored by Git.
+2. Set `FACTORWEAVE_API_KEY` in `.env`.
+3. Load the environment and start the app.
 
-The browser never receives the Factor Weave credential. Provider requests are made by Flask on the server.
+Keep `.env` out of Git. The browser never needs this key.
 
-## Optional payments
+### Optional: enable hosted checkout links
 
-Create hosted Stripe Payment Links only when you intentionally want to accept payments, then set `STRIPE_PRO_URL` and/or `STRIPE_CREATOR_URL`. Until those variables are present, the paid buttons remain disabled. This MVP does not collect card data or require a Stripe secret key.
+Set `STRIPE_PRO_URL` and/or `STRIPE_CREATOR_URL` to hosted Stripe Payment Links only when you intend to accept payments. Until those variables are configured, paid buttons remain disabled. This project does not collect card details or require a Stripe secret key.
 
-See [`docs/REVENUE_SETUP.md`](docs/REVENUE_SETUP.md) for the end-to-end proof, live-provider, checkout, and first-revenue flow. `.env.example` documents the supported local variables; real credentials stay in `.env` or the deployment host's secret manager.
+See [Revenue setup](docs/REVENUE_SETUP.md) for the proof, live-provider, checkout, and first-revenue flow.
 
-## Test and verify
+## Verify changes
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe -m compileall app.py src
 ```
 
-## Hosted deployment
+GitHub Actions runs the same test and compile checks on pushes to `main` and pull requests.
 
-The repository includes a generic production entry point (`wsgi.py`), a `Procfile`, and a Dockerfile. Hosts that support Procfiles can use:
+## Deploy
+
+The repo includes a WSGI entry point, Procfile, and Dockerfile.
+
+**Procfile-compatible host**
 
 ```text
 gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60 wsgi:app
 ```
 
-For Docker-based hosting:
+**Docker**
 
 ```powershell
 docker build -t market-observatory .
 docker run --rm -p 5000:5000 --env-file .env market-observatory
 ```
 
-Keep `FACTORWEAVE_API_KEY`, `STRIPE_PRO_URL`, and `STRIPE_CREATOR_URL` in the host's secret/environment settings. Never bake `.env` into an image or commit it.
+Keep provider and payment-link values in your host's secret or environment settings. Do not bake `.env` into an image or commit it.
 
-## Visual portfolio
+## Project guides
 
-The privacy-safe Sushir 3D Studio showcase is included under [`portfolio/`](portfolio/). Open `portfolio/index.html` locally or serve the folder from any static host. It includes a cinematic still, a synthetic public observatory demo, service positioning, and buyer-facing contact links. Private/name-specific source files are intentionally not included.
+| Guide | Use it for |
+| --- | --- |
+| [Revenue setup](docs/REVENUE_SETUP.md) | Proving the demo, configuring the provider, checkout, and first-revenue steps |
+| [Launch checklist](docs/LAUNCH_CHECKLIST.md) | A practical pass through launch readiness |
+| [Flask/API service brief](docs/services/flask-api-fix.md) | Scope and boundaries for a small fixed-scope API fix |
+| [Fiverr seller kit](docs/FIVERR_SELLER_KIT.md) | Service listing and buyer handoff materials |
+| [Contributing](CONTRIBUTING.md) | Local workflow, tests, and pull-request expectations |
+| [Security](SECURITY.md) | How to report a possible vulnerability |
 
-## Cargo Profit Engine — live technical-pilot funnel
+## More from the studio
 
-A separate public funnel now showcases the lead-intelligence and developer-service workflow built around Cargo + Go + Sitelas + Quickchat.
+### Sushir 3D Studio
 
-- **Live site:** https://cargo-profit-engine-5820.sitelas.com
-- **Tracked launch link:** https://zipgo.ink/cargo-profit-engine
-- **AI customer guide:** https://app.quickchat.ai/ri4k73zpat
-- **Current verified build:** 8 scored accounts, 3 P1 opportunities, 3 relevant professional buyers found, 0 outbound messages sent during the build.
-- **Developer-service focus:** API integrations, workflow automation, Go/Flask dashboards, testing/CI, and bounded AI/MCP prototypes.
-- **Public/private separation:** public pages show anonymized opportunity categories; exact prospect and buyer identities remain private.
-- **Activation controls:** enrichment/outbound are gated until relevance, suppression, basis, and sender-readiness checks are documented.
+Browse the privacy-safe showcase in [portfolio/](portfolio/). Open `portfolio/index.html` locally or serve the folder from a static host. It includes a cinematic still, synthetic demo, and service positioning.
 
-The funnel is designed to turn traffic into technical questions or pilot requests, not to claim guaranteed revenue or ROI.
+### Tactical operations showcase
 
-## Interactive 3D tactical showcase
+[Open Sushir Halo Tactical Command Center V12 — Cinematic Operations](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V12_CINEMATIC_OPERATIONS.html).
 
-**Latest:** [Sushir Halo Tactical Command Center V12 — Cinematic Operations](showcase/SUSHIR_HALO_TACTICAL_COMMAND_CENTER_V12_CINEMATIC_OPERATIONS.html)
+This Three.js/WebGL demo explores route comparison, freeze-frame analysis, pressure sectors, replay controls, cover-aware line-of-sight checks, objective overlays, a live mini-map, and render telemetry. Tactical values are modeled for the demo and are not official Halo telemetry.
 
-A tested Three.js/WebGL tactical visualization presented as a cinematic operations-analysis product demo.
+### Cargo Profit Engine
 
-- **actual vs recommended 3D routes**
-- **freeze-frame tactical analysis**
-- **cause classification** for repeated tactical mistakes
-- **sector focus** showing where pressure matters
-- projected 3D callouts attached to the arena
-- story timeline from read → contact → decision → conversion → reset
-- live tactical verdict explaining commit / hold / reset / change-angle decisions
-- full-screen Director Mode with LOS beam, target halo, replay ghosts, story beat, decision window, and modeled confidence
-- synchronized replay controls, cover-aware LOS checks, modeled target priority, objective overlays, and matchup matrix
-- live mini-map and render telemetry
-- explicit separation of modeled tactical values from real/official Halo telemetry
+A separate funnel for lead-intelligence and technical-pilot work:
 
-Low-key version: **I made the angles move, then made them explain themselves.**
+- [Live site](https://cargo-profit-engine-5820.sitelas.com)
+- [Tracked launch link](https://zipgo.ink/cargo-profit-engine)
+- [AI customer guide](https://app.quickchat.ai/ri4k73zpat)
 
+The published summary describes 8 scored accounts, 3 P1 opportunities, 3 relevant professional buyers found, and 0 outbound messages sent during that build. Public pages use anonymized opportunity categories; exact prospect identities remain private. The funnel is intended to start technical conversations, not promise revenue or ROI.
+
+## Work with the project
+
+For a reproducible Flask or REST endpoint issue, the project offers **one agreed issue for $40 USD**. The scope, timing, verification, and any paid services are confirmed before work begins.
+
+[Open the service-request form](https://github.com/windingsky9-droid/Ssushhii/issues/new?template=service-request.yml) with the expected behavior, error, relevant stack, and documentation. Keep credentials and private customer data out of public issues. [Read the service brief](docs/services/flask-api-fix.md).
+
+---
+
+<sub>Built as a practical research MVP: useful in demo mode, optional to connect, and explicit about what it does.</sub>
