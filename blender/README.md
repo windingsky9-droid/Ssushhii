@@ -34,6 +34,17 @@ The same shot rendered six times, one layer of upgrades per stage:
 
 ![Split view: clay blockout on the left, final render on the right](../portfolio/media/duo-display-before-after.jpg)
 
+## The making-of
+
+[`make_making_of.py`](make_making_of.py) turns the six stage frames into a
+23-second video: for each stage, the prompt and the code that adds it type
+out on the left while the render builds on the right. Every prompt is in the
+[prompt library](../docs/PROMPT_LIBRARY.md).
+
+[![The making-of, one frame per stage: prompt and code on the left, the render on the right](../portfolio/media/duo-display-making-of-sheet.jpg)](../portfolio/media/duo-display-making-of.mp4)
+
+[Watch the making-of (MP4, 23 s)](../portfolio/media/duo-display-making-of.mp4)
+
 ## Why this beats a browser capture
 
 The studio's earlier stills (V11 to V15) are Playwright screenshots of the
@@ -52,25 +63,48 @@ travels:
 
 ## Render it yourself
 
-Install [Blender 4.2 LTS](https://www.blender.org/download/lts/4-2/), then
-Pillow (`py -m pip install pillow`) and ffmpeg for the timelapse.
+### 1. Install what it needs
 
-Windows (PowerShell), from the repository root:
+One script installs [Blender 4.2 LTS](https://www.blender.org/download/lts/4-2/),
+Python 3 with Pillow, and ffmpeg. Both skip anything already installed.
+
+Windows (PowerShell), from the repository root. It uses winget:
+
+```powershell
+.\blender\setup_windows.ps1
+```
+
+macOS (with [Homebrew](https://brew.sh)) or Linux (apt, dnf, pacman or
+zypper). Blender is pinned to 4.2.23, checked against blender.org's
+published SHA-256 and unpacked into your home folder:
+
+```bash
+./blender/setup_unix.sh
+```
+
+Each script ends by printing the installed versions and the command to run
+next.
+
+### 2. Render
+
+Windows:
 
 ```powershell
 .\blender\render_build_log.ps1
 .\blender\render_build_log.ps1 -Left ALPHA -Right BRAVO
 ```
 
-macOS or Linux:
+macOS or Linux (pass the Blender path the setup script printed):
 
 ```bash
-./blender/render_build_log.sh
-LEFT=ALPHA RIGHT=BRAVO ./blender/render_build_log.sh
+BLENDER=~/.local/opt/blender-4.2.23/blender ./blender/render_build_log.sh
+BLENDER=~/.local/opt/blender-4.2.23/blender LEFT=ALPHA RIGHT=BRAVO ./blender/render_build_log.sh
 ```
 
-Output lands in `blender/renders/`, which Git ignores, so names you render
-there stay on your machine.
+That renders the six stages, the convergence ladder and the final shots, then
+assembles the timelapse and the making-of video. Output lands in
+`blender/renders/`, which Git ignores, so names you render there stay on your
+machine.
 
 One still, straight from Blender:
 
@@ -99,3 +133,6 @@ One still, straight from Blender:
 [`assemble_build_log.py`](assemble_build_log.py) turns the stage frames into
 the timelapse (MP4 and GIF), the contact sheet, the before/after split and the
 convergence animation, with Winding Sky labels on every frame.
+[`make_making_of.py`](make_making_of.py) makes the making-of video and its
+contact sheet; pass `--times` with per-stage render seconds to show them on
+each stage.

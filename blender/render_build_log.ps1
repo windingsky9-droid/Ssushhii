@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
 Render the Duo Display build log with Blender 4.2 LTS: six build stages,
-a 1-to-64-sample convergence ladder, the final shots, and the timelapse.
+a 1-to-64-sample convergence ladder, the final shots, the timelapse and the
+making-of video.
 
 .DESCRIPTION
 Output lands in blender\renders (git-ignored). Requires Blender 4.2 LTS,
-Python with Pillow (py -m pip install pillow) and ffmpeg on PATH for the
-timelapse and GIF.
+Python with Pillow and ffmpeg on PATH; setup_windows.ps1 installs all three.
 
 .EXAMPLE
 .\blender\render_build_log.ps1
@@ -44,4 +44,10 @@ Invoke-Render @("--stage", "6", "--shots", "hero,left,right", "--out", "$Out\fin
 py "$PSScriptRoot\assemble_build_log.py" --stages "$Out\stages" --ladder "$Out\ladder" --out "$Out\build-log" `
 	--title "$Left x $Right - DUO DISPLAY" --font "$PSScriptRoot\fonts\ChakraPetch-Bold.ttf" `
 	--sans "$PSScriptRoot\fonts\ChakraPetch-SemiBold.ttf" --mono $MonoFont
+if ($LASTEXITCODE -ne 0) { throw "assemble_build_log.py exited with code $LASTEXITCODE" }
+
+Write-Host "Making-of video"
+py "$PSScriptRoot\make_making_of.py" --stages "$Out\stages" --final "$Out\final\duo-display-hero.png" `
+	--out "$Out\making-of\making-of.mp4" --title "$Left x $Right" --mono $MonoFont
+if ($LASTEXITCODE -ne 0) { throw "make_making_of.py exited with code $LASTEXITCODE" }
 Write-Host "Done: $Out"

@@ -13,7 +13,7 @@
 ![Blender](https://img.shields.io/badge/Blender-4.2_LTS-E87D0D?logo=blender&logoColor=white)
 ![Cycles](https://img.shields.io/badge/render-Cycles-b8ff73)
 
-[Blender build log](blender/) · [Portfolio](portfolio/) · [Halo command center](#interactive-3d-tactical-showcase) · [Market Observatory](#market-observatory) · [Hire me](#need-a-small-flaskapi-fix)
+[Blender build log](blender/) · [Prompt library](docs/PROMPT_LIBRARY.md) · [Portfolio](portfolio/) · [Halo command center](#interactive-3d-tactical-showcase) · [Market Observatory](#market-observatory) · [Hire me](#need-a-small-flaskapi-fix)
 
 </div>
 
@@ -47,6 +47,12 @@
 | Clay and one key light | Metal, glass, glowing 3D type | Coloured spots, rim and fill | HUD, cores, team-up arc | Volumetric god rays | DOF, AgX, bloom, streaks |
 
 The earlier stills are browser captures of the WebGL demos. Duo Display is path traced: real reflections, light that scatters through haze, physical depth of field and glowing type that lights the metal around it. The [build log](blender/) has the scripts, timings, every stage, and how to render your own two names.
+
+### The making-of: prompt, code, render
+
+[![The making-of, one frame per stage: the prompt and code on the left, the render building on the right](portfolio/media/duo-display-making-of-sheet.jpg)](portfolio/media/duo-display-making-of.mp4)
+
+Each stage's prompt and the code it produced type out beside the render they make. [Watch the making-of (MP4, 23 s)](portfolio/media/duo-display-making-of.mp4), copy the prompts from the [prompt library](docs/PROMPT_LIBRARY.md), and install everything with one command: `.\blender\setup_windows.ps1` on Windows or `./blender/setup_unix.sh` on macOS and Linux.
 
 ## How the studio grew
 
