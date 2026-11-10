@@ -1,0 +1,23 @@
+name: Tactical engine CI
+
+on:
+  push:
+    paths:
+      - 'showcase/modules/**'
+      - 'showcase/tests/**'
+      - '.github/workflows/tactical-js.yml'
+  pull_request:
+    paths:
+      - 'showcase/modules/**'
+      - 'showcase/tests/**'
+      - '.github/workflows/tactical-js.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test showcase/tests/*.test.mjs
