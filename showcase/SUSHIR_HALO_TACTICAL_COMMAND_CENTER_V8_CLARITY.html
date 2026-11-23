@@ -1,5 +1,3 @@
-[Reading 222 lines from start (total: 222 lines, 0 remaining)]
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -222,5 +220,3 @@ let last=performance.now();let frameCount=0;
 function animate(t){controls.update();core.rotation.x+=.002;core.rotation.y+=.003;const sp=(t*.00022)%1;scanPulse.scale.setScalar(1+sp*6.6);scanPulse.material.opacity=.2*(1-sp);actorBeams.children.forEach((m,i)=>{m.material.opacity=(i===0?.10:.04)+(Math.sin(t*.002+i)*.012)});routeGhosts.forEach(o=>o.ghost.position.copy(o.curve.getPointAt((o.phase+t*.000055*o.speed*18)%1)));actorGroups.forEach((g,id)=>{g.userData.ring.rotation.z+=id==='sushir'?.012:.006});renderer.render(scene,camera);frameCount++;if(t-last>1000){last=t;frameCount=0}requestAnimationFrame(animate)}requestAnimationFrame(animate);
 </script>
 </body></html>
-
-[executed on device: Omen (5b99300c-8844-4b8e-9d20-880e8f93848d)]
